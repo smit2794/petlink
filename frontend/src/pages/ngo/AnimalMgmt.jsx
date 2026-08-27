@@ -1,32 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useApp } from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
-import { 
-  Search, Filter, ArrowLeft, Heart, FileText, Activity, 
+import PetQRCode from "../../components/PetQRCode";
+import {
+  Search, Filter, ArrowLeft, Heart, FileText, Activity,
   Calendar, Layers, ShieldAlert, User, Eye, PawPrint, Tag, ClipboardList,
   MessageSquare, Upload, Check
 } from "lucide-react";
 
-// Mock QR Code SVG Component
-const QRPlaceholder = ({ petId }) => (
-  <svg width="120" height="120" viewBox="0 0 100 100" style={{ backgroundColor: "#F7F5F0", padding: "6px", borderRadius: "8px", border: "1px solid var(--border-color)" }}>
-    <rect x="5" y="5" width="25" height="25" fill="var(--primary-color)" stroke="white" strokeWidth="2" />
-    <rect x="10" y="10" width="15" height="15" fill="white" />
-    <rect x="13" y="13" width="9" height="9" fill="var(--primary-color)" />
-    <rect x="70" y="5" width="25" height="25" fill="var(--primary-color)" stroke="white" strokeWidth="2" />
-    <rect x="75" y="10" width="15" height="15" fill="white" />
-    <rect x="78" y="78" width="9" height="9" fill="var(--primary-color)" />
-    <rect x="5" y="70" width="25" height="25" fill="var(--primary-color)" stroke="white" strokeWidth="2" />
-    <rect x="10" y="75" width="15" height="15" fill="white" />
-    <rect x="13" y="78" width="9" height="9" fill="var(--primary-color)" />
-    <rect x="40" y="10" width="10" height="15" fill="var(--primary-color)" />
-    <rect x="40" y="30" width="15" height="5" fill="var(--primary-color)" />
-    <rect x="15" y="40" width="20" height="10" fill="var(--primary-color)" />
-    <rect x="45" y="45" width="15" height="15" fill="var(--primary-color)" />
-    <rect x="70" y="40" width="20" height="10" fill="var(--primary-color)" />
-    <rect x="40" y="70" width="15" height="20" fill="var(--primary-color)" />
-  </svg>
-);
 
 const AnimalMgmt = () => {
   const { animals, updateAnimal, updateAnimalPersisted, addAnimal, caseNotes, addCaseNote, addAnimalPersisted, foundReports, confirmFoundMatch, dismissFoundReport } = useApp();
@@ -74,7 +55,7 @@ const AnimalMgmt = () => {
       const birdBreeds = ["Spotted Owl", "Pigeon", "Indian Ringneck Parakeet"];
 
       const count = parseInt(importCount) || 5;
-      
+
       let successCount = 0;
       let failCount = 0;
 
@@ -82,10 +63,10 @@ const AnimalMgmt = () => {
         const randomName = names[Math.floor(Math.random() * names.length)];
         const speciesChoices = ["Dog", "Cat", "Cow", "Bird"];
         const randomSpecies = speciesChoices[Math.floor(Math.random() * speciesChoices.length)];
-        
+
         let breed = "Indie Mix";
         let photo = "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400";
-        
+
         if (randomSpecies === "Dog") {
           breed = dogBreeds[Math.floor(Math.random() * dogBreeds.length)];
           photo = "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400";
@@ -124,7 +105,7 @@ const AnimalMgmt = () => {
       if (failCount > 0) {
         addToast(`Bulk import: ${successCount} saved, ${failCount} failed. Check connection and retry if needed.`, "warning");
       }
-      
+
       setIsUploading(false);
       setShowImportModal(false);
       setMockFileName("");
@@ -139,8 +120,8 @@ const AnimalMgmt = () => {
   }, []);
 
   const filteredAnimals = animals.filter((pet) => {
-    const matchesSearch = 
-      pet.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const matchesSearch =
+      pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       pet.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       pet.breed.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "All" || pet.status === statusFilter;
@@ -164,22 +145,21 @@ const AnimalMgmt = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-      
+
       {selectedPet ? (
         /* DETAIL VIEW COMPONENT */
         <div className="animate-scale-up" style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-          
-           {/* Detail Header */}
+
+          {/* Detail Header */}
           <div style={{ display: "flex", alignItems: "center", gap: "16px", justifyContent: "space-between" }}>
             <button className="btn btn-outline btn-sm" onClick={() => setSelectedPet(null)}>
               <ArrowLeft size={16} /> Back to Directory
             </button>
-            <span className={`badge badge-${
-              selectedPet.status === "Adopted" ? "adopted" :
+            <span className={`badge badge-${selectedPet.status === "Adopted" ? "adopted" :
               selectedPet.status === "Available for Adoption" ? "adoption" :
-              selectedPet.status === "In Shelter" ? "shelter" :
-              selectedPet.status === "Under Treatment" ? "treatment" : "rescued"
-            }`}>
+                selectedPet.status === "In Shelter" ? "shelter" :
+                  selectedPet.status === "Under Treatment" ? "treatment" : "rescued"
+              }`}>
               {selectedPet.status}
             </span>
           </div>
@@ -189,7 +169,7 @@ const AnimalMgmt = () => {
             <h4 style={{ fontSize: "0.85rem", fontWeight: 800, textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "24px" }}>
               Custody Pipeline Stage Tracker
             </h4>
-            
+
             <div style={{
               display: "flex",
               alignItems: "center",
@@ -199,7 +179,7 @@ const AnimalMgmt = () => {
               width: "100%",
               maxWidth: "800px"
             }} className="stepper-container">
-              
+
               {/* Stepper Line */}
               <div style={{
                 position: "absolute",
@@ -244,7 +224,7 @@ const AnimalMgmt = () => {
                           setSelectedPet(prev => ({ ...prev, status: selectedPet.status })); // revert on failure
                         }
                       }}
-                      
+
                       style={{
                         width: "32px",
                         height: "32px",
@@ -285,12 +265,12 @@ const AnimalMgmt = () => {
             gridTemplateColumns: "240px 1fr",
             gap: "32px"
           }} className="animal-profile-grid">
-            
+
             {/* Left Block: Picture Card */}
             <div className="card" style={{ display: "flex", flexDirection: "column", gap: "24px", alignItems: "center", alignSelf: "start" }}>
-              <img 
-                src={selectedPet.photo} 
-                alt={selectedPet.name} 
+              <img
+                src={selectedPet.photo}
+                alt={selectedPet.name}
                 style={{
                   width: "100%",
                   height: "220px",
@@ -303,7 +283,7 @@ const AnimalMgmt = () => {
                 <h2 style={{ fontSize: "1.6rem", fontWeight: 800 }}>{selectedPet.name || "Unnamed Stray"}</h2>
                 <span style={{ color: "var(--text-muted)", fontSize: "0.88rem", fontWeight: 700 }}>ID: {selectedPet.id}</span>
               </div>
-              <QRPlaceholder petId={selectedPet.id} />
+              <PetQRCode animalId={selectedPet.id} size={120} />
               <div style={{ textAlign: "center", fontSize: "0.75rem", color: "var(--text-muted)" }}>
                 <span>Scan collar QR tag for offline EHR lookup</span>
               </div>
@@ -357,7 +337,7 @@ const AnimalMgmt = () => {
 
               {/* Tab Content Panels */}
               <div className="card" style={{ minHeight: "320px" }}>
-                
+
                 {/* 1. Overview Tab */}
                 {activeTab === "overview" && (
                   <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -431,25 +411,25 @@ const AnimalMgmt = () => {
                         </div>
 
                         <button className="btn btn-outline btn-sm" onClick={async () => {
-          const notes = prompt("Enter additional veterinary notes:", health.treatmentNotes || "");
-          if (notes !== null) {
-            setSelectedPet(prev => ({
-              ...prev,
-              healthSummary: {
-                ...health,
-                treatmentNotes: notes
-              }
-            }));
-            try {
-              await updateAnimalPersisted(selectedPet.id, {
-                healthSummary: {
-                  ...health,
-                  treatmentNotes: notes
-                }
-              });
-            } catch (err) {
-              // error toast already shown inside updateAnimalPersisted
-            }
+                          const notes = prompt("Enter additional veterinary notes:", health.treatmentNotes || "");
+                          if (notes !== null) {
+                            setSelectedPet(prev => ({
+                              ...prev,
+                              healthSummary: {
+                                ...health,
+                                treatmentNotes: notes
+                              }
+                            }));
+                            try {
+                              await updateAnimalPersisted(selectedPet.id, {
+                                healthSummary: {
+                                  ...health,
+                                  treatmentNotes: notes
+                                }
+                              });
+                            } catch (err) {
+                              // error toast already shown inside updateAnimalPersisted
+                            }
                           }
                         }} style={{ alignSelf: "flex-start" }}>
                           Update Medical Notes
@@ -567,7 +547,7 @@ const AnimalMgmt = () => {
                 {activeTab === "notes" && (
                   <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                     <h3 style={{ fontSize: "1.2rem", fontWeight: 800 }}>Internal Staff Notes</h3>
-                    
+
                     {/* Add note form */}
                     <form onSubmit={(e) => {
                       e.preventDefault();
@@ -580,12 +560,12 @@ const AnimalMgmt = () => {
                       });
                       e.target.reset();
                     }} style={{ display: "flex", gap: "10px" }}>
-                      <input 
-                        type="text" 
-                        name="noteText" 
-                        placeholder="Write an internal comment..." 
-                        className="form-control" 
-                        required 
+                      <input
+                        type="text"
+                        name="noteText"
+                        placeholder="Write an internal comment..."
+                        className="form-control"
+                        required
                       />
                       <button type="submit" className="btn btn-primary btn-sm" style={{ padding: "8px 16px" }}>Add Note</button>
                     </form>
@@ -617,7 +597,7 @@ const AnimalMgmt = () => {
       ) : (
         /* DIRECTORY CATALOG LIST - REDESIGNED PET PROFILE CARDS */
         <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-          
+
           {/* Header block with Bulk Import */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
             <div>
@@ -628,8 +608,8 @@ const AnimalMgmt = () => {
                 Audit digital collars, scan NFC tag registries, and track treatment histories.
               </p>
             </div>
-            <button 
-              className="btn btn-outline" 
+            <button
+              className="btn btn-outline"
               onClick={() => setShowImportModal(true)}
               style={{ display: "flex", alignItems: "center", gap: "8px", borderColor: "var(--primary-color)", color: "var(--primary-color)" }}
             >
@@ -650,7 +630,7 @@ const AnimalMgmt = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            
+
             <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <Filter size={14} color="var(--text-muted)" />
@@ -710,15 +690,15 @@ const AnimalMgmt = () => {
                 </div>
               ) : (
                 filteredAnimals.map((pet) => {
-                  const statusClass = 
+                  const statusClass =
                     pet.status === "Adopted" ? "adopted" :
-                    pet.status === "Available for Adoption" ? "adoption" :
-                    pet.status === "In Shelter" ? "shelter" :
-                    pet.status === "Under Treatment" ? "treatment" : "rescued";
-                  
+                      pet.status === "Available for Adoption" ? "adoption" :
+                        pet.status === "In Shelter" ? "shelter" :
+                          pet.status === "Under Treatment" ? "treatment" : "rescued";
+
                   return (
-                    <div 
-                      key={pet.id} 
+                    <div
+                      key={pet.id}
                       className="card animate-slide-up"
                       onClick={() => {
                         setSelectedPet(pet);
@@ -748,9 +728,9 @@ const AnimalMgmt = () => {
                     >
                       {/* Photo wrapper */}
                       <div style={{ position: "relative", width: "100%", height: "180px", overflow: "hidden" }}>
-                        <img 
-                          src={pet.photo} 
-                          alt={pet.name} 
+                        <img
+                          src={pet.photo}
+                          alt={pet.name}
                           style={{
                             width: "100%",
                             height: "100%",
@@ -759,7 +739,7 @@ const AnimalMgmt = () => {
                           }}
                           className="pet-card-image"
                         />
-                        
+
                         {/* Overlapping status badge pill in bottom-left */}
                         <div style={{
                           position: "absolute",
@@ -772,7 +752,7 @@ const AnimalMgmt = () => {
                           </span>
                         </div>
                       </div>
-                      
+
                       {/* Card details */}
                       <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "10px", flexGrow: 1 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
@@ -783,12 +763,12 @@ const AnimalMgmt = () => {
                               const isParentPet = cust.toLowerCase().includes("family") || cust.toLowerCase().includes("home");
                               const reportsCount = isParentPet ? 0 : (foundReports || []).filter(r => r.animalId === pet.id && r.status === "Pending").length;
                               return reportsCount > 0 && (
-                                <span 
-                                  className="badge" 
-                                  style={{ 
-                                    fontSize: "0.62rem", 
-                                    backgroundColor: "var(--accent-coral)", 
-                                    color: "white", 
+                                <span
+                                  className="badge"
+                                  style={{
+                                    fontSize: "0.62rem",
+                                    backgroundColor: "var(--accent-coral)",
+                                    color: "white",
                                     padding: "2px 6px",
                                     animation: "pulse 1.5s infinite",
                                     cursor: "pointer"
@@ -838,7 +818,7 @@ const AnimalMgmt = () => {
                       </div>
 
                       {/* Hover Overlay Button */}
-                      <div 
+                      <div
                         className="view-profile-btn"
                         style={{
                           position: "absolute",
@@ -914,12 +894,12 @@ const AnimalMgmt = () => {
                     </>
                   )}
                 </div>
-                <input 
-                  type="file" 
-                  accept=".csv" 
+                <input
+                  type="file"
+                  accept=".csv"
                   onChange={(e) => { if (e.target.files[0]) setMockFileName(e.target.files[0].name); }}
-                  style={{ display: "none" }} 
-                  id="csv-file-picker" 
+                  style={{ display: "none" }}
+                  id="csv-file-picker"
                 />
                 <label htmlFor="csv-file-picker" style={{ display: mockFileName ? "none" : "block", padding: "4px 12px", border: "1px solid var(--border-color)", borderRadius: "20px", fontSize: "0.75rem", cursor: "pointer", backgroundColor: "white", marginTop: "4px" }}>
                   Select File
@@ -941,18 +921,18 @@ const AnimalMgmt = () => {
               </div>
 
               <div style={{ display: "flex", gap: "12px", marginTop: "10px" }}>
-                <button 
-                  type="button" 
-                  className="btn btn-outline" 
-                  style={{ flex: 1 }} 
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  style={{ flex: 1 }}
                   onClick={() => { setShowImportModal(false); setMockFileName(""); }}
                   disabled={isUploading}
                 >
                   Cancel
                 </button>
-                <button 
-                  type="button" 
-                  className="btn btn-primary" 
+                <button
+                  type="button"
+                  className="btn btn-primary"
                   style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
                   onClick={handleBulkImport}
                   disabled={isUploading || !mockFileName}

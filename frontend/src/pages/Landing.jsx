@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useApp } from "../context/AppContext";
 import { Heart, Shield, Stethoscope, ShieldAlert, Users, Award, Play, Globe } from "lucide-react";
 
 const Landing = () => {
   const [animate, setAnimate] = useState(false);
+  const { animals } = useApp();
+  const navigate = useNavigate();
+
+  const lostPet = animals.find(p => p.status === "Lost");
+  const safePet = animals.find(p => p.status !== "Lost");
+
 
   useEffect(() => {
     // Staggered entry animation on load
@@ -168,7 +175,7 @@ const Landing = () => {
           maxWidth: "680px",
           lineHeight: 1.6
         }}>
-          PetLink OS bridges the gap between field rescues, veterinary clinics, pet foster parents, 
+          PetLink OS bridges the gap between field rescues, veterinary clinics, pet foster parents,
           and municipal systems. Click a portal below to enter the live operating environment.
         </p>
       </div>
@@ -193,15 +200,23 @@ const Landing = () => {
           <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>Simulate a street NFC collar scan without hardware.</span>
         </div>
         <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-          <Link to="/scan/PET-104" className="btn btn-primary btn-sm" style={{ backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)", padding: "6px 14px", fontSize: "0.8rem", fontWeight: 800 }}>
-            Simulate Scan — Lost Parent Pet (Kalu)
-          </Link>
-          <Link to="/scan/PET-103" className="btn btn-primary btn-sm" style={{ backgroundColor: "var(--primary-color)", borderColor: "var(--primary-color)", padding: "6px 14px", fontSize: "0.8rem", fontWeight: 800 }}>
-            Simulate Scan — Lost NGO Stray (Mani)
-          </Link>
-          <Link to="/scan/PET-101" className="btn btn-outline btn-sm" style={{ borderColor: "var(--border-color)", padding: "6px 12px", fontSize: "0.78rem" }}>
-            Simulate Scan — Safe Pet (Sheru)
-          </Link>
+          <button
+            onClick={() => lostPet ? navigate(`/scan/${lostPet.id}`) : alert("No lost pet currently exists in the database — mark one as Lost first via the Parent Portal.")}
+            className="btn btn-primary btn-sm"
+            style={{ backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)", padding: "6px 14px", fontSize: "0.8rem", fontWeight: 800, opacity: lostPet ? 1 : 0.5 }}
+          >
+            Simulate Scan — Lost Pet {lostPet ? `(${lostPet.name})` : "(none found)"}
+          </button>
+
+          <button
+            onClick={() => safePet ? navigate(`/scan/${safePet.id}`) : alert("No safe pet currently exists in the database.")}
+            className="btn btn-outline btn-sm"
+            style={{ borderColor: "var(--border-color)", padding: "6px 12px", fontSize: "0.78rem", opacity: safePet ? 1 : 0.5 }}
+          >
+            Simulate Scan — Safe Pet {safePet ? `(${safePet.name})` : "(none found)"}
+
+          </button>
+
         </div>
       </div>
 

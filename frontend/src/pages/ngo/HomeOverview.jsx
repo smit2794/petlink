@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useApp } from "../../context/AppContext";
-import { 
+import PetQRCode from "../../components/PetQRCode";
+import {
   Navigation, Dog, ShieldAlert, Syringe, Scissors, Heart,
-  PlusCircle, UserPlus, ClipboardList, AlertTriangle, 
+  PlusCircle, UserPlus, ClipboardList, AlertTriangle,
   MapPin, Image, Upload, Check, Search, Calendar, ChevronRight, X
 } from "lucide-react";
 
@@ -16,7 +17,7 @@ const CountUp = ({ target }) => {
     const end = target;
     const duration = 600; // ms
     const increment = Math.ceil(end / (duration / 25)) || 1;
-    
+
     const timer = setInterval(() => {
       start += increment;
       if (start >= end) {
@@ -33,29 +34,10 @@ const CountUp = ({ target }) => {
   return <span>{count}</span>;
 };
 
-// Mini QR Code SVG Component specifically for previews inside form
-const MiniQR = ({ value }) => (
-  <svg width="70" height="70" viewBox="0 0 100 100" style={{ backgroundColor: "#F7F5F0", padding: "4px", borderRadius: "6px", border: "1px solid var(--border-color)" }}>
-    <rect x="5" y="5" width="25" height="25" fill="var(--primary-color)" stroke="white" strokeWidth="2" />
-    <rect x="10" y="10" width="15" height="15" fill="white" />
-    <rect x="13" y="13" width="9" height="9" fill="var(--primary-color)" />
-    <rect x="70" y="5" width="25" height="25" fill="var(--primary-color)" stroke="white" strokeWidth="2" />
-    <rect x="75" y="10" width="15" height="15" fill="white" />
-    <rect x="78" y="78" width="9" height="9" fill="var(--primary-color)" />
-    <rect x="5" y="70" width="25" height="25" fill="var(--primary-color)" stroke="white" strokeWidth="2" />
-    <rect x="10" y="75" width="15" height="15" fill="white" />
-    <rect x="13" y="78" width="9" height="9" fill="var(--primary-color)" />
-    <rect x="40" y="10" width="10" height="15" fill="var(--primary-color)" />
-    <rect x="40" y="30" width="15" height="5" fill="var(--primary-color)" />
-    <rect x="15" y="40" width="20" height="10" fill="var(--primary-color)" />
-    <rect x="45" y="45" width="15" height="15" fill="var(--primary-color)" />
-    <rect x="70" y="40" width="20" height="10" fill="var(--primary-color)" />
-    <rect x="40" y="70" width="15" height="20" fill="var(--primary-color)" />
-  </svg>
-);
+
 
 const HomeOverview = () => {
-  const { 
+  const {
     animals, rescues, volunteers, inventory,
     addRescue, addAnimal, addRescuePersisted, assignVolunteerToRescueCase, addAnimalPersisted
   } = useApp();
@@ -76,7 +58,7 @@ const HomeOverview = () => {
 
   // 2. Animal Form States
   const [animalForm, setAnimalForm] = useState({
-    name: "", species: "Dog", breed: "", gender: "Male", age: "", weight: "", 
+    name: "", species: "Dog", breed: "", gender: "Male", age: "", weight: "",
     status: "In Shelter", custodian: "Pune Central Shelter", vaccinationStatus: "Not Vaccinated",
     sterilizationStatus: "Pending", treatmentNotes: ""
   });
@@ -126,7 +108,7 @@ const HomeOverview = () => {
   const pendingSterilizations = animals.filter(a => a.healthSummary?.sterilizationStatus === "Pending").length;
   const recentAdoptions = animals.filter(a => a.status === "Adopted").length;
 
-  const recentVolunteerActions = volunteers.flatMap(vol => 
+  const recentVolunteerActions = volunteers.flatMap(vol =>
     (vol.tasks || []).filter(t => t.status === "Done").map(task => ({
       volunteerName: vol.name,
       taskTitle: task.title,
@@ -172,10 +154,10 @@ const HomeOverview = () => {
     if (!rescueForm.phone) tempErrors.phone = "Phone number is required";
 
     if (Object.keys(tempErrors).length > 0) {
-  setErrors(tempErrors);
-  setIsSubmittingRescue(false);
-  return;
-}
+      setErrors(tempErrors);
+      setIsSubmittingRescue(false);
+      return;
+    }
 
     try {
       await addRescuePersisted({
@@ -227,7 +209,7 @@ const HomeOverview = () => {
     setShowAnimalModal(false);
 
     setAnimalForm({
-      name: "", species: "Dog", breed: "", gender: "Male", age: "", weight: "", 
+      name: "", species: "Dog", breed: "", gender: "Male", age: "", weight: "",
       status: "In Shelter", custodian: "Pune Central Shelter", vaccinationStatus: "Not Vaccinated",
       sterilizationStatus: "Pending", treatmentNotes: ""
     });
@@ -257,7 +239,7 @@ const HomeOverview = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
-      
+
       {/* Top Header Controls */}
       <div style={{
         display: "flex",
@@ -274,7 +256,7 @@ const HomeOverview = () => {
             Unified command hub for shelters, rescues, and volunteer logistics.
           </p>
         </div>
-        
+
         {/* Rounded Soft Primary/Secondary Actions */}
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
           <button className="btn btn-primary" onClick={() => { setErrors({}); setShowRescueModal(true); }}>
@@ -306,7 +288,7 @@ const HomeOverview = () => {
             gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
             gap: "24px"
           }}>
-            
+
             {/* Card 1: Active Rescues */}
             <div className="card card-accent-amber animate-slide-up" style={{
               backgroundColor: "#FFFBF2",
@@ -361,7 +343,7 @@ const HomeOverview = () => {
               </h2>
               <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "4px" }}>Animals In Shelter</p>
               <span style={{ fontSize: "0.72rem", color: "var(--secondary-color)", fontWeight: 700, display: "block", marginTop: "8px" }}>
-                ➔ Capacity at {Math.floor((animalsInShelter/25)*100)}%
+                ➔ Capacity at {Math.floor((animalsInShelter / 25) * 100)}%
               </span>
             </div>
 
@@ -486,7 +468,7 @@ const HomeOverview = () => {
 
           {/* SPLIT SUBGRID FOR STOCKS AND VOLUNTEERS */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "32px" }}>
-            
+
             {/* Storehouse Widget */}
             <div className="card" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -586,7 +568,7 @@ const HomeOverview = () => {
               <h2 style={{ fontWeight: 800, color: "var(--primary-color)" }}>🚑 Log Emergency Dispatch Case</h2>
               <button className="modal-close" onClick={() => setShowRescueModal(false)}><X size={20} /></button>
             </div>
-            
+
             <form onSubmit={handleRescueSubmit}>
               {/* Photo Upload with preview */}
               <div className="form-group">
@@ -603,10 +585,10 @@ const HomeOverview = () => {
                   backgroundColor: "#FCFAF6"
                 }}>
                   {rescuePhotoPreview ? (
-                    <img 
-                      src={rescuePhotoPreview} 
-                      alt="Preview" 
-                      style={{ width: "90px", height: "90px", objectFit: "cover", borderRadius: "10px", border: "1px solid var(--border-color)" }} 
+                    <img
+                      src={rescuePhotoPreview}
+                      alt="Preview"
+                      style={{ width: "90px", height: "90px", objectFit: "cover", borderRadius: "10px", border: "1px solid var(--border-color)" }}
                     />
                   ) : (
                     <div style={{ width: "90px", height: "90px", borderRadius: "10px", backgroundColor: "#EDE7DE", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)" }}>
@@ -658,7 +640,7 @@ const HomeOverview = () => {
                     <option>Other</option>
                   </select>
                 </div>
-                
+
                 <div className="form-group">
                   <label className="form-label">Assign Handler Dispatch</label>
                   <select
@@ -740,7 +722,7 @@ const HomeOverview = () => {
               <h2 style={{ fontWeight: 800, color: "var(--primary-color)" }}>🐾 Register Direct Intake Profile</h2>
               <button className="modal-close" onClick={() => setShowAnimalModal(false)}><X size={20} /></button>
             </div>
-            
+
             <form onSubmit={handleAnimalSubmit}>
               {/* Pre-generated details display */}
               <div style={{
@@ -753,7 +735,7 @@ const HomeOverview = () => {
                 border: "1px solid rgba(38,96,72,0.1)",
                 marginBottom: "20px"
               }}>
-                <MiniQR value={generatedId} />
+                <PetQRCode animalId={generatedId} size={70} />
                 <div>
                   <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--secondary-color)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                     Automated System Tag Assignment
@@ -782,10 +764,10 @@ const HomeOverview = () => {
                   backgroundColor: "#FCFAF6"
                 }}>
                   {animalPhotoPreview ? (
-                    <img 
-                      src={animalPhotoPreview} 
-                      alt="Intake Preview" 
-                      style={{ width: "90px", height: "90px", objectFit: "cover", borderRadius: "10px", border: "1px solid var(--border-color)" }} 
+                    <img
+                      src={animalPhotoPreview}
+                      alt="Intake Preview"
+                      style={{ width: "90px", height: "90px", objectFit: "cover", borderRadius: "10px", border: "1px solid var(--border-color)" }}
                     />
                   ) : (
                     <div style={{ width: "90px", height: "90px", borderRadius: "10px", backgroundColor: "#EDE7DE", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)" }}>
@@ -843,7 +825,7 @@ const HomeOverview = () => {
                     onChange={(e) => setAnimalForm({ ...animalForm, breed: e.target.value })}
                   />
                 </div>
-                
+
                 <div className="form-group">
                   <label className="form-label">
                     Estimated Age * {errors.age && <span className="form-error">{errors.age}</span>}
@@ -961,7 +943,7 @@ const HomeOverview = () => {
               <h2 style={{ fontWeight: 800, color: "var(--primary-color)" }}>📋 Assign Field Volunteer</h2>
               <button className="modal-close" onClick={() => setShowTaskModal(false)}><X size={20} /></button>
             </div>
-            
+
             <form onSubmit={handleTaskSubmit}>
               {/* Select Volunteer dropdown */}
               <div className="form-group">
