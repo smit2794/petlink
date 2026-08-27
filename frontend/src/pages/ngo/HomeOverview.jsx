@@ -117,21 +117,33 @@ const HomeOverview = () => {
   ).slice(0, 4);
 
   // File Preview Handlers
-  const handleRescuePhotoChange = (e) => {
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleRescuePhotoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      const base64 = await convertToBase64(file);
       setRescuePhoto(file);
-      setRescuePhotoPreview(URL.createObjectURL(file));
+      setRescuePhotoPreview(base64);
     }
   };
 
-  const handleAnimalPhotoChange = (e) => {
+  const handleAnimalPhotoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      const base64 = await convertToBase64(file);
       setAnimalPhoto(file);
-      setAnimalPhotoPreview(URL.createObjectURL(file));
+      setAnimalPhotoPreview(base64);
     }
   };
+
 
   // Mock GPS Location filler
   const handleUseCurrentLocation = () => {

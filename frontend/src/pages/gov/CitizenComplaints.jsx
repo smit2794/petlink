@@ -4,7 +4,7 @@ import { MessageSquare, Upload, ClipboardList, CheckCircle2, AlertTriangle, X } 
 
 const CitizenComplaints = () => {
   const { complaints, addCitizenComplaint } = useApp();
-  
+
   // Form states
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [formData, setFormData] = useState({
@@ -18,12 +18,22 @@ const CitizenComplaints = () => {
   const [errors, setErrors] = useState({});
   const [filterStatus, setFilterStatus] = useState("All");
 
-  const handlePhotoChange = (e) => {
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handlePhotoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      const base64 = await convertToBase64(file);
       setFormData({
         ...formData,
-        photoPreview: URL.createObjectURL(file)
+        photoPreview: base64
       });
     }
   };
@@ -79,7 +89,7 @@ const CitizenComplaints = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-      
+
       {/* Header Info */}
       <div>
         <h1 style={{ fontSize: "1.7rem", fontWeight: 800, color: "var(--primary-color)", letterSpacing: "-0.02em" }}>
@@ -92,7 +102,7 @@ const CitizenComplaints = () => {
 
       {/* Grid: Form on Left, Ledger Table on Bottom/Right */}
       <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1.7fr", gap: "28px" }} className="animal-profile-grid">
-        
+
         {/* Left Card: Cruelty / Stray Form */}
         <div className="card" style={{ padding: "32px", display: "flex", flexDirection: "column", gap: "20px" }}>
           <h2 style={{ fontSize: "1.1rem", fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "8px" }}>
@@ -100,7 +110,7 @@ const CitizenComplaints = () => {
           </h2>
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-            
+
             {/* Anonymous Toggle */}
             <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px", backgroundColor: "#FCFAF6", borderRadius: "10px", border: "1px solid var(--border-color)" }}>
               <input
@@ -221,13 +231,13 @@ const CitizenComplaints = () => {
 
         {/* Right Column: Ledger List */}
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          
+
           {/* Ledger filters */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
             <h3 style={{ fontSize: "1.1rem", fontWeight: 800, display: "flex", alignItems: "center", gap: "6px" }}>
               <ClipboardList size={18} color="var(--accent-gov)" /> Complaints Ledger
             </h3>
-            
+
             <div style={{ display: "flex", gap: "6px" }}>
               {["All", "Assigned", "Resolved"].map((tab) => {
                 const isSelected = filterStatus === tab;
