@@ -20,13 +20,23 @@ const RegisterNewPet = () => {
   });
   const [errors, setErrors] = useState({});
 
-  const handlePhotoChange = (e) => {
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handlePhotoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      const base64 = await convertToBase64(file);
       setFormData({
         ...formData,
         photoFile: file,
-        photoPreview: URL.createObjectURL(file)
+        photoPreview: base64
       });
     }
   };
@@ -63,10 +73,10 @@ const RegisterNewPet = () => {
       lastUpdated: "Just now",
       qrCode: `MOCK-QR-${mockId}`,
       timeline: [
-        { 
-          date: new Date().toISOString().split("T")[0], 
-          title: "Registry Created", 
-          description: `Direct domestic registration by Parent Aarav Sharma. Collar tag issued under ID ${mockId}.` 
+        {
+          date: new Date().toISOString().split("T")[0],
+          title: "Registry Created",
+          description: `Direct domestic registration by Parent Aarav Sharma. Collar tag issued under ID ${mockId}.`
         }
       ],
       healthSummary: {
@@ -84,11 +94,11 @@ const RegisterNewPet = () => {
       // error toast already shown inside registerPetPersisted
     }
   };
-  
+
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "28px", maxWidth: "600px", margin: "0 auto" }}>
-      
+
       {/* Header Back Link */}
       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
         <button className="btn btn-outline btn-sm" onClick={() => navigate("/parent/pets")}>
@@ -120,8 +130,8 @@ const RegisterNewPet = () => {
       }}>
         <Info size={20} style={{ flexShrink: 0, marginTop: "2px" }} />
         <div>
-          <strong>Important Verification Policy:</strong> Vets and parents cannot register stray rescues. 
-          If your pet was adopted through a shelter, do not fill this form—the NGO's approval automatically grants registry rights. 
+          <strong>Important Verification Policy:</strong> Vets and parents cannot register stray rescues.
+          If your pet was adopted through a shelter, do not fill this form—the NGO's approval automatically grants registry rights.
           Use this form <strong>only</strong> for private household pets.
         </div>
       </div>
@@ -129,17 +139,17 @@ const RegisterNewPet = () => {
       {/* Registration Form Card */}
       <div className="card" style={{ padding: "32px" }}>
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-          
+
           {/* Photo Upload slot */}
           <div className="form-group" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
             <label className="form-label" style={{ alignSelf: "flex-start", fontWeight: 800 }}>Pet Photo Profile *</label>
-            
+
             {formData.photoPreview ? (
               <div style={{ position: "relative", width: "120px", height: "120px" }}>
-                <img 
-                  src={formData.photoPreview} 
-                  alt="Preview" 
-                  style={{ width: "120px", height: "120px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--accent-amber)" }} 
+                <img
+                  src={formData.photoPreview}
+                  alt="Preview"
+                  style={{ width: "120px", height: "120px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--accent-amber)" }}
                 />
                 <button
                   type="button"
@@ -181,11 +191,11 @@ const RegisterNewPet = () => {
               }}>
                 <Upload size={20} style={{ marginBottom: "6px" }} />
                 <span>Upload Photo</span>
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  style={{ display: "none" }} 
-                  onChange={handlePhotoChange} 
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={handlePhotoChange}
                 />
               </label>
             )}
@@ -281,12 +291,12 @@ const RegisterNewPet = () => {
           </div>
 
           {/* Submit Button */}
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="btn btn-primary"
-            style={{ 
-              backgroundColor: "var(--accent-amber)", 
-              borderColor: "var(--accent-amber)", 
+            style={{
+              backgroundColor: "var(--accent-amber)",
+              borderColor: "var(--accent-amber)",
               marginTop: "12px",
               display: "flex",
               alignItems: "center",
