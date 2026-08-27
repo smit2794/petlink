@@ -1,0 +1,487 @@
+export const initialAnimals = [
+  {
+    id: "PET-101",
+    assignedVetId: "VET-1",
+    name: "Sheru",
+    species: "Dog",
+    breed: "Indie (Desi Dog)",
+    status: "In Shelter",
+    gender: "Male",
+    age: "2 years",
+    weight: "18 kg",
+    photo: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400",
+    custodian: "Pune Central Shelter",
+    lastUpdated: "2 hours ago",
+    healthSummary: {
+      vaccinationStatus: "Fully Vaccinated",
+      sterilizationStatus: "Sterilized",
+      treatmentNotes: "Fully recovered from minor skin allergy. Healthy and active."
+    },
+    qrCode: "MOCK-QR-PET-101",
+    timeline: [
+      { date: "2026-07-01", title: "Intake", description: "Brought in from Kothrud Rescue site." },
+      { date: "2026-07-02", title: "Medical Exam", description: "Checked for rabies and ticks. Administered initial anti-parasitic." },
+      { date: "2026-07-05", title: "Vaccination Completed", description: "DHPPi and Rabies vaccinations completed." }
+    ],
+    documents: [
+      { name: "HealthCard_Sheru.pdf", type: "PDF Document", size: "1.2 MB" },
+      { name: "Deworming_Cert.pdf", type: "PDF Document", size: "450 KB" }
+    ]
+  },
+  {
+    id: "PET-102",
+    assignedVetId: "VET-1",
+    name: "Gauri",
+    species: "Cow",
+    breed: "Gir Cow",
+    status: "Under Treatment",
+    gender: "Female",
+    age: "4 years",
+    weight: "280 kg",
+    photo: "https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&q=80&w=400",
+    custodian: "Hadapsar Gaushala",
+    lastUpdated: "1 hour ago",
+    healthSummary: {
+      vaccinationStatus: "Pending Second Dose",
+      sterilizationStatus: "Not Applicable",
+      treatmentNotes: "Treatment for left leg fracture from road accident. Cast applied, healing well."
+    },
+    qrCode: "MOCK-QR-PET-102",
+    timeline: [
+      { date: "2026-07-08", title: "Reported Accident", description: "Reported near Hadapsar bypass." },
+      { date: "2026-07-08", title: "Emergency Transfer", description: "Transported via animal ambulance to Gaushala." },
+      { date: "2026-07-09", title: "Orthopedic Surgery", description: "Dr. Patil set the fractured bone and applied a cast." }
+    ],
+    documents: [
+      { name: "XRay_Gauri_Leg.jpg", type: "Image File", size: "3.4 MB" },
+      { name: "Treatment_Consent.pdf", type: "PDF Document", size: "890 KB" }
+    ]
+  },
+  {
+    id: "PET-103",
+    assignedVetId: "VET-1",
+    name: "Mani",
+    species: "Cat",
+    breed: "Indie Cat",
+    status: "Lost",
+    gender: "Female",
+    age: "8 months",
+    weight: "3.2 kg",
+    photo: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400",
+    custodian: "Kothrud Feline Cattery",
+    lastUpdated: "1 day ago",
+    healthSummary: {
+      vaccinationStatus: "Fully Vaccinated",
+      sterilizationStatus: "Sterilized",
+      treatmentNotes: "Spayed on July 5th. Fully active, playful, and socialized."
+    },
+    qrCode: "MOCK-QR-PET-103",
+    timeline: [
+      { date: "2026-08-02", title: "⚠️ Reported Lost", description: "Slipped away during shelter gate operations." },
+      { date: "2026-06-25", title: "Found in Drain", description: "Rescued from stormwater drain in Shivajinagar." },
+      { date: "2026-07-05", title: "Sterilization", description: "Successfully spayed by Vet Partner." }
+    ],
+    documents: [
+      { name: "Spaying_Cert_Mani.pdf", type: "PDF Document", size: "950 KB" }
+    ]
+  },
+  {
+    id: "PET-104",
+    assignedVetId: "VET-1",
+    name: "Kalu",
+    species: "Dog",
+    breed: "Indie (Desi Dog)",
+    status: "Lost",
+    gender: "Male",
+    age: "1.5 years",
+    weight: "16.5 kg",
+    photo: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=400",
+    custodian: "Sharma Family (Home)",
+    lastUpdated: "3 days ago",
+    healthSummary: {
+      vaccinationStatus: "Fully Vaccinated",
+      sterilizationStatus: "Sterilized",
+      treatmentNotes: "No ongoing issues. Up-to-date with deworming."
+    },
+    qrCode: "MOCK-QR-PET-104",
+    timeline: [
+      { date: "2026-08-01", title: "⚠️ Reported Lost", description: "Reported lost near Kothrud Depot Area." },
+      { date: "2026-05-10", title: "Rescue", description: "Brought in with minor skin infection." },
+      { date: "2026-06-20", title: "Adopted", description: "Adopted by Aarav Sharma's family in Pune." }
+    ],
+    documents: [
+      { name: "Adoption_Deed_Kalu.pdf", type: "PDF Document", size: "2.1 MB" }
+    ]
+  },
+  {
+    id: "PET-105",
+    assignedVetId: "VET-1",
+    name: "Cheeku",
+    species: "Bird",
+    breed: "Pigeon",
+    status: "Under Treatment",
+    gender: "Male",
+    age: "3 months",
+    weight: "280 g",
+    photo: "https://images.unsplash.com/photo-1522858547137-f1dcec554f55?auto=format&fit=crop&q=80&w=400",
+    custodian: "Aviation Rehab Center",
+    lastUpdated: "4 hours ago",
+    healthSummary: {
+      vaccinationStatus: "Not Vaccinated",
+      sterilizationStatus: "Not Applicable",
+      treatmentNotes: "Injured wing from kite string (manjha). Stitched and bandaged. Under observation."
+    },
+    qrCode: "MOCK-QR-PET-105",
+    timeline: [
+      { date: "2026-07-09", title: "Admitted", description: "Brought in by volunteer with deep wing cut." },
+      { date: "2026-07-09", title: "Stitching Wing", description: "Minor procedure to repair wing membrane." }
+    ],
+    documents: [
+      { name: "Injury_Log_Cheeku.txt", type: "Text Report", size: "12 KB" }
+    ]
+  },
+  {
+    id: "PET-106",
+    assignedVetId: "VET-1",
+    name: "Rani",
+    species: "Dog",
+    breed: "Indie (Desi Dog)",
+    status: "Rescued",
+    gender: "Female",
+    age: "3 years",
+    weight: "15 kg",
+    photo: "https://images.unsplash.com/photo-1561037404-61cd46aa615b?auto=format&fit=crop&q=80&w=400",
+    custodian: "Emergency Intake Bay",
+    lastUpdated: "Just now",
+    healthSummary: {
+      vaccinationStatus: "Not Vaccinated",
+      sterilizationStatus: "Pending",
+      treatmentNotes: "Rescued today. Severe dehydration and mild fever. Given saline drip."
+    },
+    qrCode: "MOCK-QR-PET-106",
+    timeline: [
+      { date: "2026-07-10", title: "Intake", description: "Rescued from Swargate Bus Stand. Extremely dehydrated." }
+    ],
+    documents: []
+  },
+  {
+    id: "PET-107",
+    assignedVetId: "VET-1",
+    name: "Billo",
+    species: "Cat",
+    breed: "Spotted Street Cat",
+    status: "In Shelter",
+    gender: "Female",
+    age: "1 year",
+    weight: "3.5 kg",
+    photo: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=400",
+    custodian: "Pune Central Shelter",
+    lastUpdated: "5 hours ago",
+    healthSummary: {
+      vaccinationStatus: "Fully Vaccinated",
+      sterilizationStatus: "Sterilized",
+      treatmentNotes: "Very healthy. Friendly demeanor."
+    },
+    qrCode: "MOCK-QR-PET-107",
+    timeline: [
+      { date: "2026-06-15", title: "Intake", description: "Brought in for sterilization cycle." },
+      { date: "2026-06-18", title: "Vaccination", description: "Rabies booster administered." }
+    ],
+    documents: []
+  },
+  {
+    id: "PET-108",
+    assignedVetId: "VET-1",
+    name: "Rocky",
+    species: "Dog",
+    breed: "Golden Retriever Mix",
+    status: "Available for Adoption",
+    gender: "Male",
+    age: "5 years",
+    weight: "26 kg",
+    photo: "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=400",
+    custodian: "Pune Central Shelter",
+    lastUpdated: "2 days ago",
+    healthSummary: {
+      vaccinationStatus: "Fully Vaccinated",
+      sterilizationStatus: "Sterilized",
+      treatmentNotes: "Abandonment case. In good health but needs regular weight monitoring."
+    },
+    qrCode: "MOCK-QR-PET-108",
+    timeline: [
+      { date: "2026-06-30", title: "Abandoned at Park", description: "Found tied to a bench in Viman Nagar." },
+      { date: "2026-07-02", title: "Behavioral Check", description: "Friendly, trained, ready for adoption." }
+    ],
+    documents: [
+      { name: "Surrender_Release.pdf", type: "PDF Document", size: "1.1 MB" }
+    ]
+  }
+];
+
+export const initialRescues = [
+  {
+    id: "RSC-201",
+    animalType: "Dog",
+    condition: "Accident Trauma / Fractured Leg",
+    location: "Kothrud, Pune",
+    reportedBy: "Suresh Gowda",
+    phone: "+91 98765 43210",
+    status: "Rescued",
+    assignedVolunteer: "Rahul Mehta",
+    date: "2026-07-09",
+    x: 35,
+    y: 65,
+    timeline: [
+      { time: "10:15 AM", title: "Report Received", desc: "Reported dog hit by a car near Kothrud Depot." },
+      { time: "10:30 AM", title: "Volunteer Dispatched", desc: "Rahul Mehta dispatched with ambulance." },
+      { time: "11:15 AM", title: "Rescued & Secured", desc: "Animal stabilized and loaded into rescue vehicle." },
+      { time: "12:00 PM", title: "Admitted", desc: "Brought to Pune Central Shelter for emergency assessment." }
+    ]
+  },
+  {
+    id: "RSC-202",
+    animalType: "Cow",
+    condition: "Deep Laceration on Back",
+    location: "Hadapsar Bypass, Pune",
+    reportedBy: "Ritu Patel",
+    phone: "+91 98877 66554",
+    status: "In Progress",
+    assignedVolunteer: "Nikhil Rao",
+    date: "2026-07-10",
+    x: 75,
+    y: 55,
+    timeline: [
+      { time: "09:00 AM", title: "Report Received", desc: "Stray cow bleeding near flyover construction." },
+      { time: "09:30 AM", title: "Volunteer Arrived", desc: "Nikhil Rao on-site. Requesting large-animal ambulance." },
+      { time: "11:00 AM", title: "Treatment Commenced", desc: "Wound cleaned on-site; awaiting heavy-duty loader transport." }
+    ]
+  },
+  {
+    id: "RSC-203",
+    animalType: "Cat",
+    condition: "Trapped in Lift Shaft",
+    location: "Kalyani Nagar, Pune",
+    reportedBy: "Vikram Sen",
+    phone: "+91 97766 55443",
+    status: "Assigned",
+    assignedVolunteer: "Anjali Deshmukh",
+    date: "2026-07-10",
+    x: 60,
+    y: 35,
+    timeline: [
+      { time: "02:15 PM", title: "Report Received", desc: "Kitten crying in the basement lift shaft of Blue Bells society." },
+      { time: "02:30 PM", title: "Assigned", desc: "Assigned to Anjali Deshmukh (Feline specialist)." }
+    ]
+  },
+  {
+    id: "RSC-204",
+    animalType: "Dog",
+    condition: "Severe Skin Mange & Starvation",
+    location: "Swargate Bus Stand, Pune",
+    reportedBy: "Amit Shinde",
+    phone: "+91 96655 44332",
+    status: "Rescued",
+    assignedVolunteer: "Pooja Sharma",
+    date: "2026-07-10",
+    x: 45,
+    y: 80,
+    timeline: [
+      { time: "11:30 AM", title: "Report Received", desc: "Hairless street dog shaking near Platform 4." },
+      { time: "12:00 PM", title: "Volunteer Arrived", desc: "Pooja on-site. Successfully secured dog with food lure." },
+      { time: "01:30 PM", title: "Arrived at Shelter", desc: "Logged as PET-106 (Rani). Treatment initiated." }
+    ]
+  },
+  {
+    id: "RSC-205",
+    animalType: "Bird",
+    condition: "Manjha cut on wings",
+    location: "Deccan Gymkhana, Pune",
+    reportedBy: "Sunita Deshpande",
+    phone: "+91 95544 33221",
+    status: "New",
+    assignedVolunteer: "None",
+    date: "2026-07-10",
+    x: 30,
+    y: 40,
+    timeline: [
+      { time: "03:45 PM", title: "Report Received", desc: "Pigeon hanging from tree branches near Deccan bus stop." }
+    ]
+  }
+];
+
+export const initialVolunteers = [
+  {
+    id: "VOL-301",
+    name: "Rahul Mehta",
+    avatar: "RM",
+    contact: "+91 98123 45678",
+    assignedTaskCount: 1,
+    attendance: "96%",
+    lastCheckIn: "15 mins ago (Kothrud Shelter)",
+    performanceScore: 4.8,
+    tasks: [
+      { id: "TSK-3011", title: "Deliver meds to Kothrud site", status: "Done", priority: "Medium" },
+      { id: "TSK-3012", title: "Rescue Case RSC-201: Secure injured dog", status: "Done", priority: "High" },
+      { id: "TSK-3013", title: "Shift Sheru to Cattery Ward", status: "To Do", priority: "Low" }
+    ]
+  },
+  {
+    id: "VOL-302",
+    name: "Anjali Deshmukh",
+    avatar: "AD",
+    contact: "+91 98234 56789",
+    assignedTaskCount: 1,
+    attendance: "92%",
+    lastCheckIn: "2 hours ago (Kalyani Nagar)",
+    performanceScore: 4.5,
+    tasks: [
+      { id: "TSK-3021", title: "Rescue Case RSC-203: Trap cat in lift shaft", status: "In Progress", priority: "High" }
+    ]
+  },
+  {
+    id: "VOL-303",
+    name: "Nikhil Rao",
+    avatar: "NR",
+    contact: "+91 98345 67890",
+    assignedTaskCount: 2,
+    attendance: "88%",
+    lastCheckIn: "30 mins ago (Hadapsar Bypass)",
+    performanceScore: 4.2,
+    tasks: [
+      { id: "TSK-3031", title: "Rescue Case RSC-202: Secure bleeding cow", status: "In Progress", priority: "High" },
+      { id: "TSK-3032", title: "Pick up cattle fodder from wholesaler", status: "To Do", priority: "Medium" }
+    ]
+  },
+  {
+    id: "VOL-304",
+    name: "Sneha Iyer",
+    avatar: "SI",
+    contact: "+91 98456 78901",
+    assignedTaskCount: 0,
+    attendance: "95%",
+    lastCheckIn: "Yesterday (Aundh Shelter)",
+    performanceScore: 4.9,
+    tasks: [
+      { id: "TSK-3041", title: "Conduct home check for Kunal Kapoor", status: "Done", priority: "Medium" }
+    ]
+  },
+  {
+    id: "VOL-305",
+    name: "Pooja Sharma",
+    avatar: "PS",
+    contact: "+91 98567 89012",
+    assignedTaskCount: 1,
+    attendance: "90%",
+    lastCheckIn: "1 hour ago (Swargate Intake)",
+    performanceScore: 4.7,
+    tasks: [
+      { id: "TSK-3051", title: "Rescue Case RSC-204: Swargate Dog Intake", status: "Done", priority: "High" },
+      { id: "TSK-3052", title: "Feed puppies in Ward B", status: "To Do", priority: "Low" }
+    ]
+  }
+];
+
+export const initialDonations = [
+  {
+    id: "DON-401",
+    donorName: "Sudha Murty Foundation",
+    amount: 150000,
+    date: "2026-07-10",
+    purpose: "Shelter Expansion Project",
+    email: "sudha.m@foundation.org"
+  },
+  {
+    id: "DON-402",
+    donorName: "Karan Johar",
+    amount: 50000,
+    date: "2026-07-09",
+    purpose: "Critical Medical Care Fund",
+    email: "karan@dharmaprod.in"
+  },
+  {
+    id: "DON-403",
+    donorName: "Meera Nair",
+    amount: 5000,
+    date: "2026-07-08",
+    purpose: "Daily Stray Feeding",
+    email: "meera.nair@films.net"
+  },
+  {
+    id: "DON-404",
+    donorName: "Deepak Parekh",
+    amount: 25000,
+    date: "2026-07-07",
+    purpose: "Ambulance Fuel & Maintenance",
+    email: "deepak.p@hdfc.com"
+  },
+  {
+    id: "DON-405",
+    donorName: "Aditi Rao Hydari",
+    amount: 10000,
+    date: "2026-07-05",
+    purpose: "Anti-Rabies Vaccination Drive",
+    email: "aditi.rao@hydari.in"
+  }
+];
+
+export const initialAdoptions = [
+  {
+    id: "ADP-501",
+    applicantName: "Siddharth Malhotra",
+    applicantContact: "+91 99887 76655",
+    animalId: "PET-103",
+    animalName: "Mani",
+    animalPhoto: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400",
+    date: "2026-07-09",
+    status: "Applicant Verification",
+    notes: "Has a lovely flat in Kalyani Nagar. Previously owned a Persian cat. Clean home check completed."
+  },
+  {
+    id: "ADP-502",
+    applicantName: "Prisha Sen",
+    applicantContact: "+91 98776 54321",
+    animalId: "PET-108",
+    animalName: "Rocky",
+    animalPhoto: "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=400",
+    date: "2026-07-08",
+    status: "Applications Received",
+    notes: "Family of 4 with a farmhouse in Lonavala. Wants a companion for their existing Labrador."
+  },
+  {
+    id: "ADP-503",
+    applicantName: "Kunal Kapoor",
+    applicantContact: "+91 98888 77777",
+    animalId: "PET-101",
+    animalName: "Sheru",
+    animalPhoto: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400",
+    date: "2026-07-07",
+    status: "Approved",
+    notes: "Passed home background checks. Fully active environment. Ready to sign the adoption contract."
+  },
+  {
+    id: "ADP-504",
+    applicantName: "Neha Dhupia",
+    applicantContact: "+91 99999 00000",
+    animalId: "PET-107",
+    animalName: "Billo",
+    animalPhoto: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=400",
+    date: "2026-07-06",
+    status: "Follow-up Scheduled",
+    notes: "Adopted Billo last week. 7-day virtual checkup due. Report details: Adjusting nicely, healthy eating."
+  }
+];
+
+export const initialInventory = [
+  { id: "INV-01", name: "Rabisin Anti-Rabies Vaccine", category: "Medicine", stock: 120, threshold: 30, unit: "Vials" },
+  { id: "INV-02", name: "Puppy Dry Kibble (Pedigree)", category: "Food", stock: 45, threshold: 50, unit: "Bags (10kg)" },
+  { id: "INV-03", name: "Cat Dry Kibble (Whiskas)", category: "Food", stock: 22, threshold: 20, unit: "Bags (5kg)" },
+  { id: "INV-04", name: "Ivermectin Skin Ointment", category: "Medicine", stock: 15, threshold: 25, unit: "Tubes" },
+  { id: "INV-05", name: "Melonex Painkiller", category: "Medicine", stock: 8, threshold: 10, unit: "Bottles" },
+  { id: "INV-06", name: "Cattle Green Fodder", category: "Food", stock: 650, threshold: 200, unit: "kg" }
+];
+
+export const initialComplaints = [
+  { id: "CMP-301", complainantName: "Rakesh Jha", contactInfo: "+91 99223 88122", description: "Injured stray dog near Kothrud Depot.", location: "Kothrud", status: "Assigned", assignedNGO: "Pune Central Animal Shelter", date: "2026-07-10" },
+  { id: "CMP-302", complainantName: "Anonymous", contactInfo: "N/A", description: "Cat trapped in lift shaft.", location: "Kalyani Nagar", status: "Assigned", assignedNGO: "Pune Central Animal Shelter", date: "2026-07-10" },
+  { id: "CMP-303", complainantName: "Sunita Rao", contactInfo: "+91 98112 33445", description: "Sick street cow near Aundh bypass.", location: "Aundh", status: "Resolved", assignedNGO: "Pune Central Animal Shelter", date: "2026-07-08" }
+];
