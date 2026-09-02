@@ -1,39 +1,47 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import PetQRCode from "../../components/PetQRCode";
 import { useApp } from "../../context/AppContext";
-import { 
-  ArrowLeft, Heart, Calendar, ShieldCheck, FileText, Activity, 
+import {
+  ArrowLeft, Heart, Calendar, ShieldCheck, FileText, Activity,
   AlertTriangle, Download, Eye, Clock, ClipboardList, Info, Camera
 } from "lucide-react";
-
-// Mock QR Code SVG Component
-const MiniQR = ({ value }) => (
-  <svg width="60" height="60" viewBox="0 0 100 100" style={{ backgroundColor: "#F7F5F0", padding: "4px", borderRadius: "6px", border: "1px solid var(--border-color)" }}>
-    <rect x="5" y="5" width="25" height="25" fill="var(--accent-amber)" stroke="white" strokeWidth="2" />
-    <rect x="10" y="10" width="15" height="15" fill="white" />
-    <rect x="13" y="13" width="9" height="9" fill="var(--accent-amber)" />
-    <rect x="70" y="5" width="25" height="25" fill="var(--accent-amber)" stroke="white" strokeWidth="2" />
-    <rect x="75" y="10" width="15" height="15" fill="white" />
-    <rect x="78" y="78" width="9" height="9" fill="var(--accent-amber)" />
-    <rect x="5" y="70" width="25" height="25" fill="var(--accent-amber)" stroke="white" strokeWidth="2" />
-    <rect x="10" y="75" width="15" height="15" fill="white" />
-    <rect x="13" y="78" width="9" height="9" fill="var(--accent-amber)" />
-    <rect x="40" y="10" width="10" height="15" fill="var(--accent-amber)" />
-    <rect x="40" y="30" width="15" height="5" fill="var(--accent-amber)" />
-    <rect x="15" y="40" width="20" height="10" fill="var(--accent-amber)" />
-    <rect x="45" y="45" width="15" height="15" fill="var(--accent-amber)" />
-    <rect x="70" y="40" width="20" height="10" fill="var(--accent-amber)" />
-    <rect x="40" y="70" width="15" height="20" fill="var(--accent-amber)" />
-  </svg>
-);
 
 const ParentPetProfile = () => {
   const { petId } = useParams();
   const navigate = useNavigate();
-  const { animals, petMemories, addPetMemory } = useApp();
+  const { animals, petMemories, addPetMemory, updateAnimalPersisted, addToast } = useApp();
 
   const pet = animals.find((p) => p.id === petId);
   const [activeTab, setActiveTab] = useState("timeline");
+  const [showExternalVisitModal, setShowExternalVisitModal] = useState(false);
+  const [externalVisitForm, setExternalVisitForm] = useState({ clinicName: "", visitDate: "", notes: "" });
+  const [isSavingExternalVisit, setIsSavingExternalVisit] = useState(false);
+
+  const handleLogExternalVisit = async (e) => {
+    e.preventDefault();
+    if (!externalVisitForm.clinicName || !externalVisitForm.visitDate) return;
+    if (isSavingExternalVisit) return;
+    setIsSavingExternalVisit(true);
+
+    const newEntry = {
+      date: externalVisitForm.visitDate,
+      title: "External Vet Visit (Unverified)",
+      description: `Reported by parent: visited ${externalVisitForm.clinicName}. Notes: ${externalVisitForm.notes || "None provided"}. This entry is self-reported and has not been verified through PetLink's Vet Portal.`
+    };
+
+    try {
+      await updateAnimalPersisted(pet.id, {
+        timeline: [newEntry, ...pet.timeline]
+      });
+      addToast("External vet visit logged to timeline.", "success");
+      setShowExternalVisitModal(false);
+      setExternalVisitForm({ clinicName: "", visitDate: "", notes: "" });
+    } catch (err) {
+      // error toast already shown inside updateAnimalPersisted
+    }
+    setIsSavingExternalVisit(false);
+  };
 
   if (!pet) {
     return (
@@ -53,7 +61,7 @@ const ParentPetProfile = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-      
+
       {/* Top Navigation Back Row */}
       <div style={{ display: "flex", alignItems: "center", gap: "16px", justifyContent: "space-between" }}>
         <button className="btn btn-outline btn-sm" onClick={() => navigate("/parent/pets")}>
@@ -74,12 +82,12 @@ const ParentPetProfile = () => {
         border: "1px solid var(--border-color)",
         position: "relative"
       }}>
-        
+
         {/* Photo Left Block */}
         <div style={{ display: "flex", flexDirection: "column", gap: "16px", alignItems: "center" }}>
-          <img 
-            src={pet.photo} 
-            alt={pet.name} 
+          <img
+            src={pet.photo}
+            alt={pet.name}
             style={{
               width: "100%",
               height: "170px",
@@ -100,7 +108,7 @@ const ParentPetProfile = () => {
             <h3 style={{ fontSize: "0.82rem", fontWeight: 800, textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "12px", letterSpacing: "0.05em" }}>
               Biological Summary (Read-Only)
             </h3>
-            
+
             <div style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
@@ -147,22 +155,29 @@ const ParentPetProfile = () => {
 
             {/* Quick Lost Alert shortcut */}
             {pet.status === "Lost" ? (
-              <button 
-                className="btn btn-primary" 
+              <button
+                className="btn btn-primary"
                 style={{ backgroundColor: "var(--secondary-color)", borderColor: "var(--secondary-color)" }}
                 onClick={() => navigate(`/parent/lost?petId=${pet.id}`)}
               >
                 Mark as Recovered / Found
               </button>
             ) : (
-              <button 
-                className="btn btn-danger" 
+              <button
+                className="btn btn-danger"
                 style={{ display: "flex", alignItems: "center", gap: "6px" }}
                 onClick={() => navigate(`/parent/lost?petId=${pet.id}`)}
               >
                 <AlertTriangle size={14} /> Report Pet as Lost
               </button>
             )}
+            <button
+              className="btn btn-outline"
+              style={{ display: "flex", alignItems: "center", gap: "6px" }}
+              onClick={() => setShowExternalVisitModal(true)}
+            >
+              Log External Vet Visit
+            </button>
           </div>
         </div>
 
@@ -170,9 +185,15 @@ const ParentPetProfile = () => {
 
       {/* DETAILED PANE SECTION */}
       <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: "28px" }} className="animal-profile-grid">
-        
+
         {/* 1. Left Side Navigation Card */}
         <div className="card left-nav-card" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px", height: "fit-content" }}>
+
+          {/* Collar QR Code — permanent scan link + downloadable tag image */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 0 16px", borderBottom: "1px solid var(--border-color)", marginBottom: "8px" }}>
+            <PetQRCode animalId={pet.id} size={100} showDownload={true} />
+          </div>
+
           {[
             { id: "timeline", label: "Medical Timeline", icon: Activity },
             { id: "vaccines", label: "Vaccination Reminders", icon: ShieldCheck },
@@ -218,7 +239,7 @@ const ParentPetProfile = () => {
 
         {/* 2. Main Content Card */}
         <div className="card tab-panel-card main-content-card" style={{ minHeight: "340px", padding: "28px" }}>
-          
+
           {/* 1. Clinic & Admittance History Log */}
           {activeTab === "timeline" && (
             <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -500,7 +521,7 @@ const ParentPetProfile = () => {
         {/* 3. Health Guard Tips Card */}
         <div className="tips-card-container" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "var(--primary-color)", margin: 0 }}>Health Guard Tips</h3>
-          
+
           <div className="card" style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "20px 24px" }}>
             <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
               <Info size={18} color="var(--accent-amber)" style={{ flexShrink: 0, marginTop: "2px" }} />
@@ -578,7 +599,56 @@ const ParentPetProfile = () => {
             grid-template-columns: 1fr !important;
           }
         }
-      `}</style>
+            `}</style>
+
+      {showExternalVisitModal && (
+        <div className="modal-overlay" onClick={() => setShowExternalVisitModal(false)}>
+          <div className="modal-content" style={{ maxWidth: "480px" }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 style={{ fontWeight: 800 }}>Log External Vet Visit</h2>
+              <button className="modal-close" onClick={() => setShowExternalVisitModal(false)}>✕</button>
+            </div>
+            <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", margin: "0 0 16px" }}>
+              This logs a note about a visit to a vet outside PetLink OS. It will be clearly marked as <strong>unverified</strong> and will not change {pet.name}'s official vaccination/sterilization status — only a PetLink-registered vet can update that.
+            </p>
+            <form onSubmit={handleLogExternalVisit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              <div className="form-group">
+                <label className="form-label">Clinic / Vet Name *</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={externalVisitForm.clinicName}
+                  onChange={(e) => setExternalVisitForm({ ...externalVisitForm, clinicName: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Visit Date *</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  value={externalVisitForm.visitDate}
+                  onChange={(e) => setExternalVisitForm({ ...externalVisitForm, visitDate: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Notes (optional)</label>
+                <textarea
+                  className="form-control"
+                  rows={3}
+                  value={externalVisitForm.notes}
+                  onChange={(e) => setExternalVisitForm({ ...externalVisitForm, notes: e.target.value })}
+                />
+              </div>
+              <button type="submit" className="btn btn-primary" disabled={isSavingExternalVisit}>
+                {isSavingExternalVisit ? "Saving..." : "Log Visit"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

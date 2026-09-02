@@ -60,16 +60,25 @@ const PublicScanPage = () => {
     setError("");
   };
 
-  const handlePhotoUploadMock = (e) => {
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handlePhotoUploadMock = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      const base64 = await convertToBase64(file);
       setFormData((prev) => ({
         ...prev,
-        photoPreview: URL.createObjectURL(file)
+        photoPreview: base64
       }));
     }
   };
-
   const handleSubmitReport = async (e) => {
     e.preventDefault();
     if (!formData.location.trim()) {
@@ -92,7 +101,7 @@ const PublicScanPage = () => {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F7F5F0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px 16px" }}>
       <div style={{ maxWidth: "480px", width: "100%", display: "flex", flexDirection: "column", gap: "20px" }}>
-        
+
         {isLoading ? (
           // Resolving scan state skeleton loader
           <div className="card" style={{ padding: "40px", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", borderRadius: "24px" }}>
@@ -102,7 +111,7 @@ const PublicScanPage = () => {
           </div>
         ) : step === 1 ? (
           <div className="animate-scale-up" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            
+
             {/* 1. Header Navigation Bar */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <button onClick={() => navigate("/")} style={{ background: "none", border: 0, color: "var(--text-muted)", cursor: "pointer", fontSize: "0.82rem", display: "flex", alignItems: "center", gap: "4px", fontWeight: 700 }}>
@@ -115,19 +124,19 @@ const PublicScanPage = () => {
 
             {/* 2. Main Animal Profile details Card */}
             <div className="card" style={{ padding: "0px", borderRadius: "24px", overflow: "hidden", border: "1px solid var(--border-color)", boxShadow: "0 10px 30px rgba(0,0,0,0.04)" }}>
-              
+
               {/* Pet Photo Cover */}
               <div style={{ position: "relative", height: "280px" }}>
-                <img 
-                  src={pet.photo} 
-                  alt={pet.name} 
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                <img
+                  src={pet.photo}
+                  alt={pet.name}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
-                
+
                 {/* State Tag Overlay */}
                 <div style={{ position: "absolute", bottom: "16px", left: "16px", zIndex: 10 }}>
-                  <span 
-                    className={`badge badge-${pet.status === "Lost" ? "rescued" : "adopted"}`} 
+                  <span
+                    className={`badge badge-${pet.status === "Lost" ? "rescued" : "adopted"}`}
                     style={{ fontSize: "0.75rem", padding: "6px 14px", border: "2px solid white", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}
                   >
                     {pet.status === "Lost" ? "⚠️ Reported Lost" : "🟢 Registered Safe"}
@@ -167,22 +176,22 @@ const PublicScanPage = () => {
                     </div>
 
                     <form onSubmit={handleSubmitReport} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-                      
+
                       {/* Location details */}
                       <div className="form-group">
                         <label className="form-label" style={{ fontWeight: 800 }}>Found Location / Landmark Address *</label>
                         <div style={{ display: "flex", gap: "8px" }}>
-                          <input 
-                            type="text" 
-                            className="form-control" 
+                          <input
+                            type="text"
+                            className="form-control"
                             placeholder="e.g. Near Kothrud Petrol Pump, Pune"
                             value={formData.location}
                             onChange={(e) => { setFormData({ ...formData, location: e.target.value }); setError(""); }}
                             required
                           />
-                          <button 
-                            type="button" 
-                            className="btn btn-outline" 
+                          <button
+                            type="button"
+                            className="btn btn-outline"
                             style={{ padding: "10px", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
                             onClick={handleGPSAutoCapture}
                             title="Auto Capture Coordinates"
@@ -199,18 +208,18 @@ const PublicScanPage = () => {
                         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                           <label className="btn btn-outline" style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", padding: "8px 16px", fontSize: "0.82rem" }}>
                             <Camera size={14} /> Snap / Pick File
-                            <input 
-                              type="file" 
-                              accept="image/*" 
-                              style={{ display: "none" }} 
+                            <input
+                              type="file"
+                              accept="image/*"
+                              style={{ display: "none" }}
                               onChange={handlePhotoUploadMock}
                             />
                           </label>
                           {formData.photoPreview && (
-                            <img 
-                              src={formData.photoPreview} 
-                              alt="Upload preview" 
-                              style={{ width: "44px", height: "44px", borderRadius: "6px", objectFit: "cover" }} 
+                            <img
+                              src={formData.photoPreview}
+                              alt="Upload preview"
+                              style={{ width: "44px", height: "44px", borderRadius: "6px", objectFit: "cover" }}
                             />
                           )}
                         </div>
@@ -221,9 +230,9 @@ const PublicScanPage = () => {
                         <label className="form-label" style={{ fontWeight: 800 }}>Your Contact Number (Optional)</label>
                         <div style={{ position: "relative" }}>
                           <Phone size={14} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
-                          <input 
-                            type="text" 
-                            className="form-control" 
+                          <input
+                            type="text"
+                            className="form-control"
                             placeholder="e.g. +91 98765 43210"
                             style={{ paddingLeft: "36px" }}
                             value={formData.contact}
@@ -232,9 +241,9 @@ const PublicScanPage = () => {
                         </div>
                       </div>
 
-                      <button 
-                        type="submit" 
-                        className="btn btn-primary" 
+                      <button
+                        type="submit"
+                        className="btn btn-primary"
                         style={{ width: "100%", backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)", padding: "12px", fontWeight: 800, marginTop: "10px" }}
                       >
                         Submit Found Report
@@ -243,13 +252,36 @@ const PublicScanPage = () => {
                     </form>
                   </div>
                 ) : (
-                  // Safe Mode view
+                  // Safe Mode view — shows health verification info, never owner contact/address details
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "8px", borderTop: "1px solid var(--border-color)", paddingTop: "20px" }}>
                     <h3 style={{ fontSize: "1.05rem", fontWeight: 800, margin: 0, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "6px" }}>
                       <CheckCircle size={16} /> Safe & Cared For
                     </h3>
                     <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", margin: 0, lineHeight: 1.5 }}>
-                      This pet has a loving custodian node registered in our system and is not reported missing. Thank you for verifying their digital tag compliance details.
+                      This pet has a registered custodian and is not reported missing.
+                    </p>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginTop: "6px" }}>
+                      <div style={{ padding: "12px 14px", backgroundColor: "#FCFAF6", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+                        <span style={{ fontSize: "0.68rem", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                          Vaccination Status
+                        </span>
+                        <p style={{ fontSize: "0.88rem", fontWeight: 800, color: "var(--text-main)", margin: "4px 0 0" }}>
+                          {pet.healthSummary?.vaccinationStatus || "Not on file"}
+                        </p>
+                      </div>
+                      <div style={{ padding: "12px 14px", backgroundColor: "#FCFAF6", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+                        <span style={{ fontSize: "0.68rem", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                          Sterilization Status
+                        </span>
+                        <p style={{ fontSize: "0.88rem", fontWeight: 800, color: "var(--text-main)", margin: "4px 0 0" }}>
+                          {pet.healthSummary?.sterilizationStatus || "Not on file"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <p style={{ fontSize: "0.72rem", color: "var(--text-muted)", margin: "6px 0 0", lineHeight: 1.4 }}>
+                      Owner contact details are kept private. If this pet appears distressed or unattended, please use the report option below.
                     </p>
                   </div>
                 )}
