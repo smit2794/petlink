@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
-import { MapPin, Phone, Clock, AlertTriangle, CheckCircle2, ShieldAlert, XCircle, ArrowLeft } from "lucide-react";
+import { MapPin, Phone, Clock, AlertTriangle, CheckCircle2, ShieldAlert, XCircle, ArrowLeft, PawPrint } from "lucide-react";
+
+// Report status badge with icon
+const getReportStatusBadge = (status) => {
+  if (status === "Pending") return <span className="badge badge-rescued" style={{ fontSize: "0.68rem" }}><Clock size={11} /> Pending</span>;
+  if (status === "Confirmed") return <span className="badge badge-adopted" style={{ fontSize: "0.68rem" }}><CheckCircle2 size={11} /> Confirmed</span>;
+  return <span className="badge badge-shelter" style={{ fontSize: "0.68rem" }}><XCircle size={11} /> Dismissed</span>;
+};
 
 const NGOFoundReports = () => {
   const { foundReports, animals, confirmFoundMatch, dismissFoundReport } = useApp();
@@ -94,8 +101,11 @@ const NGOFoundReports = () => {
                 fontWeight: 700,
                 fontSize: "0.82rem",
                 textTransform: "capitalize",
-                backgroundColor: activeTab === tab ? "var(--primary-light)" : "transparent",
-                color: activeTab === tab ? "var(--primary-color)" : "var(--text-muted)"
+                backgroundColor: activeTab === tab ? "var(--secondary-light)" : "transparent",
+                color: activeTab === tab ? "var(--primary-color)" : "var(--text-muted)",
+                borderBottom: activeTab === tab ? "2px solid var(--secondary-color)" : "2px solid transparent",
+                borderRadius: activeTab === tab ? "10px 10px 0 0" : "30px",
+                transition: "all var(--transition-fast)"
               }}
             >
               {tab === "pending" ? `Pending (${relevantReports.filter(r => r.status === "Pending").length})` : 
@@ -132,11 +142,10 @@ const NGOFoundReports = () => {
 
       {/* Main Ledger Display */}
       {finalReports.length === 0 ? (
-        <div className="card" style={{ padding: "50px 24px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
-          <ShieldAlert size={36} color="var(--primary-color)" />
-          <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: 0 }}>
-            No found reports match the active filters.
-          </p>
+        <div className="empty-state paw-bg">
+          <div className="empty-state-icon"><PawPrint size={28} /></div>
+          <p className="empty-state-title">No reports in this stage</p>
+          <p className="empty-state-desc">No found reports match the current tab and filter selection.</p>
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
@@ -151,7 +160,11 @@ const NGOFoundReports = () => {
                   borderRadius: "20px",
                   display: "grid",
                   gridTemplateColumns: "100px 1fr",
-                  gap: "24px"
+                  gap: "24px",
+                  borderLeft: `5px solid ${
+                    report.status === "Pending" ? "var(--accent-amber)" :
+                    report.status === "Confirmed" ? "#27AE60" : "var(--text-muted)"
+                  }`
                 }}
               >
                 {/* Animal Photo */}
@@ -190,15 +203,7 @@ const NGOFoundReports = () => {
                       </span>
                     </div>
 
-                    <span
-                      className={`badge badge-${
-                        report.status === "Pending" ? "rescued" :
-                        report.status === "Confirmed" ? "adopted" : "shelter"
-                      }`}
-                      style={{ fontSize: "0.68rem" }}
-                    >
-                      {report.status}
-                    </span>
+                    {getReportStatusBadge(report.status)}
                   </div>
 
                   {/* Finder Details Grid */}

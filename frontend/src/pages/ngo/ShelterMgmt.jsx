@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useApp } from "../../context/AppContext";
-import { 
+import {
   Building, ShieldAlert, Truck, Package, Plus, Minus,
-  Activity, CheckCircle2, ChevronRight, AlertTriangle, Send, X, ArrowLeftRight
+  Activity, CheckCircle2, ChevronRight, AlertTriangle, Send, X, ArrowLeftRight, Clock
 } from "lucide-react";
 
 // Helper Circular Progress Component
@@ -54,26 +54,26 @@ const CircularProgress = ({ pct, label, color = "var(--secondary-color)", size =
 };
 
 const ShelterMgmt = () => {
-  const { 
-    inventory, 
+  const {
+    inventory,
     updateInventoryStock,
     updateInventoryStockPersisted,
-    animals, 
-    ngoTransfers, 
-    requestNGOTransfer, 
-    respondToNGOTransfer 
+    animals,
+    ngoTransfers,
+    requestNGOTransfer,
+    respondToNGOTransfer
   } = useApp();
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [selectedPetForTransfer, setSelectedPetForTransfer] = useState(null);
-  
+
   // Transfer Form State
   const [transferForm, setTransferForm] = useState({
     destinationNGO: "Hadapsar Gaushala Cattle Shelter",
     reason: ""
   });
-  
+
   const ngoList = [
     "Pune Central Animal Shelter",
     "Hadapsar Gaushala Cattle Shelter",
@@ -92,7 +92,7 @@ const ShelterMgmt = () => {
   // Compute capacities dynamically
   const shelterAnimalsCount = animals.filter(a => a.status === "In Shelter" || a.status === "Available for Adoption").length;
   const treatmentAnimalsCount = animals.filter(a => a.status === "Under Treatment").length;
-  
+
   // Custom static limits
   const maxGeneralCapacity = 15;
   const generalCapacityPct = Math.min(100, Math.floor((shelterAnimalsCount / maxGeneralCapacity) * 100));
@@ -103,8 +103,8 @@ const ShelterMgmt = () => {
   // intake rate (rescues/day) is approx 1.4, adoption rate is approx 0.8. Net rate = 0.6 / day.
   const netIntakeRate = 0.6;
   const remainingBeds = Math.max(0, maxGeneralCapacity - shelterAnimalsCount);
-  const daysToCapacity = netIntakeRate > 0 && remainingBeds > 0 
-    ? Math.round(remainingBeds / netIntakeRate) 
+  const daysToCapacity = netIntakeRate > 0 && remainingBeds > 0
+    ? Math.round(remainingBeds / netIntakeRate)
     : 0;
 
   // Isolation details list
@@ -120,7 +120,7 @@ const ShelterMgmt = () => {
   const handleStockUpdate = async (itemId, change) => {
     try {
       await updateInventoryStockPersisted(itemId, change);
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleOpenTransferModal = (pet) => {
@@ -150,7 +150,7 @@ const ShelterMgmt = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-      
+
       {/* Title */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
         <div>
@@ -179,7 +179,7 @@ const ShelterMgmt = () => {
               <h3 style={{ fontSize: "1.1rem", fontWeight: 800, display: "flex", alignItems: "center", gap: "8px" }}>
                 <Building size={20} color="var(--primary-color)" /> Live Shelter Ward Capacities
               </h3>
-              
+
               <div style={{
                 display: "flex",
                 justifyContent: "space-around",
@@ -187,29 +187,29 @@ const ShelterMgmt = () => {
                 gap: "24px",
                 padding: "12px 0"
               }}>
-                <CircularProgress 
-                  pct={generalCapacityPct} 
-                  label={`General Ward A (${shelterAnimalsCount}/${maxGeneralCapacity} Occupied)`} 
-                  color="var(--secondary-color)" 
+                <CircularProgress
+                  pct={generalCapacityPct}
+                  label={`General Ward A (${shelterAnimalsCount}/${maxGeneralCapacity} Occupied)`}
+                  color="var(--secondary-color)"
                 />
-                <CircularProgress 
-                  pct={isolationCapacityPct} 
-                  label={`Isolation/Quarantine (${treatmentAnimalsCount}/8 Occupied)`} 
-                  color="var(--accent-coral)" 
+                <CircularProgress
+                  pct={isolationCapacityPct}
+                  label={`Isolation/Quarantine (${treatmentAnimalsCount}/8 Occupied)`}
+                  color="var(--accent-coral)"
                 />
-                <CircularProgress 
-                  pct={catteryCapacityPct} 
-                  label="Feline Cattery (2/5 Occupied)" 
-                  color="var(--accent-amber)" 
+                <CircularProgress
+                  pct={catteryCapacityPct}
+                  label="Feline Cattery (2/5 Occupied)"
+                  color="var(--accent-amber)"
                 />
               </div>
             </div>
 
             {/* Forecast Widget */}
             <div className="card" style={{
-              display: "flex", 
-              flexDirection: "column", 
-              justifyContent: "center", 
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
               gap: "16px",
               background: "linear-gradient(135deg, rgba(46, 111, 86, 0.05) 0%, rgba(250, 248, 245, 1) 100%)",
               border: "1px solid var(--border-color)",
@@ -234,13 +234,13 @@ const ShelterMgmt = () => {
 
           {/* Transfer Requests Ledger & Transfer Form Trigger Section */}
           <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1.6fr", gap: "28px" }} className="shelter-split-grid">
-            
+
             {/* Transfer Requests Catalog */}
             <div className="card" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <h3 style={{ fontSize: "1.1rem", fontWeight: 800, display: "flex", alignItems: "center", gap: "8px" }}>
                 <ArrowLeftRight size={20} color="var(--primary-color)" /> Inter-Shelter Transfers
               </h3>
-              
+
               <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "300px", overflowY: "auto" }}>
                 {ngoTransfers.length === 0 ? (
                   <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", textAlign: "center", padding: "20px" }}>No active transfers logged.</p>
@@ -266,7 +266,8 @@ const ShelterMgmt = () => {
                               {trf.sourceNGO} ➔ {trf.destinationNGO}
                             </span>
                           </div>
-                          <span className={`badge badge-${trf.status === "Approved" ? "adopted" : trf.status === "Pending" ? "lost" : "rescued"}`} style={{ fontSize: "0.65rem" }}>
+                          <span className={`badge badge-${trf.status === "Approved" ? "adopted" : trf.status === "Pending" ? "lost" : "rescued"}`} style={{ fontSize: "0.65rem", display: "flex", alignItems: "center", gap: "5px" }}>
+                            {trf.status === "Approved" ? <CheckCircle2 size={10} /> : trf.status === "Pending" ? <Clock size={10} /> : <Send size={10} />}
                             {trf.status}
                           </span>
                         </div>
@@ -278,15 +279,15 @@ const ShelterMgmt = () => {
                         {/* Approve/Reject actions for incoming pending transfers */}
                         {isIncoming && trf.status === "Pending" && (
                           <div style={{ display: "flex", gap: "8px", marginTop: "4px" }}>
-                            <button 
-                              className="btn btn-secondary btn-sm" 
+                            <button
+                              className="btn btn-secondary btn-sm"
                               style={{ flex: 1, padding: "4px" }}
                               onClick={() => respondToNGOTransfer(trf.id, "Approved")}
                             >
                               Approve
                             </button>
-                            <button 
-                              className="btn btn-outline btn-sm" 
+                            <button
+                              className="btn btn-outline btn-sm"
                               style={{ flex: 1, padding: "4px", color: "var(--accent-coral)", borderColor: "var(--accent-coral)" }}
                               onClick={() => respondToNGOTransfer(trf.id, "Rejected")}
                             >
@@ -312,7 +313,12 @@ const ShelterMgmt = () => {
 
               <div style={{ display: "flex", flexDirection: "column", gap: "10px", maxHeight: "250px", overflowY: "auto" }}>
                 {shelterPets.length === 0 ? (
-                  <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", textAlign: "center" }}>No animal residents currently in shelter custody.</p>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px", padding: "24px", border: "2px dashed var(--border-color)", borderRadius: "12px", textAlign: "center" }}>
+                    <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "var(--secondary-light)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--secondary-color)" }}>
+                      <Package size={18} />
+                    </div>
+                    <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", margin: 0 }}>No animal residents currently in shelter custody.</p>
+                  </div>
                 ) : (
                   shelterPets.map((pet) => (
                     <div key={pet.id} style={{
@@ -331,8 +337,8 @@ const ShelterMgmt = () => {
                           <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", display: "block" }}>{pet.id} • {pet.breed}</span>
                         </div>
                       </div>
-                      <button 
-                        className="btn btn-outline btn-sm" 
+                      <button
+                        className="btn btn-outline btn-sm"
                         style={{ display: "flex", alignItems: "center", gap: "4px" }}
                         onClick={() => handleOpenTransferModal(pet)}
                       >
@@ -395,8 +401,8 @@ const ShelterMgmt = () => {
                               }} />
                             </div>
                             {isLow && (
-                              <span style={{ fontSize: "0.65rem", color: "var(--accent-coral)", fontWeight: 700, display: "flex", alignItems: "center", gap: "2px" }}>
-                                <AlertTriangle size={8} /> REORDER REQUIRED
+                              <span className="badge badge-lost" style={{ fontSize: "0.62rem", padding: "2px 6px", animation: "none" }}>
+                                <AlertTriangle size={9} /> REORDER
                               </span>
                             )}
                           </div>
@@ -436,60 +442,61 @@ const ShelterMgmt = () => {
       ======================================================== */}
       {showTransferModal && selectedPetForTransfer && (
         <div className="modal-overlay" onClick={() => { setShowTransferModal(false); setSelectedPetForTransfer(null); }} style={{ zIndex: 9999 }}>
-          <div className="modal-content animate-scale-up" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "450px" }}>
+          <div className="modal-content animate-scale-up" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "450px", padding: 0 }}>
             <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "8px" }}>
-                <ArrowLeftRight size={20} /> Request Custody Transfer
+              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "1.3rem" }}>🚚</span> Request Custody Transfer
               </h2>
-              <button className="modal-close" onClick={() => { setShowTransferModal(false); setSelectedPetForTransfer(null); }}>✕</button>
+              <button className="modal-close" onClick={() => { setShowTransferModal(false); setSelectedPetForTransfer(null); }}><X size={18} /></button>
             </div>
-
-            <form onSubmit={handleRequestTransferSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-              <div style={{ padding: "10px", backgroundColor: "#FCFAF6", borderRadius: "10px", border: "1px solid var(--border-color)", display: "flex", gap: "10px", alignItems: "center" }}>
-                <img src={selectedPetForTransfer.photo} alt={selectedPetForTransfer.name} style={{ width: "40px", height: "40px", borderRadius: "50%", objectFit: "cover" }} />
-                <div>
-                  <strong style={{ fontSize: "0.9rem" }}>{selectedPetForTransfer.name} ({selectedPetForTransfer.id})</strong>
-                  <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", display: "block" }}>Current Custodian: {selectedPetForTransfer.custodian}</span>
+            <div className="modal-body">
+              <form id="transfer-form" onSubmit={handleRequestTransferSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                <div style={{ padding: "10px", backgroundColor: "#FCFAF6", borderRadius: "10px", border: "1px solid var(--border-color)", display: "flex", gap: "10px", alignItems: "center" }}>
+                  <img src={selectedPetForTransfer.photo} alt={selectedPetForTransfer.name} style={{ width: "40px", height: "40px", borderRadius: "50%", objectFit: "cover" }} />
+                  <div>
+                    <strong style={{ fontSize: "0.9rem" }}>{selectedPetForTransfer.name} ({selectedPetForTransfer.id})</strong>
+                    <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", display: "block" }}>Current Custodian: {selectedPetForTransfer.custodian}</span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="form-group">
-                <label className="form-label">Destination NGO Partner *</label>
-                <select
-                  className="form-control"
-                  value={transferForm.destinationNGO}
-                  onChange={(e) => setTransferForm({ ...transferForm, destinationNGO: e.target.value })}
-                >
-                  {ngoList
-                    .filter(n => n !== selectedPetForTransfer.custodian && n !== "Pune Central Shelter")
-                    .map(name => (
-                      <option key={name} value={name}>{name}</option>
-                    ))
-                  }
-                </select>
-              </div>
+                <div className="form-group">
+                  <label className="form-label">Destination NGO Partner *</label>
+                  <select
+                    className="form-control"
+                    value={transferForm.destinationNGO}
+                    onChange={(e) => setTransferForm({ ...transferForm, destinationNGO: e.target.value })}
+                  >
+                    {ngoList
+                      .filter(n => n !== selectedPetForTransfer.custodian && n !== "Pune Central Shelter")
+                      .map(name => (
+                        <option key={name} value={name}>{name}</option>
+                      ))
+                    }
+                  </select>
+                </div>
 
-              <div className="form-group">
-                <label className="form-label">Reason for Transfer *</label>
-                <textarea
-                  className="form-control"
-                  rows="3"
-                  placeholder="Explain capacity overload, specialized medical equipment needs, gaushala requirements..."
-                  value={transferForm.reason}
-                  onChange={(e) => setTransferForm({ ...transferForm, reason: e.target.value })}
-                  required
-                />
-              </div>
+                <div className="form-group">
+                  <label className="form-label">Reason for Transfer *</label>
+                  <textarea
+                    className="form-control"
+                    rows="3"
+                    placeholder="Explain capacity overload, specialized medical equipment needs, gaushala requirements..."
+                    value={transferForm.reason}
+                    onChange={(e) => setTransferForm({ ...transferForm, reason: e.target.value })}
+                    required
+                  />
+                </div>
 
-              <div style={{ display: "flex", gap: "12px", marginTop: "10px" }}>
-                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => { setShowTransferModal(false); setSelectedPetForTransfer(null); }}>
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                  Submit Request
-                </button>
-              </div>
-            </form>
+              </form>
+            </div>{/* end modal-body */}
+            <div className="modal-footer">
+              <button type="button" className="btn btn-outline" onClick={() => { setShowTransferModal(false); setSelectedPetForTransfer(null); }}>
+                Cancel
+              </button>
+              <button form="transfer-form" type="submit" className="btn btn-primary">
+                Submit Request
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -264,6 +264,8 @@ const HomeOverview = () => {
           <h1 style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-main)", letterSpacing: "-0.02em" }}>
             Welcome Back, Pooja
           </h1>
+          {/* Gradient accent underline */}
+          <div style={{ width: "64px", height: "3px", borderRadius: "2px", background: "linear-gradient(90deg, var(--secondary-color), var(--accent-amber))", margin: "8px 0 10px" }} />
           <p style={{ color: "var(--text-muted)", fontSize: "1rem", fontWeight: 500 }}>
             Unified command hub for shelters, rescues, and volunteer logistics.
           </p>
@@ -306,27 +308,27 @@ const HomeOverview = () => {
               backgroundColor: "#FFFBF2",
               animationDelay: "50ms"
             }}>
-              <div style={{ display: "flex", justifyBetween: "space-between", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
                 <div style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "12px",
                   backgroundColor: "rgba(224, 144, 37, 0.12)",
                   color: "var(--accent-amber)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center"
                 }}>
-                  <Navigation size={18} />
+                  <Navigation size={20} />
                 </div>
-                <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted)", letterSpacing: "0.05em" }}>DISPATCH</span>
+                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "var(--accent-amber)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Dispatch</span>
               </div>
-              <h2 style={{ fontSize: "2.2rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>
                 <CountUp target={activeRescues} />
               </h2>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "4px" }}>Active Rescues</p>
-              <span style={{ fontSize: "0.72rem", color: "#27AE60", fontWeight: 700, display: "block", marginTop: "8px" }}>
-                ➔ +3 reported today
+              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "6px" }}>Active Rescues</p>
+              <span style={{ fontSize: "0.75rem", color: "#27AE60", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px", marginTop: "8px" }}>
+                ↑ +3 reported today
               </span>
             </div>
 
@@ -335,27 +337,27 @@ const HomeOverview = () => {
               backgroundColor: "#F4FAF7",
               animationDelay: "100ms"
             }}>
-              <div style={{ display: "flex", justifyBetween: "space-between", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
                 <div style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "12px",
                   backgroundColor: "rgba(38, 96, 72, 0.12)",
                   color: "var(--secondary-color)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center"
                 }}>
-                  <Dog size={18} />
+                  <Dog size={20} />
                 </div>
-                <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted)", letterSpacing: "0.05em" }}>SHELTER</span>
+                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "var(--secondary-color)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Shelter</span>
               </div>
-              <h2 style={{ fontSize: "2.2rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>
                 <CountUp target={animalsInShelter} />
               </h2>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "4px" }}>Animals In Shelter</p>
-              <span style={{ fontSize: "0.72rem", color: "var(--secondary-color)", fontWeight: 700, display: "block", marginTop: "8px" }}>
-                ➔ Capacity at {Math.floor((animalsInShelter / 25) * 100)}%
+              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "6px" }}>Animals In Shelter</p>
+              <span style={{ fontSize: "0.75rem", color: "var(--secondary-color)", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px", marginTop: "8px" }}>
+                ↑ Capacity at {Math.floor((animalsInShelter / 25) * 100)}%
               </span>
             </div>
 
@@ -364,27 +366,27 @@ const HomeOverview = () => {
               backgroundColor: "#FDF5F5",
               animationDelay: "150ms"
             }}>
-              <div style={{ display: "flex", justifyBetween: "space-between", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
                 <div style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "12px",
                   backgroundColor: "rgba(217, 83, 79, 0.12)",
                   color: "var(--accent-coral)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center"
                 }}>
-                  <ShieldAlert size={18} />
+                  <ShieldAlert size={20} />
                 </div>
-                <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--accent-coral)", letterSpacing: "0.05em" }}>CRITICAL</span>
+                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "var(--accent-coral)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Critical</span>
               </div>
-              <h2 style={{ fontSize: "2.2rem", fontWeight: 800, color: "var(--accent-coral)", lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--accent-coral)", lineHeight: 1 }}>
                 <CountUp target={criticalCases} />
               </h2>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "4px" }}>Critical Operations</p>
-              <span style={{ fontSize: "0.72rem", color: "var(--accent-coral)", fontWeight: 700, display: "block", marginTop: "8px" }}>
-                ➔ Urgent clinical care
+              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "6px" }}>Critical Operations</p>
+              <span style={{ fontSize: "0.75rem", color: "var(--accent-coral)", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px", marginTop: "8px" }}>
+                ⚠ Urgent clinical care
               </span>
             </div>
 
@@ -393,27 +395,27 @@ const HomeOverview = () => {
               backgroundColor: "#F4F8FA",
               animationDelay: "200ms"
             }}>
-              <div style={{ display: "flex", justifyBetween: "space-between", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
                 <div style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "12px",
                   backgroundColor: "rgba(41, 128, 185, 0.12)",
                   color: "#2980B9",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center"
                 }}>
-                  <Syringe size={18} />
+                  <Syringe size={20} />
                 </div>
-                <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted)", letterSpacing: "0.05em" }}>HEALTH</span>
+                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#2980B9", letterSpacing: "0.1em", textTransform: "uppercase" }}>Health</span>
               </div>
-              <h2 style={{ fontSize: "2.2rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>
                 <CountUp target={pendingVaccinations} />
               </h2>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "4px" }}>Pending Vaccines</p>
-              <span style={{ fontSize: "0.72rem", color: "#2980B9", fontWeight: 700, display: "block", marginTop: "8px" }}>
-                ➔ +8 scheduled soon
+              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "6px" }}>Pending Vaccines</p>
+              <span style={{ fontSize: "0.75rem", color: "#2980B9", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px", marginTop: "8px" }}>
+                ↑ +8 scheduled soon
               </span>
             </div>
 
@@ -423,27 +425,27 @@ const HomeOverview = () => {
               borderLeft: "5px solid #8E24AA",
               animationDelay: "250ms"
             }}>
-              <div style={{ display: "flex", justifyBetween: "space-between", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
                 <div style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "12px",
                   backgroundColor: "rgba(142, 36, 170, 0.12)",
                   color: "#8E24AA",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center"
                 }}>
-                  <Scissors size={18} />
+                  <Scissors size={20} />
                 </div>
-                <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted)", letterSpacing: "0.05em" }}>SURGERY</span>
+                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#8E24AA", letterSpacing: "0.1em", textTransform: "uppercase" }}>Surgery</span>
               </div>
-              <h2 style={{ fontSize: "2.2rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>
                 <CountUp target={pendingSterilizations} />
               </h2>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "4px" }}>Pending Sterils</p>
-              <span style={{ fontSize: "0.72rem", color: "#8E24AA", fontWeight: 700, display: "block", marginTop: "8px" }}>
-                ➔ ABC cycle active
+              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "6px" }}>Pending Sterils</p>
+              <span style={{ fontSize: "0.75rem", color: "#8E24AA", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px", marginTop: "8px" }}>
+                ↑ ABC cycle active
               </span>
             </div>
 
@@ -453,27 +455,27 @@ const HomeOverview = () => {
               borderLeft: "5px solid #27AE60",
               animationDelay: "300ms"
             }}>
-              <div style={{ display: "flex", justifyBetween: "space-between", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
                 <div style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "12px",
                   backgroundColor: "rgba(39, 174, 96, 0.12)",
                   color: "#27AE60",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center"
                 }}>
-                  <Heart size={18} fill="#27AE60" />
+                  <Heart size={20} fill="#27AE60" />
                 </div>
-                <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted)", letterSpacing: "0.05em" }}>HOMES</span>
+                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#27AE60", letterSpacing: "0.1em", textTransform: "uppercase" }}>Homes</span>
               </div>
-              <h2 style={{ fontSize: "2.2rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>
                 <CountUp target={recentAdoptions} />
               </h2>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "4px" }}>Adopted Pets</p>
-              <span style={{ fontSize: "0.72rem", color: "#27AE60", fontWeight: 700, display: "block", marginTop: "8px" }}>
-                ➔ +5 homed this week
+              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "6px" }}>Adopted Pets</p>
+              <span style={{ fontSize: "0.75rem", color: "#27AE60", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px", marginTop: "8px" }}>
+                ↑ +5 homed this week
               </span>
             </div>
           </div>
@@ -518,11 +520,12 @@ const HomeOverview = () => {
               <h3 style={{ fontSize: "1.15rem", fontWeight: 800 }}>Recent Field Activities</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "14px", flexGrow: 1 }}>
                 {recentVolunteerActions.length === 0 ? (
-                  <div className="empty-state" style={{ padding: "20px", border: "none" }}>
-                    <div className="empty-state-icon" style={{ width: "48px", height: "48px", marginBottom: "12px" }}>
-                      <ClipboardList size={20} />
+                  <div className="empty-state paw-bg" style={{ padding: "32px 20px", gap: "10px" }}>
+                    <div className="empty-state-icon" style={{ width: "56px", height: "56px" }}>
+                      <ClipboardList size={24} />
                     </div>
-                    <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>No tasks logged as resolved yet.</p>
+                    <p className="empty-state-title" style={{ fontSize: "1rem" }}>No field missions yet</p>
+                    <p className="empty-state-desc" style={{ fontSize: "0.85rem", marginBottom: "0" }}>Completed volunteer tasks will appear here once logged.</p>
                   </div>
                 ) : (
                   recentVolunteerActions.map((action, idx) => (
@@ -575,151 +578,155 @@ const HomeOverview = () => {
       ======================================================== */}
       {showRescueModal && (
         <div className="modal-overlay" onClick={() => setShowRescueModal(false)}>
-          <div className="modal-content animate-scale-up" style={{ maxWidth: "580px" }} onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content animate-scale-up" style={{ maxWidth: "580px", padding: 0 }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)" }}>🚑 Log Emergency Dispatch Case</h2>
-              <button className="modal-close" onClick={() => setShowRescueModal(false)}><X size={20} /></button>
+              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "1.3rem" }}>🚑</span> Log Emergency Dispatch Case
+              </h2>
+              <button className="modal-close" onClick={() => setShowRescueModal(false)}><X size={18} /></button>
             </div>
+            <div className="modal-body">
 
-            <form onSubmit={handleRescueSubmit}>
-              {/* Photo Upload with preview */}
-              <div className="form-group">
-                <label className="form-label">
-                  Rescue Photo Capture * {errors.photo && <span className="form-error">{errors.photo}</span>}
-                </label>
-                <div style={{
-                  display: "flex",
-                  gap: "16px",
-                  alignItems: "center",
-                  padding: "16px",
-                  borderRadius: "12px",
-                  border: errors.photo ? "2px dashed var(--accent-coral)" : "2px dashed var(--border-color)",
-                  backgroundColor: "#FCFAF6"
-                }}>
-                  {rescuePhotoPreview ? (
-                    <img
-                      src={rescuePhotoPreview}
-                      alt="Preview"
-                      style={{ width: "90px", height: "90px", objectFit: "cover", borderRadius: "10px", border: "1px solid var(--border-color)" }}
-                    />
-                  ) : (
-                    <div style={{ width: "90px", height: "90px", borderRadius: "10px", backgroundColor: "#EDE7DE", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)" }}>
-                      <Image size={24} />
+              <form id="rescue-form" onSubmit={handleRescueSubmit}>
+                {/* Photo Upload with preview */}
+                <div className="form-group">
+                  <label className="form-label">
+                    Rescue Photo Capture * {errors.photo && <span className="form-error">{errors.photo}</span>}
+                  </label>
+                  <div style={{
+                    display: "flex",
+                    gap: "16px",
+                    alignItems: "center",
+                    padding: "16px",
+                    borderRadius: "12px",
+                    border: errors.photo ? "2px dashed var(--accent-coral)" : "2px dashed var(--border-color)",
+                    backgroundColor: "#FCFAF6"
+                  }}>
+                    {rescuePhotoPreview ? (
+                      <img
+                        src={rescuePhotoPreview}
+                        alt="Preview"
+                        style={{ width: "90px", height: "90px", objectFit: "cover", borderRadius: "10px", border: "1px solid var(--border-color)" }}
+                      />
+                    ) : (
+                      <div style={{ width: "90px", height: "90px", borderRadius: "10px", backgroundColor: "#EDE7DE", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)" }}>
+                        <Image size={24} />
+                      </div>
+                    )}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>JPEG/PNG coordinates proof capture</span>
+                      <label className="btn btn-secondary btn-sm" style={{ alignSelf: "flex-start", cursor: "pointer" }}>
+                        <Upload size={14} /> Upload photo
+                        <input type="file" accept="image/*" onChange={handleRescuePhotoChange} style={{ display: "none" }} />
+                      </label>
                     </div>
-                  )}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>JPEG/PNG coordinates proof capture</span>
-                    <label className="btn btn-secondary btn-sm" style={{ alignSelf: "flex-start", cursor: "pointer" }}>
-                      <Upload size={14} /> Upload photo
-                      <input type="file" accept="image/*" onChange={handleRescuePhotoChange} style={{ display: "none" }} />
-                    </label>
                   </div>
                 </div>
-              </div>
 
-              {/* Location field with Current Location filler */}
-              <div className="form-group">
-                <label className="form-label">
-                  Rescue Location * {errors.location && <span className="form-error">{errors.location}</span>}
-                </label>
-                <div style={{ display: "flex", gap: "10px" }}>
-                  <input
-                    type="text"
-                    placeholder="Enter street coordinates or address..."
-                    className="form-control"
-                    style={{ flex: 1, borderColor: errors.location ? "var(--accent-coral)" : "" }}
-                    value={rescueForm.location}
-                    onChange={(e) => setRescueForm({ ...rescueForm, location: e.target.value })}
-                  />
-                  <button type="button" className="btn btn-secondary" onClick={handleUseCurrentLocation} style={{ borderRadius: "12px" }}>
-                    <MapPin size={16} /> GPS
-                  </button>
-                </div>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                <div className="form-group">
-                  <label className="form-label">Species *</label>
-                  <select
-                    className="form-control"
-                    value={rescueForm.animalType}
-                    onChange={(e) => setRescueForm({ ...rescueForm, animalType: e.target.value })}
-                  >
-                    <option>Dog</option>
-                    <option>Cat</option>
-                    <option>Cow</option>
-                    <option>Bird</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Assign Handler Dispatch</label>
-                  <select
-                    className="form-control"
-                    value={rescueForm.assignedVolunteer}
-                    onChange={(e) => setRescueForm({ ...rescueForm, assignedVolunteer: e.target.value })}
-                  >
-                    <option>None</option>
-                    {volunteers.map(v => (
-                      <option key={v.id} value={v.name}>{v.name}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">
-                  Rescue Notes / Injury Condition * {errors.condition && <span className="form-error">{errors.condition}</span>}
-                </label>
-                <textarea
-                  placeholder="Describe status of injury, e.g., fractured leg, dehydration..."
-                  className="form-control"
-                  rows="2"
-                  style={{ borderColor: errors.condition ? "var(--accent-coral)" : "" }}
-                  value={rescueForm.condition}
-                  onChange={(e) => setRescueForm({ ...rescueForm, condition: e.target.value })}
-                />
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "16px" }}>
+                {/* Location field with Current Location filler */}
                 <div className="form-group">
                   <label className="form-label">
-                    Reported By * {errors.reportedBy && <span className="form-error">{errors.reportedBy}</span>}
+                    Rescue Location * {errors.location && <span className="form-error">{errors.location}</span>}
                   </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Suresh Kumar"
-                    className="form-control"
-                    style={{ borderColor: errors.reportedBy ? "var(--accent-coral)" : "" }}
-                    value={rescueForm.reportedBy}
-                    onChange={(e) => setRescueForm({ ...rescueForm, reportedBy: e.target.value })}
-                  />
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    <input
+                      type="text"
+                      placeholder="Enter street coordinates or address..."
+                      className="form-control"
+                      style={{ flex: 1, borderColor: errors.location ? "var(--accent-coral)" : "" }}
+                      value={rescueForm.location}
+                      onChange={(e) => setRescueForm({ ...rescueForm, location: e.target.value })}
+                    />
+                    <button type="button" className="btn btn-secondary" onClick={handleUseCurrentLocation} style={{ borderRadius: "12px" }}>
+                      <MapPin size={16} /> GPS
+                    </button>
+                  </div>
                 </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div className="form-group">
+                    <label className="form-label">Species *</label>
+                    <select
+                      className="form-control"
+                      value={rescueForm.animalType}
+                      onChange={(e) => setRescueForm({ ...rescueForm, animalType: e.target.value })}
+                    >
+                      <option>Dog</option>
+                      <option>Cat</option>
+                      <option>Cow</option>
+                      <option>Bird</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Assign Handler Dispatch</label>
+                    <select
+                      className="form-control"
+                      value={rescueForm.assignedVolunteer}
+                      onChange={(e) => setRescueForm({ ...rescueForm, assignedVolunteer: e.target.value })}
+                    >
+                      <option>None</option>
+                      {volunteers.map(v => (
+                        <option key={v.id} value={v.name}>{v.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
                 <div className="form-group">
                   <label className="form-label">
-                    Contact Phone * {errors.phone && <span className="form-error">{errors.phone}</span>}
+                    Rescue Notes / Injury Condition * {errors.condition && <span className="form-error">{errors.condition}</span>}
                   </label>
-                  <input
-                    type="text"
-                    placeholder="+91 XXXXX XXXXX"
+                  <textarea
+                    placeholder="Describe status of injury, e.g., fractured leg, dehydration..."
                     className="form-control"
-                    style={{ borderColor: errors.phone ? "var(--accent-coral)" : "" }}
-                    value={rescueForm.phone}
-                    onChange={(e) => setRescueForm({ ...rescueForm, phone: e.target.value })}
+                    rows="2"
+                    style={{ borderColor: errors.condition ? "var(--accent-coral)" : "" }}
+                    value={rescueForm.condition}
+                    onChange={(e) => setRescueForm({ ...rescueForm, condition: e.target.value })}
                   />
                 </div>
-              </div>
 
-              <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
-                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowRescueModal(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={isSubmittingRescue}>
-                  Create Rescue Case
-                </button>
-              </div>
-            </form>
+                <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "16px" }}>
+                  <div className="form-group">
+                    <label className="form-label">
+                      Reported By * {errors.reportedBy && <span className="form-error">{errors.reportedBy}</span>}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Suresh Kumar"
+                      className="form-control"
+                      style={{ borderColor: errors.reportedBy ? "var(--accent-coral)" : "" }}
+                      value={rescueForm.reportedBy}
+                      onChange={(e) => setRescueForm({ ...rescueForm, reportedBy: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">
+                      Contact Phone * {errors.phone && <span className="form-error">{errors.phone}</span>}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="+91 XXXXX XXXXX"
+                      className="form-control"
+                      style={{ borderColor: errors.phone ? "var(--accent-coral)" : "" }}
+                      value={rescueForm.phone}
+                      onChange={(e) => setRescueForm({ ...rescueForm, phone: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+              </form>
+            </div>{/* end modal-body */}
+            <div className="modal-footer">
+              <button type="button" className="btn btn-outline" onClick={() => setShowRescueModal(false)}>
+                Cancel
+              </button>
+              <button form="rescue-form" type="submit" className="btn btn-primary" disabled={isSubmittingRescue}>
+                {isSubmittingRescue ? "Saving..." : "Create Rescue Case"}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -729,293 +736,304 @@ const HomeOverview = () => {
       ======================================================== */}
       {showAnimalModal && (
         <div className="modal-overlay" onClick={() => setShowAnimalModal(false)}>
-          <div className="modal-content animate-scale-up" style={{ maxWidth: "600px" }} onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content animate-scale-up" style={{ maxWidth: "600px", padding: 0 }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)" }}>🐾 Register Direct Intake Profile</h2>
-              <button className="modal-close" onClick={() => setShowAnimalModal(false)}><X size={20} /></button>
+              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "1.3rem" }}>🐾</span> Register Direct Intake Profile
+              </h2>
+              <button className="modal-close" onClick={() => setShowAnimalModal(false)}><X size={18} /></button>
             </div>
+            <div className="modal-body">
 
-            <form onSubmit={handleAnimalSubmit}>
-              {/* Pre-generated details display */}
-              <div style={{
-                display: "flex",
-                gap: "20px",
-                alignItems: "center",
-                backgroundColor: "var(--secondary-light)",
-                padding: "16px",
-                borderRadius: "14px",
-                border: "1px solid rgba(38,96,72,0.1)",
-                marginBottom: "20px"
-              }}>
-                <PetQRCode animalId={generatedId} size={70} />
-                <div>
-                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--secondary-color)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    Automated System Tag Assignment
-                  </span>
-                  <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--primary-color)", margin: "2px 0" }}>
-                    Preview ID: {generatedId}
-                  </h3>
-                  <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                    Final tag ID is generated and confirmed after you save.
-                  </p>
-                </div>
-              </div>
-
-              {/* Photo file picker with preview */}
-              <div className="form-group">
-                <label className="form-label">
-                  Intake Profile Picture * {errors.photo && <span className="form-error">{errors.photo}</span>}
-                </label>
+              <form id="animal-form" onSubmit={handleAnimalSubmit}>
+                {/* Pre-generated details display */}
                 <div style={{
                   display: "flex",
-                  gap: "16px",
+                  gap: "20px",
                   alignItems: "center",
+                  backgroundColor: "var(--secondary-light)",
                   padding: "16px",
-                  borderRadius: "12px",
-                  border: errors.photo ? "2px dashed var(--accent-coral)" : "2px dashed var(--border-color)",
-                  backgroundColor: "#FCFAF6"
+                  borderRadius: "14px",
+                  border: "1px solid rgba(38,96,72,0.1)",
+                  marginBottom: "20px"
                 }}>
-                  {animalPhotoPreview ? (
-                    <img
-                      src={animalPhotoPreview}
-                      alt="Intake Preview"
-                      style={{ width: "90px", height: "90px", objectFit: "cover", borderRadius: "10px", border: "1px solid var(--border-color)" }}
-                    />
-                  ) : (
-                    <div style={{ width: "90px", height: "90px", borderRadius: "10px", backgroundColor: "#EDE7DE", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)" }}>
-                      <Image size={24} />
-                    </div>
-                  )}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>Clear capture of animal features</span>
-                    <label className="btn btn-secondary btn-sm" style={{ alignSelf: "flex-start", cursor: "pointer" }}>
-                      <Upload size={14} /> Upload image
-                      <input type="file" accept="image/*" onChange={handleAnimalPhotoChange} style={{ display: "none" }} />
-                    </label>
+                  <PetQRCode animalId={generatedId} size={70} />
+                  <div>
+                    <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--secondary-color)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                      Automated System Tag Assignment
+                    </span>
+                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--primary-color)", margin: "2px 0" }}>
+                      Preview ID: {generatedId}
+                    </h3>
+                    <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                      Final tag ID is generated and confirmed after you save.
+                    </p>
                   </div>
                 </div>
-              </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "16px" }}>
-                <div className="form-group">
-                  <label className="form-label">Animal Name (Optional)</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Moti (leave empty if unnamed)"
-                    className="form-control"
-                    value={animalForm.name}
-                    onChange={(e) => setAnimalForm({ ...animalForm, name: e.target.value })}
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Species</label>
-                  <select
-                    className="form-control"
-                    value={animalForm.species}
-                    onChange={(e) => setAnimalForm({ ...animalForm, species: e.target.value })}
-                  >
-                    <option>Dog</option>
-                    <option>Cat</option>
-                    <option>Cow</option>
-                    <option>Bird</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px" }}>
+                {/* Photo file picker with preview */}
                 <div className="form-group">
                   <label className="form-label">
-                    Breed * {errors.breed && <span className="form-error">{errors.breed}</span>}
+                    Intake Profile Picture * {errors.photo && <span className="form-error">{errors.photo}</span>}
                   </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Indie"
+                  <div style={{
+                    display: "flex",
+                    gap: "16px",
+                    alignItems: "center",
+                    padding: "16px",
+                    borderRadius: "12px",
+                    border: errors.photo ? "2px dashed var(--accent-coral)" : "2px dashed var(--border-color)",
+                    backgroundColor: "#FCFAF6"
+                  }}>
+                    {animalPhotoPreview ? (
+                      <img
+                        src={animalPhotoPreview}
+                        alt="Intake Preview"
+                        style={{ width: "90px", height: "90px", objectFit: "cover", borderRadius: "10px", border: "1px solid var(--border-color)" }}
+                      />
+                    ) : (
+                      <div style={{ width: "90px", height: "90px", borderRadius: "10px", backgroundColor: "#EDE7DE", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)" }}>
+                        <Image size={24} />
+                      </div>
+                    )}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>Clear capture of animal features</span>
+                      <label className="btn btn-secondary btn-sm" style={{ alignSelf: "flex-start", cursor: "pointer" }}>
+                        <Upload size={14} /> Upload image
+                        <input type="file" accept="image/*" onChange={handleAnimalPhotoChange} style={{ display: "none" }} />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "16px" }}>
+                  <div className="form-group">
+                    <label className="form-label">Animal Name (Optional)</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Moti (leave empty if unnamed)"
+                      className="form-control"
+                      value={animalForm.name}
+                      onChange={(e) => setAnimalForm({ ...animalForm, name: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Species</label>
+                    <select
+                      className="form-control"
+                      value={animalForm.species}
+                      onChange={(e) => setAnimalForm({ ...animalForm, species: e.target.value })}
+                    >
+                      <option>Dog</option>
+                      <option>Cat</option>
+                      <option>Cow</option>
+                      <option>Bird</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px" }}>
+                  <div className="form-group">
+                    <label className="form-label">
+                      Breed * {errors.breed && <span className="form-error">{errors.breed}</span>}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Indie"
+                      className="form-control"
+                      style={{ borderColor: errors.breed ? "var(--accent-coral)" : "" }}
+                      value={animalForm.breed}
+                      onChange={(e) => setAnimalForm({ ...animalForm, breed: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">
+                      Estimated Age * {errors.age && <span className="form-error">{errors.age}</span>}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 1 year"
+                      className="form-control"
+                      style={{ borderColor: errors.age ? "var(--accent-coral)" : "" }}
+                      value={animalForm.age}
+                      onChange={(e) => setAnimalForm({ ...animalForm, age: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">
+                      Weight * {errors.weight && <span className="form-error">{errors.weight}</span>}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 12 kg"
+                      className="form-control"
+                      style={{ borderColor: errors.weight ? "var(--accent-coral)" : "" }}
+                      value={animalForm.weight}
+                      onChange={(e) => setAnimalForm({ ...animalForm, weight: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div className="form-group">
+                    <label className="form-label">Gender</label>
+                    <select
+                      className="form-control"
+                      value={animalForm.gender}
+                      onChange={(e) => setAnimalForm({ ...animalForm, gender: e.target.value })}
+                    >
+                      <option>Male</option>
+                      <option>Female</option>
+                      <option>Unknown</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Starting Status</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value="In Shelter"
+                      disabled
+                      style={{ backgroundColor: "#F2EFE9", cursor: "not-allowed" }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div className="form-group">
+                    <label className="form-label">Vaccination Status</label>
+                    <select
+                      className="form-control"
+                      value={animalForm.vaccinationStatus}
+                      onChange={(e) => setAnimalForm({ ...animalForm, vaccinationStatus: e.target.value })}
+                    >
+                      <option>Not Vaccinated</option>
+                      <option>Pending Second Dose</option>
+                      <option>Fully Vaccinated</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Sterilization Status</label>
+                    <select
+                      className="form-control"
+                      value={animalForm.sterilizationStatus}
+                      onChange={(e) => setAnimalForm({ ...animalForm, sterilizationStatus: e.target.value })}
+                    >
+                      <option>Pending</option>
+                      <option>Sterilized</option>
+                      <option>Not Applicable</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Direct Intake Assessment Notes</label>
+                  <textarea
+                    placeholder="Note down veterinary assessment comments, skin condition notes..."
                     className="form-control"
-                    style={{ borderColor: errors.breed ? "var(--accent-coral)" : "" }}
-                    value={animalForm.breed}
-                    onChange={(e) => setAnimalForm({ ...animalForm, breed: e.target.value })}
+                    rows="2"
+                    value={animalForm.treatmentNotes}
+                    onChange={(e) => setAnimalForm({ ...animalForm, treatmentNotes: e.target.value })}
                   />
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">
-                    Estimated Age * {errors.age && <span className="form-error">{errors.age}</span>}
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 1 year"
-                    className="form-control"
-                    style={{ borderColor: errors.age ? "var(--accent-coral)" : "" }}
-                    value={animalForm.age}
-                    onChange={(e) => setAnimalForm({ ...animalForm, age: e.target.value })}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">
-                    Weight * {errors.weight && <span className="form-error">{errors.weight}</span>}
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 12 kg"
-                    className="form-control"
-                    style={{ borderColor: errors.weight ? "var(--accent-coral)" : "" }}
-                    value={animalForm.weight}
-                    onChange={(e) => setAnimalForm({ ...animalForm, weight: e.target.value })}
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                <div className="form-group">
-                  <label className="form-label">Gender</label>
-                  <select
-                    className="form-control"
-                    value={animalForm.gender}
-                    onChange={(e) => setAnimalForm({ ...animalForm, gender: e.target.value })}
-                  >
-                    <option>Male</option>
-                    <option>Female</option>
-                    <option>Unknown</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Starting Status</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value="In Shelter"
-                    disabled
-                    style={{ backgroundColor: "#F2EFE9", cursor: "not-allowed" }}
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                <div className="form-group">
-                  <label className="form-label">Vaccination Status</label>
-                  <select
-                    className="form-control"
-                    value={animalForm.vaccinationStatus}
-                    onChange={(e) => setAnimalForm({ ...animalForm, vaccinationStatus: e.target.value })}
-                  >
-                    <option>Not Vaccinated</option>
-                    <option>Pending Second Dose</option>
-                    <option>Fully Vaccinated</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Sterilization Status</label>
-                  <select
-                    className="form-control"
-                    value={animalForm.sterilizationStatus}
-                    onChange={(e) => setAnimalForm({ ...animalForm, sterilizationStatus: e.target.value })}
-                  >
-                    <option>Pending</option>
-                    <option>Sterilized</option>
-                    <option>Not Applicable</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Direct Intake Assessment Notes</label>
-                <textarea
-                  placeholder="Note down veterinary assessment comments, skin condition notes..."
-                  className="form-control"
-                  rows="2"
-                  value={animalForm.treatmentNotes}
-                  onChange={(e) => setAnimalForm({ ...animalForm, treatmentNotes: e.target.value })}
-                />
-              </div>
-
-              <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
-                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowAnimalModal(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={isSubmittingAnimal}>
-                  {isSubmittingAnimal ? "Saving..." : "Create Profile"}
-                </button>
-              </div>
-            </form>
+              </form>
+            </div>{/* end modal-body */}
+            <div className="modal-footer">
+              <button type="button" className="btn btn-outline" onClick={() => setShowAnimalModal(false)}>
+                Cancel
+              </button>
+              <button form="animal-form" type="submit" className="btn btn-primary" disabled={isSubmittingAnimal}>
+                {isSubmittingAnimal ? "Saving..." : "Create Profile"}
+              </button>
+            </div>
           </div>
         </div>
-      )}
+      )
+      }
 
       {/* ========================================================
           FIXED MODAL 3: ASSIGN VOLUNTEER TASK
       ======================================================== */}
-      {showTaskModal && (
-        <div className="modal-overlay" onClick={() => setShowTaskModal(false)}>
-          <div className="modal-content animate-scale-up" style={{ maxWidth: "520px" }} onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)" }}>📋 Assign Field Volunteer</h2>
-              <button className="modal-close" onClick={() => setShowTaskModal(false)}><X size={20} /></button>
-            </div>
-
-            <form onSubmit={handleTaskSubmit}>
-              {/* Select Volunteer dropdown */}
-              <div className="form-group">
-                <label className="form-label">
-                  Select Field Volunteer * {errors.volunteerId && <span className="form-error">{errors.volunteerId}</span>}
-                </label>
-                <select
-                  className="form-control"
-                  style={{ borderColor: errors.volunteerId ? "var(--accent-coral)" : "" }}
-                  value={taskForm.volunteerId}
-                  onChange={(e) => setTaskForm({ ...taskForm, volunteerId: e.target.value })}
-                >
-                  <option value="">-- Choose Field Personnel --</option>
-                  {volunteers.map(v => (
-                    <option key={v.id} value={v.id}>
-                      {v.name} ({v.tasks.filter(t => t.status !== "Done").length} active cases)
-                    </option>
-                  ))}
-                </select>
+      {
+        showTaskModal && (
+          <div className="modal-overlay" onClick={() => setShowTaskModal(false)}>
+            <div className="modal-content animate-scale-up" style={{ maxWidth: "520px", padding: 0 }} onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "10px" }}>
+                  <span style={{ fontSize: "1.3rem" }}>📋</span> Assign Field Volunteer
+                </h2>
+                <button className="modal-close" onClick={() => setShowTaskModal(false)}><X size={18} /></button>
               </div>
+              <div className="modal-body">
 
-              {/* Select Unassigned Rescue Case dropdown */}
-              <div className="form-group">
-                <label className="form-label">
-                  Select Unassigned Rescue Case * {errors.rescueId && <span className="form-error">{errors.rescueId}</span>}
-                </label>
-                <select
-                  className="form-control"
-                  style={{ borderColor: errors.rescueId ? "var(--accent-coral)" : "" }}
-                  value={taskForm.rescueId}
-                  onChange={(e) => setTaskForm({ ...taskForm, rescueId: e.target.value })}
-                >
-                  <option value="">-- Choose Unassigned Case --</option>
-                  {unassignedRescues.map(r => (
-                    <option key={r.id} value={r.id}>
-                      [{r.id}] {r.animalType} - {r.condition} ({r.location ? r.location.split(" (")[0] : ""})
-                    </option>
-                  ))}
-                </select>
-                {unassignedRescues.length === 0 && (
-                  <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "6px", display: "block" }}>
-                    ℹ️ All active rescues are currently assigned.
-                  </span>
-                )}
-              </div>
+                <form id="task-form" onSubmit={handleTaskSubmit}>
+                  {/* Select Volunteer dropdown */}
+                  <div className="form-group">
+                    <label className="form-label">
+                      Select Field Volunteer * {errors.volunteerId && <span className="form-error">{errors.volunteerId}</span>}
+                    </label>
+                    <select
+                      className="form-control"
+                      style={{ borderColor: errors.volunteerId ? "var(--accent-coral)" : "" }}
+                      value={taskForm.volunteerId}
+                      onChange={(e) => setTaskForm({ ...taskForm, volunteerId: e.target.value })}
+                    >
+                      <option value="">-- Choose Field Personnel --</option>
+                      {volunteers.map(v => (
+                        <option key={v.id} value={v.id}>
+                          {v.name} ({v.tasks.filter(t => t.status !== "Done").length} active cases)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-              <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
-                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowTaskModal(false)}>
+                  {/* Select Unassigned Rescue Case dropdown */}
+                  <div className="form-group">
+                    <label className="form-label">
+                      Select Unassigned Rescue Case * {errors.rescueId && <span className="form-error">{errors.rescueId}</span>}
+                    </label>
+                    <select
+                      className="form-control"
+                      style={{ borderColor: errors.rescueId ? "var(--accent-coral)" : "" }}
+                      value={taskForm.rescueId}
+                      onChange={(e) => setTaskForm({ ...taskForm, rescueId: e.target.value })}
+                    >
+                      <option value="">-- Choose Unassigned Case --</option>
+                      {unassignedRescues.map(r => (
+                        <option key={r.id} value={r.id}>
+                          [{r.id}] {r.animalType} - {r.condition} ({r.location ? r.location.split(" (")[0] : ""})
+                        </option>
+                      ))}
+                    </select>
+                    {unassignedRescues.length === 0 && (
+                      <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "6px", display: "block" }}>
+                        ℹ️ All active rescues are currently assigned.
+                      </span>
+                    )}
+                  </div>
+
+                </form>
+              </div>{/* end modal-body */}
+              <div className="modal-footer">
+                <button type="button" className="btn btn-outline" onClick={() => setShowTaskModal(false)}>
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={unassignedRescues.length === 0}>
+                <button form="task-form" type="submit" className="btn btn-primary" disabled={unassignedRescues.length === 0}>
                   Commit Assignment
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+            </div>
+          </div >
+        )
+      }
 
-    </div>
+    </div >
   );
 };
 

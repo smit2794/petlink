@@ -73,8 +73,11 @@ const ReportsMgmt = () => {
       
       {/* Page Title */}
       <div>
-        <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--text-main)" }}>
-          Analytical Audits & Regulatory Reports
+        <h1 style={{ fontSize: "1.8rem", fontWeight: 800, letterSpacing: "-0.02em" }}>
+          <span style={{ background: "linear-gradient(90deg, var(--primary-color), var(--secondary-color))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            Analytical Audits
+          </span>{" "}
+          <span style={{ color: "var(--text-main)" }}>& Regulatory Reports</span>
         </h1>
         <p style={{ color: "var(--text-muted)", fontSize: "0.95rem" }}>
           Export local animal welfare summaries for government compliance, audit funding allocations, and evaluate metrics.
@@ -101,13 +104,15 @@ const ReportsMgmt = () => {
             gap: "24px"
           }}>
             {/* Card 1: Govt Compliance */}
-            <div className="card" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div className="card" style={{ display: "flex", flexDirection: "column", gap: "16px", overflow: "hidden", padding: 0 }}>
+              <div style={{ height: "4px", background: "linear-gradient(90deg, #546E7A, #78909C)" }} />
+              <div style={{ padding: "20px 24px 24px", display: "flex", flexDirection: "column", gap: "16px" }}>
               <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "rgba(92, 107, 115, 0.1)", color: "var(--accent-blue-gray)", display: "flex", alignItems: "center", justify: "center", justifyContent: "center" }}>
+                <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "rgba(92, 107, 115, 0.1)", color: "#546E7A", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <FileText size={20} />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: "1rem", fontWeight: 800 }}>Municipal compliance Report</h3>
+                  <h3 style={{ fontSize: "1rem", fontWeight: 800 }}>Municipal Compliance Report</h3>
                   <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Rabies coverage & census</span>
                 </div>
               </div>
@@ -130,12 +135,15 @@ const ReportsMgmt = () => {
                   <Download size={14} /> Download PDF
                 </button>
               )}
+              </div>
             </div>
 
             {/* Card 2: CSR Sponsorship */}
-            <div className="card" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div className="card" style={{ display: "flex", flexDirection: "column", gap: "16px", overflow: "hidden", padding: 0 }}>
+              <div style={{ height: "4px", background: "linear-gradient(90deg, var(--secondary-color), var(--secondary-light))" }} />
+              <div style={{ padding: "20px 24px 24px", display: "flex", flexDirection: "column", gap: "16px" }}>
               <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "rgba(46, 111, 86, 0.1)", color: "var(--secondary-color)", display: "flex", alignItems: "center", justify: "center", justifyContent: "center" }}>
+                <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "rgba(46, 111, 86, 0.1)", color: "var(--secondary-color)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <Heart size={20} />
                 </div>
                 <div>
@@ -162,12 +170,15 @@ const ReportsMgmt = () => {
                   <Download size={14} /> Download Excel
                 </button>
               )}
+              </div>
             </div>
 
             {/* Card 3: Internal Analytics */}
-            <div className="card" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div className="card" style={{ display: "flex", flexDirection: "column", gap: "16px", overflow: "hidden", padding: 0 }}>
+              <div style={{ height: "4px", background: "linear-gradient(90deg, var(--accent-coral), #F5C647)" }} />
+              <div style={{ padding: "20px 24px 24px", display: "flex", flexDirection: "column", gap: "16px" }}>
               <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "rgba(224, 93, 93, 0.1)", color: "var(--accent-coral)", display: "flex", alignItems: "center", justify: "center", justifyContent: "center" }}>
+                <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "rgba(224, 93, 93, 0.1)", color: "var(--accent-coral)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <TrendingUp size={20} />
                 </div>
                 <div>
@@ -194,6 +205,7 @@ const ReportsMgmt = () => {
                   <Download size={14} /> Download PDF
                 </button>
               )}
+              </div>
             </div>
           </div>
 

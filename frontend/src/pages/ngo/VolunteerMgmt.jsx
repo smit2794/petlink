@@ -154,8 +154,10 @@ const VolunteerMgmt = () => {
                       style={{
                         padding: "16px 20px",
                         cursor: "pointer",
-                        borderLeft: isSelected ? "5px solid var(--secondary-color)" : "1px solid var(--border-color)",
-                        backgroundColor: isSelected ? "var(--secondary-light)" : "var(--card-bg)"
+                        borderLeft: isSelected ? "5px solid var(--secondary-color)" : "5px solid transparent",
+                        backgroundColor: isSelected ? "var(--secondary-light)" : "var(--card-bg)",
+                        transition: "all var(--transition-fast)",
+                        boxShadow: isSelected ? "var(--shadow-md)" : ""
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
@@ -265,14 +267,18 @@ const VolunteerMgmt = () => {
                     {/* Column 1: To Do */}
                     <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "2px solid #90A4AE", paddingBottom: "6px" }}>
-                        <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-main)" }}>To Do</span>
-                        <span className="badge" style={{ backgroundColor: "var(--card-bg)", color: "var(--text-main)", fontSize: "0.65rem", padding: "1px 6px" }}>
+                        <span style={{ fontSize: "0.82rem", fontWeight: 800, color: "#546E7A", display: "flex", alignItems: "center", gap: "6px" }}>
+                          📋 To Do
+                        </span>
+                        <span className="badge" style={{ backgroundColor: "#ECEFF1", color: "#546E7A", fontSize: "0.65rem", padding: "1px 6px" }}>
                           {getTasksByStatus("To Do").length}
                         </span>
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: "8px", minHeight: "150px" }}>
-                        {getTasksByStatus("To Do").map((task) => (
-                          <div key={task.id} className="card" style={{ padding: "12px", border: "1px solid var(--border-color)", borderRadius: "12px", borderLeft: "4px solid #90A4AE" }}>
+                        {getTasksByStatus("To Do").length === 0 ? (
+                          <div style={{ textAlign: "center", padding: "20px", color: "var(--text-muted)", fontSize: "0.82rem", border: "2px dashed var(--border-color)", borderRadius: "10px" }}>All clear here</div>
+                        ) : getTasksByStatus("To Do").map((task) => (
+                          <div key={task.id} className="card" style={{ padding: "12px", border: "1px solid var(--border-color)", borderRadius: "12px", borderLeft: `4px solid ${task.priority === "High" ? "var(--accent-coral)" : task.priority === "Medium" ? "var(--accent-amber)" : "#90A4AE"}` }}>
                             <span style={{ fontSize: "0.6rem", fontWeight: 700, color: task.priority === "High" ? "var(--accent-coral)" : "var(--text-muted)", textTransform: "uppercase" }}>
                               {task.priority} Priority
                             </span>
@@ -292,13 +298,17 @@ const VolunteerMgmt = () => {
                     {/* Column 2: In Progress */}
                     <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "2px solid var(--accent-amber)", paddingBottom: "6px" }}>
-                        <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-main)" }}>In Progress</span>
+                        <span style={{ fontSize: "0.82rem", fontWeight: 800, color: "var(--accent-amber)", display: "flex", alignItems: "center", gap: "6px" }}>
+                          ⚡ In Progress
+                        </span>
                         <span className="badge" style={{ backgroundColor: "var(--accent-amber-light)", color: "var(--accent-amber)", fontSize: "0.65rem", padding: "1px 6px" }}>
                           {getTasksByStatus("In Progress").length}
                         </span>
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: "8px", minHeight: "150px" }}>
-                        {getTasksByStatus("In Progress").map((task) => (
+                        {getTasksByStatus("In Progress").length === 0 ? (
+                          <div style={{ textAlign: "center", padding: "20px", color: "var(--text-muted)", fontSize: "0.82rem", border: "2px dashed var(--border-color)", borderRadius: "10px" }}>Nothing active yet</div>
+                        ) : getTasksByStatus("In Progress").map((task) => (
                           <div key={task.id} className="card" style={{ padding: "12px", border: "1px solid var(--border-color)", borderRadius: "12px", borderLeft: "4px solid var(--accent-amber)" }}>
                             <span style={{ fontSize: "0.6rem", fontWeight: 700, color: task.priority === "High" ? "var(--accent-coral)" : "var(--text-muted)", textTransform: "uppercase" }}>
                               {task.priority} Priority
@@ -322,13 +332,17 @@ const VolunteerMgmt = () => {
                     {/* Column 3: Done */}
                     <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "2px solid #2E7D32", paddingBottom: "6px" }}>
-                        <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-main)" }}>Done</span>
+                        <span style={{ fontSize: "0.82rem", fontWeight: 800, color: "#2E7D32", display: "flex", alignItems: "center", gap: "6px" }}>
+                          ✓ Done
+                        </span>
                         <span className="badge" style={{ backgroundColor: "#E8F5E9", color: "#2E7D32", fontSize: "0.65rem", padding: "1px 6px" }}>
                           {getTasksByStatus("Done").length}
                         </span>
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: "8px", minHeight: "150px" }}>
-                        {getTasksByStatus("Done").map((task) => (
+                        {getTasksByStatus("Done").length === 0 ? (
+                          <div style={{ textAlign: "center", padding: "20px", color: "var(--text-muted)", fontSize: "0.82rem", border: "2px dashed var(--border-color)", borderRadius: "10px" }}>No completed tasks yet</div>
+                        ) : getTasksByStatus("Done").map((task) => (
                           <div key={task.id} className="card" style={{ padding: "12px", border: "1px solid var(--border-color)", borderRadius: "12px", borderLeft: "4px solid #27AE60" }}>
                             <span style={{ fontSize: "0.6rem", fontWeight: 700, color: "#27AE60", textTransform: "uppercase" }}>
                               Completed
@@ -366,8 +380,12 @@ const VolunteerMgmt = () => {
 
                 </div>
               ) : (
-                <div className="card" style={{ padding: "40px", textAlign: "center", color: "var(--text-muted)" }}>
-                  Select a volunteer from the directory to review their tasks.
+                <div className="card paw-bg" style={{ padding: "48px 40px", display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", textAlign: "center" }}>
+                  <div style={{ width: "56px", height: "56px", borderRadius: "50%", backgroundColor: "var(--secondary-light)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--secondary-color)" }}>
+                    <Users size={24} />
+                  </div>
+                  <p style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-main)" }}>No volunteer selected</p>
+                  <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>Choose a field handler from the directory to view their task board.</p>
                 </div>
               )}
             </div>
@@ -436,14 +454,17 @@ const VolunteerMgmt = () => {
       ======================================================== */}
       {showTaskModal && (
         <div className="modal-overlay" onClick={() => setShowTaskModal(false)}>
-          <div className="modal-content animate-scale-up" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content animate-scale-up" style={{ padding: 0 }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)" }}>📋 Assign Task to {currentVol.name}</h2>
+              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "1.3rem" }}>📋</span> Assign Task to {currentVol.name}
+              </h2>
               <button className="modal-close" onClick={() => setShowTaskModal(false)}>
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
-            <form onSubmit={handleTaskSubmit}>
+            <div className="modal-body">
+            <form id="vol-task-form" onSubmit={handleTaskSubmit}>
               <div className="form-group">
                 <label className="form-label">Task Description</label>
                 <input
@@ -469,16 +490,16 @@ const VolunteerMgmt = () => {
                   <option>High</option>
                 </select>
               </div>
-
-              <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
-                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowTaskModal(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                  Create & Assign Task
-                </button>
-              </div>
             </form>
+            </div>{/* end modal-body */}
+            <div className="modal-footer">
+              <button type="button" className="btn btn-outline" onClick={() => setShowTaskModal(false)}>
+                Cancel
+              </button>
+              <button form="vol-task-form" type="submit" className="btn btn-primary">
+                Create & Assign Task
+              </button>
+            </div>
           </div>
         </div>
       )}

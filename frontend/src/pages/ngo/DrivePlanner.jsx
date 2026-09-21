@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useApp } from "../../context/AppContext";
-import { Calendar, MapPin, Users, Plus, Target, CheckCircle, Clock } from "lucide-react";
+import { Calendar, MapPin, Users, Plus, Target, CheckCircle, Clock, X } from "lucide-react";
 
 const DrivePlanner = () => {
   const { drives, volunteers, addDrive, logDriveAnimalCompletion } = useApp();
@@ -110,8 +110,18 @@ const DrivePlanner = () => {
       ) : (
         /* Drives Grid */
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }} className="animal-profile-grid">
-          {drives.map((drv) => {
+          {drives.length === 0 ? (
+            <div className="empty-state paw-bg" style={{ gridColumn: "1 / -1" }}>
+              <div className="empty-state-icon"><Calendar size={28} /></div>
+              <p className="empty-state-title">No drives planned yet</p>
+              <p className="empty-state-desc">Schedule your first vaccination or sterilization drive to get started.</p>
+              <button className="btn btn-primary" onClick={() => setShowModal(true)}><Plus size={16} /> Plan a Drive</button>
+            </div>
+          ) : drives.map((drv) => {
             const progress = Math.min(Math.round((drv.completedCount / drv.targetCount) * 100), 100);
+            const [month, day] = drv.date.split("-").slice(1);
+            const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+            const monthLabel = monthNames[parseInt(month, 10) - 1];
             return (
               <div
                 key={drv.id}
@@ -125,43 +135,52 @@ const DrivePlanner = () => {
                 }}
               >
                 {/* Drive Title and status */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div>
-                    <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "var(--text-main)" }}>
-                      {drv.name}
-                    </h3>
-                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px", marginTop: "4px" }}>
-                      <Calendar size={12} /> Date: {drv.date}
-                    </span>
+                <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
+                  {/* Calendar Block */}
+                  <div style={{
+                    flexShrink: 0,
+                    width: "52px",
+                    borderRadius: "10px",
+                    overflow: "hidden",
+                    border: "1px solid var(--border-color)",
+                    textAlign: "center"
+                  }}>
+                    <div style={{ backgroundColor: "var(--primary-color)", color: "white", fontSize: "0.6rem", fontWeight: 800, padding: "3px 0", letterSpacing: "0.08em", textTransform: "uppercase" }}>{monthLabel}</div>
+                    <div style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1.2, padding: "4px 0" }}>{day}</div>
                   </div>
-                  <span className={`badge badge-${drv.status === "Completed" ? "adopted" : drv.status === "In Progress" ? "lost" : "shelter"}`} style={{ fontSize: "0.68rem" }}>
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ fontSize: "1.05rem", fontWeight: 800, color: "var(--text-main)" }}>{drv.name}</h3>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "6px" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", backgroundColor: "var(--secondary-light)", color: "var(--primary-color)", borderRadius: "20px", padding: "3px 10px", fontSize: "0.75rem", fontWeight: 700 }}>
+                        <MapPin size={11} /> {drv.location}
+                      </span>
+                    </div>
+                  </div>
+                  <span className={`badge badge-${drv.status === "Completed" ? "adopted" : drv.status === "In Progress" ? "lost" : "shelter"}`} style={{ fontSize: "0.68rem", flexShrink: 0 }}>
                     {drv.status}
                   </span>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.85rem", color: "var(--text-muted)" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <MapPin size={14} color="var(--primary-color)" />
-                    <span>Location: <strong>{drv.location}</strong></span>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <Users size={14} color="var(--primary-color)" />
-                    <span>
-                      Volunteers: <strong>
-                        {volunteers
-                          .filter((v) => drv.volunteers.includes(v.id))
-                          .map((v) => v.name)
-                          .join(", ") || "None assigned"}
-                      </strong>
-                    </span>
+                {/* Volunteer avatars */}
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <Users size={13} color="var(--text-muted)" />
+                  <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
+                    {volunteers
+                      .filter((v) => drv.volunteers.includes(v.id))
+                      .map((v) => (
+                        <span key={v.id} style={{ width: "26px", height: "26px", borderRadius: "50%", backgroundColor: "var(--primary-color)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.6rem", fontWeight: 800, border: "2px solid white", marginLeft: "-4px" }}>
+                          {v.avatar}
+                        </span>
+                      ))}
+                    {drv.volunteers.length === 0 && <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>No volunteers assigned</span>}
                   </div>
                 </div>
 
                 {/* Progress bar */}
-                <div style={{ marginTop: "8px" }}>
+                <div style={{ marginTop: "4px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", fontWeight: 700, marginBottom: "6px" }}>
-                    <span>Progress: {drv.completedCount} / {drv.targetCount} animals</span>
-                    <span>{progress}%</span>
+                    <span><Target size={13} style={{ display: "inline", marginRight: "4px" }} />{drv.completedCount} / {drv.targetCount} animals</span>
+                    <span style={{ color: drv.status === "Completed" ? "#27AE60" : "var(--primary-color)" }}>{progress}%</span>
                   </div>
                   <div style={{ height: "8px", backgroundColor: "#FCFAF6", borderRadius: "4px", overflow: "hidden", border: "1px solid var(--border-color)" }}>
                     <div style={{ width: `${progress}%`, height: "100%", backgroundColor: drv.status === "Completed" ? "#27AE60" : "var(--primary-color)", transition: "width 0.4s ease" }} />
@@ -174,7 +193,7 @@ const DrivePlanner = () => {
                     className="btn btn-outline btn-sm"
                     onClick={() => logDriveAnimalCompletion(drv.id)}
                     style={{
-                      marginTop: "10px",
+                      marginTop: "4px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -183,7 +202,7 @@ const DrivePlanner = () => {
                       color: "var(--primary-color)"
                     }}
                   >
-                    <Target size={14} /> Log Logged Animal Target
+                    <Target size={14} /> Log One Animal Completed
                   </button>
                 )}
               </div>
@@ -197,15 +216,15 @@ const DrivePlanner = () => {
       ======================================================== */}
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)} style={{ zIndex: 9999 }}>
-          <div className="modal-content animate-scale-up" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "500px" }}>
+          <div className="modal-content animate-scale-up" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "500px", padding: 0 }}>
             <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "8px" }}>
-                <Calendar size={20} /> Schedule Welfare Drive
+              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "1.3rem" }}>🗓️</span> Schedule Welfare Drive
               </h2>
-              <button className="modal-close" onClick={() => setShowModal(false)}>✕</button>
+              <button className="modal-close" onClick={() => setShowModal(false)}><X size={18} /></button>
             </div>
-
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            <div className="modal-body">
+            <form id="drive-form" onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div className="form-group">
                 <label className="form-label">Drive / Event Name *</label>
                 <input
@@ -286,16 +305,16 @@ const DrivePlanner = () => {
                 </div>
                 {errors.volunteers && <span className="form-error">{errors.volunteers}</span>}
               </div>
-
-              <div style={{ display: "flex", gap: "12px", marginTop: "10px" }}>
-                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowModal(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                  Schedule Event
-                </button>
-              </div>
             </form>
+            </div>{/* end modal-body */}
+            <div className="modal-footer">
+              <button type="button" className="btn btn-outline" onClick={() => setShowModal(false)}>
+                Cancel
+              </button>
+              <button form="drive-form" type="submit" className="btn btn-primary">
+                Schedule Event
+              </button>
+            </div>
           </div>
         </div>
       )}

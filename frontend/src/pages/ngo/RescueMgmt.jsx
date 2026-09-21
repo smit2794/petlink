@@ -2,8 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useApp } from "../../context/AppContext";
 import { 
   PlusCircle, Search, Table, Map, Navigation, 
-  User, Calendar, Phone, Activity, X, MapPin
+  User, Calendar, Phone, Activity, X, MapPin,
+  CheckCircle, Clock, AlertTriangle, PawPrint
 } from "lucide-react";
+
+// Helper: badge icon per rescue status
+const getRescueStatusBadge = (status) => {
+  const icons = {
+    "New":         { cls: "badge-lost",     icon: <AlertTriangle size={11} /> },
+    "Assigned":    { cls: "badge-rescued",   icon: <Clock size={11} /> },
+    "In Progress": { cls: "badge-treatment", icon: <Navigation size={11} /> },
+    "Rescued":     { cls: "badge-adopted",   icon: <CheckCircle size={11} /> },
+  };
+  const b = icons[status] || { cls: "badge-shelter", icon: null };
+  return <span className={`badge ${b.cls}`}>{b.icon} {status}</span>;
+};
 
 const RescueMgmt = () => {
   const { rescues, volunteers, addRescue, updateRescueStatus, updateRescueStatusPersisted } = useApp();
@@ -213,8 +226,14 @@ const RescueMgmt = () => {
                 <tbody>
                   {filteredRescues.length === 0 ? (
                     <tr>
-                      <td colSpan="7" style={{ textAlign: "center", padding: "40px", color: "var(--text-muted)" }}>
-                        No rescue cases found matching the filters.
+                      <td colSpan="7">
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", padding: "48px 20px" }}>
+                          <div style={{ width: "56px", height: "56px", borderRadius: "50%", backgroundColor: "var(--secondary-light)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--secondary-color)" }}>
+                            <PawPrint size={24} />
+                          </div>
+                          <p style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-main)" }}>No rescue cases found</p>
+                          <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>Try adjusting the filters or search query above.</p>
+                        </div>
                       </td>
                     </tr>
                   ) : (
@@ -224,7 +243,9 @@ const RescueMgmt = () => {
                         onClick={() => setSelectedRescue(rescue)}
                         style={{ 
                           cursor: "pointer",
-                          backgroundColor: selectedRescue && selectedRescue.id === rescue.id ? "var(--secondary-light)" : ""
+                          backgroundColor: selectedRescue && selectedRescue.id === rescue.id ? "var(--secondary-light)" : "",
+                          borderLeft: selectedRescue && selectedRescue.id === rescue.id ? "4px solid var(--secondary-color)" : "4px solid transparent",
+                          transition: "all var(--transition-fast)"
                         }}
                       >
                         <td style={{ fontWeight: 700 }}>{rescue.id}</td>
@@ -233,13 +254,7 @@ const RescueMgmt = () => {
                         <td>{rescue.location}</td>
                         <td>{rescue.reportedBy}</td>
                         <td>
-                          <span className={`badge badge-${
-                            rescue.status === "Rescued" ? "adopted" :
-                            rescue.status === "In Progress" ? "treatment" :
-                            rescue.status === "Assigned" ? "rescued" : "lost"
-                          }`}>
-                            {rescue.status}
-                          </span>
+                          {getRescueStatusBadge(rescue.status)}
                         </td>
                         <td>{rescue.assignedVolunteer === "None" ? "—" : rescue.assignedVolunteer}</td>
                       </tr>
@@ -517,8 +532,12 @@ const RescueMgmt = () => {
 
             </div>
           ) : (
-            <div className="card" style={{ padding: "40px", textAlign: "center", color: "var(--text-muted)" }}>
-              No rescue case selected. Select from table or click pins on map.
+            <div className="card paw-bg" style={{ padding: "48px 40px", display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", textAlign: "center" }}>
+              <div style={{ width: "56px", height: "56px", borderRadius: "50%", backgroundColor: "var(--secondary-light)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--secondary-color)" }}>
+                <PawPrint size={24} />
+              </div>
+              <p style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-main)" }}>No case selected</p>
+              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>Click a row or a map pin to view case details.</p>
             </div>
           )}
         </div>
@@ -530,14 +549,17 @@ const RescueMgmt = () => {
       ======================================================== */}
       {showNewRescueModal && (
         <div className="modal-overlay" onClick={() => setShowNewRescueModal(false)}>
-          <div className="modal-content animate-scale-up" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content animate-scale-up" style={{ padding: 0 }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)" }}>🚑 Log Emergency Rescue</h2>
+              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "1.3rem" }}>🚑</span> Log Emergency Rescue
+              </h2>
               <button className="modal-close" onClick={() => setShowNewRescueModal(false)}>
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
-            <form onSubmit={handleFormSubmit}>
+            <div className="modal-body">
+            <form id="new-rescue-form" onSubmit={handleFormSubmit}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                 <div className="form-group">
                   <label className="form-label">Animal Species</label>
@@ -620,16 +642,16 @@ const RescueMgmt = () => {
                   {formErrors.phone && <span className="form-error">{formErrors.phone}</span>}
                 </div>
               </div>
-
-              <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
-                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowNewRescueModal(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                  Create Dispatch Case
-                </button>
-              </div>
             </form>
+            </div>{/* end modal-body */}
+            <div className="modal-footer">
+              <button type="button" className="btn btn-outline" onClick={() => setShowNewRescueModal(false)}>
+                Cancel
+              </button>
+              <button form="new-rescue-form" type="submit" className="btn btn-primary">
+                Create Dispatch Case
+              </button>
+            </div>
           </div>
         </div>
       )}

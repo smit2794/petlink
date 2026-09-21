@@ -204,7 +204,7 @@ const AnimalMgmt = () => {
               }} />
 
               {custodySteps.map((step, idx) => {
-                const isPassed = idx <= currentStepIdx;
+                const isPassed = idx < currentStepIdx;
                 const isCurrent = idx === currentStepIdx;
                 return (
                   <div key={idx} style={{
@@ -226,27 +226,36 @@ const AnimalMgmt = () => {
                       }}
 
                       style={{
-                        width: "32px",
-                        height: "32px",
+                        width: "34px",
+                        height: "34px",
                         borderRadius: "50%",
-                        border: `3px solid ${isPassed ? "var(--secondary-color)" : "#EAE6DF"}`,
-                        backgroundColor: isCurrent ? "var(--secondary-color)" : isPassed ? "var(--secondary-light)" : "white",
+                        border: `3px solid ${isPassed ? "var(--secondary-color)" : isCurrent ? "var(--secondary-color)" : "#EAE6DF"}`,
+                        backgroundColor: isCurrent ? "var(--secondary-color)" : isPassed ? "var(--secondary-color)" : "white",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         cursor: "pointer",
-                        fontWeight: 700,
-                        fontSize: "0.85rem",
-                        color: isCurrent ? "white" : "var(--primary-color)",
-                        transition: "all 0.3s ease"
+                        fontWeight: 800,
+                        fontSize: "0.8rem",
+                        color: (isCurrent || isPassed) ? "white" : "#B0A898",
+                        transition: "all 0.3s ease",
+                        boxShadow: isCurrent ? "0 0 0 4px rgba(161, 200, 182, 0.3)" : "none"
                       }}
                     >
-                      {idx + 1}
+                      {isPassed ? (
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                          <path d="M2 6L5 9L10 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      ) : isCurrent ? (
+                        idx + 1
+                      ) : (
+                        <span style={{ color: "#C4BAB0", fontWeight: 700 }}>{idx + 1}</span>
+                      )}
                     </button>
                     <span style={{
-                      fontSize: "0.75rem",
-                      fontWeight: isCurrent ? 700 : 500,
-                      color: isCurrent ? "var(--primary-color)" : "var(--text-muted)",
+                      fontSize: "0.72rem",
+                      fontWeight: isCurrent ? 800 : 500,
+                      color: isCurrent ? "var(--primary-color)" : isPassed ? "var(--secondary-color)" : "var(--text-muted)",
                       textAlign: "center",
                       marginTop: "8px",
                       lineHeight: 1.2

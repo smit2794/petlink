@@ -146,7 +146,7 @@ const ParentPetProfile = () => {
           {/* QR Collar stamp & Lost mode triggers */}
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "16px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <MiniQR value={pet.id} />
+              <PetQRCode animalId={pet.id} size={60} />
               <div>
                 <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted)" }}>Collar QR Chip</span>
                 <span style={{ display: "block", fontSize: "0.72rem", color: "var(--text-muted)", maxWidth: "160px" }}>Scan collar tag to view digital immunization proofs.</span>

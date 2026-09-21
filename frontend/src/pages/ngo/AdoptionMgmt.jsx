@@ -2,8 +2,17 @@ import React, { useState, useEffect } from "react";
 import { useApp } from "../../context/AppContext";
 import { 
   Users, CheckCircle2, AlertCircle, Calendar, ClipboardCheck, 
-  Clock, ArrowRight, X, Phone, UserCheck, MessageSquare 
+  Clock, ArrowRight, X, Phone, UserCheck, MessageSquare,
+  ClipboardList, ShieldCheck, PawPrint
 } from "lucide-react";
+
+// Column icons map
+const colIcons = {
+  "Applications Received":  <ClipboardList size={14} />,
+  "Applicant Verification": <ShieldCheck size={14} />,
+  "Approved":               <CheckCircle2 size={14} />,
+  "Follow-up Scheduled":    <Calendar size={14} />,
+};
 
 const AdoptionMgmt = () => {
   const { adoptions, updateAdoptionStatus, updateAdoptionStatusPersisted, scheduleFollowUp, scheduleFollowUpPersisted } = useApp();
@@ -135,17 +144,16 @@ const AdoptionMgmt = () => {
                   paddingBottom: "10px",
                   marginBottom: "4px"
                 }}>
-                  <span style={{ fontSize: "0.85rem", fontWeight: 800, color: "var(--text-main)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    {col.label.split(" ")[0]} {col.label.split(" ")[1] || ""}
+                  <span style={{ fontSize: "0.82rem", fontWeight: 800, color: col.color, display: "flex", alignItems: "center", gap: "6px" }}>
+                    {colIcons[col.key]} {col.label}
                   </span>
                   <span style={{
-                    backgroundColor: "var(--card-bg)",
-                    color: "var(--text-main)",
+                    backgroundColor: col.color + "20",
+                    color: col.color,
                     fontSize: "0.75rem",
-                    fontWeight: 700,
-                    padding: "2px 8px",
-                    borderRadius: "20px",
-                    border: "1px solid var(--border-color)"
+                    fontWeight: 800,
+                    padding: "2px 10px",
+                    borderRadius: "20px"
                   }}>
                     {apps.length}
                   </span>
@@ -165,11 +173,13 @@ const AdoptionMgmt = () => {
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
-                      gap: "8px",
+                      gap: "10px",
                       backgroundColor: "rgba(255,255,255,0.3)"
                     }}>
-                      <ClipboardCheck size={20} style={{ opacity: 0.5 }} />
-                      <span>No cases in stage</span>
+                      <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: col.color + "15", display: "flex", alignItems: "center", justifyContent: "center", color: col.color }}>
+                        <PawPrint size={18} />
+                      </div>
+                      <span style={{ fontWeight: 600 }}>No cases in this stage</span>
                     </div>
                   ) : (
                     apps.map((app) => (
@@ -254,15 +264,16 @@ const AdoptionMgmt = () => {
       ======================================================== */}
       {currentApp && (
         <div className="modal-overlay" onClick={() => setSelectedApp(null)}>
-          <div className="modal-content animate-scale-up" style={{ maxWidth: "580px" }} onClick={(e) => e.stopPropagation()}>
-            
+          <div className="modal-content animate-scale-up" style={{ maxWidth: "580px", padding: 0 }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)" }}>📑 Adoption Application Case</h2>
+              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "1.3rem" }}>📑</span> Adoption Application Case
+              </h2>
               <button className="modal-close" onClick={() => setSelectedApp(null)}>
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
-
+            <div className="modal-body">
             <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               {/* Pet Card inside application */}
               <div style={{
@@ -406,35 +417,33 @@ const AdoptionMgmt = () => {
                 </form>
               )}
 
-              {/* Action Operations Footer */}
-              <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
-                {currentApp.status === "Applications Received" && (
-                  <button className="btn btn-primary" style={{ flex: 1 }} onClick={handleMoveToVerification}>
-                    Move to Verification
-                  </button>
-                )}
-                {currentApp.status === "Applicant Verification" && (
-                  <>
-                    <button className="btn btn-danger btn-outline" style={{ flex: 0.5 }} onClick={handleReject}>
-                      Reject App
-                    </button>
-                    <button className="btn btn-primary" style={{ flex: 1 }} onClick={handleApprove}>
-                      Approve & Grant Custody
-                    </button>
-                  </>
-                )}
-                {currentApp.status === "Approved" && !showFollowUpForm && (
-                  <button className="btn btn-primary" style={{ flex: 1, backgroundColor: "#2980B9", borderColor: "#2980B9" }} onClick={() => setShowFollowUpForm(true)}>
-                    Schedule Post-Adoption Follow-up
-                  </button>
-                )}
-                <button className="btn btn-outline" style={{ flex: 0.5 }} onClick={() => setSelectedApp(null)}>
-                  Close File
-                </button>
-              </div>
-
             </div>
-
+            </div>{/* end modal-body */}
+            <div className="modal-footer" style={{ flexWrap: "wrap" }}>
+              {currentApp.status === "Applications Received" && (
+                <button className="btn btn-primary" style={{ flex: 1 }} onClick={handleMoveToVerification}>
+                  Move to Verification
+                </button>
+              )}
+              {currentApp.status === "Applicant Verification" && (
+                <>
+                  <button className="btn btn-danger" style={{ flex: 0.5 }} onClick={handleReject}>
+                    Reject
+                  </button>
+                  <button className="btn btn-secondary" style={{ flex: 1 }} onClick={handleApprove}>
+                    Approve & Grant Custody
+                  </button>
+                </>
+              )}
+              {currentApp.status === "Approved" && !showFollowUpForm && (
+                <button className="btn btn-primary" style={{ flex: 1, backgroundColor: "#2980B9", borderColor: "#2980B9" }} onClick={() => setShowFollowUpForm(true)}>
+                  Schedule Follow-up
+                </button>
+              )}
+              <button className="btn btn-outline" style={{ flex: 0.5 }} onClick={() => setSelectedApp(null)}>
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

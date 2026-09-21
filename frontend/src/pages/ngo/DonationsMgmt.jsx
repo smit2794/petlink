@@ -5,6 +5,15 @@ import {
   PlusCircle, Printer, X, Download, ShieldCheck 
 } from "lucide-react";
 
+// Purpose → color mapping
+const purposeColor = {
+  "Critical Medical Care Fund":    { bg: "#FDF2F2", color: "var(--accent-coral)" },
+  "Shelter Expansion Project":     { bg: "#F0F6F3", color: "var(--secondary-color)" },
+  "Daily Stray Feeding":           { bg: "#FFF8EE", color: "var(--accent-amber)" },
+  "Ambulance Fuel & Maintenance":  { bg: "#F0F4F8", color: "#2980B9" },
+  "Anti-Rabies Vaccination Drive": { bg: "#FAF5FA", color: "#8E24AA" },
+};
+
 const DonationsMgmt = () => {
   const { donations, addDonation, addDonationPersisted } = useApp();
   const [isLoading, setIsLoading] = useState(true);
@@ -186,13 +195,23 @@ const DonationsMgmt = () => {
                   {donations.map((don) => (
                     <tr key={don.id}>
                       <td style={{ fontWeight: 700 }}>{don.id}</td>
-                      <td style={{ fontWeight: 600 }}>{don.donorName}</td>
+                      <td style={{ fontWeight: 600 }}>
+                        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <HeartHandshake size={14} style={{ color: "var(--accent-coral)", flexShrink: 0 }} />
+                          {don.donorName}
+                        </span>
+                      </td>
                       <td>{don.email}</td>
                       <td>{don.date}</td>
                       <td>
-                        <span className="badge badge-shelter" style={{ fontSize: "0.7rem", color: "var(--primary-color)" }}>
-                          {don.purpose}
-                        </span>
+                        {(() => {
+                          const c = purposeColor[don.purpose] || { bg: "#F0F6F3", color: "var(--secondary-color)" };
+                          return (
+                            <span style={{ display: "inline-flex", alignItems: "center", padding: "4px 10px", borderRadius: "20px", fontSize: "0.75rem", fontWeight: 700, backgroundColor: c.bg, color: c.color }}>
+                              {don.purpose}
+                            </span>
+                          );
+                        })()}
                       </td>
                       <td style={{ fontWeight: 800, color: "var(--secondary-color)" }}>
                         ₹{don.amount.toLocaleString("en-IN")}
@@ -369,14 +388,17 @@ const DonationsMgmt = () => {
       ======================================================== */}
       {showLogModal && (
         <div className="modal-overlay" onClick={() => setShowLogModal(false)}>
-          <div className="modal-content animate-scale-up" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content animate-scale-up" style={{ padding: 0 }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)" }}>💰 Log Manual Donation</h2>
+              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "1.3rem" }}>💰</span> Log Manual Donation
+              </h2>
               <button className="modal-close" onClick={() => setShowLogModal(false)}>
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
-            <form onSubmit={handleFormSubmit}>
+            <div className="modal-body">
+            <form id="donation-form" onSubmit={handleFormSubmit}>
               <div className="form-group">
                 <label className="form-label">Donor Full Name</label>
                 <input
@@ -431,16 +453,16 @@ const DonationsMgmt = () => {
                   </select>
                 </div>
               </div>
-
-              <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
-                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowLogModal(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                  Commit Donation Entry
-                </button>
-              </div>
             </form>
+            </div>{/* end modal-body */}
+            <div className="modal-footer">
+              <button type="button" className="btn btn-outline" onClick={() => setShowLogModal(false)}>
+                Cancel
+              </button>
+              <button form="donation-form" type="submit" className="btn btn-primary">
+                Commit Donation Entry
+              </button>
+            </div>
           </div>
         </div>
       )}
