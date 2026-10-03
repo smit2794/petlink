@@ -15,6 +15,8 @@ const animalSchema = new mongoose.Schema({
     default: 'Adopted'
   },
   custodian: String,
+  ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   assignedVetId: String,
   lastUpdated: String,
   qrCode: String,

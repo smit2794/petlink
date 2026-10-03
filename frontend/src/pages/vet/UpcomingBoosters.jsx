@@ -14,24 +14,36 @@ const UpcomingBoosters = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Generate upcoming boosters list dynamically from animals with "Fully Vaccinated" status
+  // Generate upcoming boosters list dynamically from real vaccination timeline entries
   const getBoostersData = () => {
-    const defaultBoosters = [
-      { petId: "PET-101", petName: "Sheru", vaccine: "Anti-Rabies (Rabisin)", lastDate: "2025-08-15", dueDate: "2026-08-15" },
-      { petId: "PET-102", petName: "Gauri", vaccine: "Brucellosis Dose 2", lastDate: "2025-08-20", dueDate: "2026-08-20" },
-      { petId: "PET-103", petName: "Mani", vaccine: "Feline FVRCP Booster", lastDate: "2025-09-02", dueDate: "2026-09-02" },
-      { petId: "PET-105", petName: "Cheeku", vaccine: "DHPPi Annual Booster", lastDate: "2025-08-10", dueDate: "2026-08-10" }
-    ];
+    const results = [];
 
-    // Align with actual context animals in case names/data updated
-    return defaultBoosters.map((b) => {
-      const realAnimal = animals.find(a => a.id === b.petId);
-      return {
-        ...b,
-        petName: realAnimal ? realAnimal.name : b.petName,
-        custodian: realAnimal ? realAnimal.custodian : "Pune Central Shelter"
-      };
-    }).sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+    animals.forEach((animal) => {
+      if (!animal.timeline) return;
+
+      // Find the most recent "Immunization Administered" entry with a parseable "Next Due" date
+      const vaccinationEntries = animal.timeline.filter(
+        (e) => e.title === "Immunization Administered" && e.description?.includes("Next Due:")
+      );
+
+      vaccinationEntries.forEach((entry) => {
+        const vaccineMatch = entry.description.match(/Vaccine:\s*([^.]+)\./);
+        const dueDateMatch = entry.description.match(/Next Due:\s*(\d{4}-\d{2}-\d{2})/);
+
+        if (dueDateMatch) {
+          results.push({
+            petId: animal.id,
+            petName: animal.name,
+            custodian: animal.custodian,
+            vaccine: vaccineMatch ? vaccineMatch[1].trim() : "Vaccination",
+            lastDate: entry.date,
+            dueDate: dueDateMatch[1]
+          });
+        }
+      });
+    });
+
+    return results.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
   };
 
   const boosters = getBoostersData();
@@ -39,7 +51,7 @@ const UpcomingBoosters = () => {
   const getUrgencyColor = (dueDate) => {
     const diffTime = new Date(dueDate) - new Date();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays < 10) return "var(--accent-coral)"; // Red/coral for critical booster limits
     if (diffDays < 20) return "var(--accent-amber)"; // Orange/amber for warning limits
     return "var(--primary-color)"; // Green/teal for planned
@@ -47,7 +59,7 @@ const UpcomingBoosters = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-      
+
       {/* Header Info */}
       <div>
         <h1 style={{ fontSize: "1.7rem", fontWeight: 800, color: "var(--primary-color)", letterSpacing: "-0.02em" }}>
@@ -71,7 +83,7 @@ const UpcomingBoosters = () => {
           {boosters.map((b) => {
             const urgencyColor = getUrgencyColor(b.dueDate);
             const daysLeft = Math.ceil((new Date(b.dueDate) - new Date()) / (1000 * 60 * 60 * 24));
-            
+
             return (
               <div
                 key={b.petId + "-" + b.vaccine}
@@ -104,7 +116,7 @@ const UpcomingBoosters = () => {
                       {daysLeft > 0 ? `${daysLeft} days remaining` : "Overdue"}
                     </span>
                   </div>
-                  
+
                   <Link
                     to={`/vet/medical/${b.petId}`}
                     className="btn btn-outline btn-sm"

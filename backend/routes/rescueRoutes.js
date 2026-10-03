@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Rescue = require('../models/Rescue');
+const { optionalAuthMiddleware } = require('../middleware/authMiddleware');
 
 // GET all rescues
 router.get('/', async (req, res) => {
@@ -13,12 +14,16 @@ router.get('/', async (req, res) => {
 });
 
 // POST create new rescue
-router.post('/', async (req, res) => {
+router.post('/', optionalAuthMiddleware, async (req, res) => {
   try {
     if (!req.body.id) {
       return res.status(400).json({ error: 'id is required' });
     }
-    const rescue = await Rescue.create(req.body);
+    const rescueData = { ...req.body };
+    if (req.user) {
+      rescueData.createdBy = req.user.id;
+    }
+    const rescue = await Rescue.create(rescueData);
     res.status(201).json(rescue);
   } catch (err) {
     if (err.code === 11000) {

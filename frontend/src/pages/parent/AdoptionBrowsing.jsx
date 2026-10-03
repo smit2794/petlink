@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useApp } from "../../context/AppContext";
+import { useAuth } from "../../context/AuthContext";
+import client from "../../api/client";
 import { Search, Filter, ClipboardList, Clock, Check, X, Info, Dog } from "lucide-react";
 
 const AdoptionBrowsing = () => {
   const { animals, adoptions, addAdoptionApplication, addAdoptionApplicationPersisted } = useApp();
+  const { user } = useAuth();
+  const [adoptableList, setAdoptableList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [speciesFilter, setSpeciesFilter] = useState("All");
@@ -12,21 +16,30 @@ const AdoptionBrowsing = () => {
   const [selectedPet, setSelectedPet] = useState(null);
   const [showApplyForm, setShowApplyForm] = useState(false);
   const [appForm, setAppForm] = useState({
-    applicantName: "Aarav Sharma",
-    applicantContact: "+91 99112 23344",
+    applicantName: user?.name || "",
+    applicantContact: user?.phone || "",
     notes: ""
   });
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 400);
-    return () => clearTimeout(timer);
+    // Fetch adoptable animals specifically
+    client.get("/animals?status=Available for Adoption")
+      .then((res) => {
+        setAdoptableList(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to load adoptable animals:", err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
-  // Filter animals marked "Available for Adoption"
-  const availableAnimals = animals.filter(pet => pet.status === "Available for Adoption");
+  // Filter animals marked "Available for Adoption" (from dedicated query or context)
+  const availableAnimals = adoptableList.length > 0
+    ? adoptableList
+    : animals.filter(pet => pet.status === "Available for Adoption");
 
   const filteredAnimals = availableAnimals.filter(pet => {
     const matchesSearch = 
@@ -38,15 +51,15 @@ const AdoptionBrowsing = () => {
     return matchesSearch && matchesSpecies;
   });
 
-  // Track parent's own applications (mock matching by name or list of applications with applicantName === "Aarav Sharma" or submitted during session)
-  const myApplications = adoptions.filter(app => app.applicantName === "Aarav Sharma");
+  // Track parent's own applications
+  const myApplications = adoptions.filter(app => app.applicantName === user?.name || app.userId === user?.id);
 
   const handleOpenPreview = (pet) => {
     setSelectedPet(pet);
     setShowApplyForm(false);
     setAppForm({
-      applicantName: "Aarav Sharma",
-      applicantContact: "+91 99112 23344",
+      applicantName: user?.name || "",
+      applicantContact: user?.phone || "",
       notes: `Interested in adopting ${pet.name}. We have a spacious apartment in Kalyani Nagar with lots of natural light and a balcony. I work from home and can spend full time training.`
     });
     setErrors({});

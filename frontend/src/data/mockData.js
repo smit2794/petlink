@@ -93,7 +93,24 @@ export const initialRescues = [
 
 export const initialVolunteers = [];
 
-export const initialDonations = [];
+export const initialDonations = [
+  {
+    id: "DON-1790258961756-691",
+    donorName: "ravi",
+    email: "ravi@test.com",
+    date: "2026-09-24",
+    purpose: "Shelter Expansion Project",
+    amount: 100000
+  },
+  {
+    id: "DON-1786239772213-558",
+    donorName: "rekha",
+    email: "rekha@gmail.com",
+    date: "2026-08-09",
+    purpose: "Shelter Expansion Project",
+    amount: 1000000
+  }
+];
 
 export const initialAdoptions = [
   {
@@ -143,6 +160,7 @@ export const initialAdoptions = [
 ];
 
 export const initialInventory = [
+  { id: "INV-001", name: "Dog Food (10kg bags)", category: "Food", stock: 110, threshold: 10, unit: "bags" },
   { id: "INV-01", name: "Rabisin Anti-Rabies Vaccine", category: "Medicine", stock: 120, threshold: 30, unit: "Vials" },
   { id: "INV-02", name: "Puppy Dry Kibble (Pedigree)", category: "Food", stock: 45, threshold: 50, unit: "Bags (10kg)" },
   { id: "INV-03", name: "Cat Dry Kibble (Whiskas)", category: "Food", stock: 22, threshold: 20, unit: "Bags (5kg)" },

@@ -1,223 +1,467 @@
 import React, { useState } from "react";
-import { AlertCircle, Phone, MapPin, Compass, ShieldAlert } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useApp } from "../../context/AppContext";
+import { useAuth } from "../../context/AuthContext";
+import {
+  Compass,
+  Map,
+  MapPin,
+  Phone,
+  PhoneCall,
+  CheckCircle,
+  PlusSquare,
+  Truck,
+  PawPrint,
+  Shield,
+  Activity,
+  HeartHandshake,
+  Crosshair,
+  Plus,
+  Minus,
+  Navigation,
+  Building2,
+  Stethoscope,
+  Flag,
+  LifeBuoy
+} from "lucide-react";
 
 const EmergencyNearby = () => {
-  const [activePin, setActivePin] = useState(null);
+  const { addToast } = useApp();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const locations = [
-    { id: 1, type: "clinic", name: "Care Animal Veterinary Hospital", lat: 38, lng: 45, phone: "+91 20 6712 9000", addr: "Hadapsar, Near Bypass Circle, Pune" },
-    { id: 2, type: "ngo", name: "Pune Central Animal Shelter", lat: 50, lng: 55, phone: "+91 20 8923 1120", addr: "Kothrud Industrial Area, Pune" },
-    { id: 3, type: "clinic", name: "Aundh Feline Diagnostic Center", lat: 25, lng: 30, phone: "+91 20 5412 8871", addr: "DP Road, Aundh, Pune" },
-    { id: 4, type: "ngo", name: "People for Animals Gaushala", lat: 70, lng: 65, phone: "+91 20 3390 1209", addr: "Hadapsar Rural gaushala plot, Pune" }
+  const [activePin, setActivePin] = useState(1);
+  const [zoomLevel, setZoomLevel] = useState(1);
+
+  const facilities = [
+    {
+      id: 1,
+      type: "clinic",
+      name: "Care Animal Veterinary Hospital",
+      distance: "2.4 km away",
+      phone: "+91 20 6712 9000",
+      addr: "Hadapsar, Near Bypass Circle, Pune",
+      pinX: 32,
+      pinY: 53,
+      pinType: "red",
+      icon: Stethoscope
+    },
+    {
+      id: 2,
+      type: "shelter",
+      name: "Pune Central Animal Shelter",
+      distance: "4.1 km away",
+      phone: "+91 20 8923 1120",
+      addr: "Kothrud Industrial Area, Pune",
+      pinX: 60,
+      pinY: 61,
+      pinType: "green",
+      icon: Building2
+    },
+    {
+      id: 3,
+      type: "clinic",
+      name: "Aundh Feline Diagnostic Center",
+      distance: "5.8 km away",
+      phone: "+91 20 5412 8871",
+      addr: "DP Road, Aundh, Pune",
+      pinX: 45,
+      pinY: 58,
+      pinType: "red",
+      icon: Stethoscope
+    }
   ];
 
+  // Additional 4th node visible on map
+  const mapNodes = [
+    ...facilities,
+    {
+      id: 4,
+      type: "shelter",
+      name: "Community Rescue Node",
+      pinX: 78,
+      pinY: 64,
+      pinType: "green",
+      icon: PawPrint
+    }
+  ];
+
+  const handleCall = (phone, name) => {
+    if (addToast) {
+      addToast(`Initiating direct dispatch call to ${name}: ${phone}`, "info");
+    }
+    window.location.href = `tel:${phone.replace(/\s+/g, "")}`;
+  };
+
+  const handleBroadcast = () => {
+    if (addToast) {
+      addToast("📍 Emergency live GPS beacon broadcasted to 24 local response units!", "warning");
+    }
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-      
-      {/* Header Info */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
-        <div>
-          <h1 style={{ fontSize: "1.7rem", fontWeight: 800, color: "var(--primary-color)", letterSpacing: "-0.02em" }}>
-            Emergency Clinics & Shelters
-          </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.92rem" }}>
-            Identify nearest clinical help or NGO rescue hubs. View contact lines and coordinates mapping.
-          </p>
-        </div>
-      </div>
-
-      {/* Primary Emergency Alert Badge */}
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "12px",
-        padding: "16px 24px",
-        backgroundColor: "var(--accent-coral-light)",
-        color: "var(--accent-coral)",
-        borderRadius: "14px",
-        border: "1px solid rgba(217, 83, 79, 0.15)",
-        fontSize: "0.9rem",
-        fontWeight: 700
-      }}>
-        <ShieldAlert size={20} />
-        <span>URGENT ANIMAL AMBULANCE TOLL-FREE HOTLINE: 1962 (National Stray Rescue Helpline)</span>
-      </div>
-
-      {/* Split Grid Layout */}
-      <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1.8fr", gap: "28px" }} className="animal-profile-grid">
-        
-        {/* Left Side: Clinic Contact Cards */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <h3 style={{ fontSize: "1.1rem", fontWeight: 800, display: "flex", alignItems: "center", gap: "6px" }}>
-            <Compass size={18} color="var(--accent-amber)" /> Nearby Care Facilities
-          </h3>
-          
-          <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-            {locations.map((loc) => {
-              const isNGO = loc.type === "ngo";
-              return (
-                <div
-                  key={loc.id}
-                  className="card animate-slide-up"
-                  onClick={() => setActivePin(loc.id)}
-                  style={{
-                    cursor: "pointer",
-                    padding: "16px 20px",
-                    borderLeft: isNGO ? "5px solid var(--primary-color)" : "5px solid var(--accent-coral)",
-                    backgroundColor: activePin === loc.id ? "#FCFAF6" : "white",
-                    borderColor: activePin === loc.id ? "var(--accent-amber)" : "",
-                    transition: "all var(--transition-fast)"
-                  }}
-                >
-                  <div style={{ display: "flex", justifyBetween: "space-between", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
-                    <span style={{ fontSize: "0.72rem", textTransform: "uppercase", fontWeight: 800, color: isNGO ? "var(--primary-color)" : "var(--accent-coral)" }}>
-                      {isNGO ? "🏢 NGO Shelter" : "🩺 Vet Clinic"}
-                    </span>
-                  </div>
-                  
-                  <strong style={{ fontSize: "0.95rem", display: "block" }}>{loc.name}</strong>
-                  
-                  <div style={{ display: "flex", gap: "6px", alignItems: "center", fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "8px" }}>
-                    <MapPin size={12} />
-                    <span>{loc.addr}</span>
-                  </div>
-
-                  <div style={{ display: "flex", justifyBetween: "space-between", justifyContent: "space-between", alignItems: "center", marginTop: "14px", paddingTop: "12px", borderTop: "1px solid var(--border-color)" }}>
-                    <span style={{ fontSize: "0.82rem", fontWeight: 600 }}>{loc.phone}</span>
-                    <button
-                      className="btn btn-outline btn-sm"
-                      style={{ padding: "4px 10px", display: "flex", alignItems: "center", gap: "4px", borderColor: "var(--accent-amber)", color: "var(--accent-amber)" }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        alert(`Dialing mock phone line: ${loc.phone}`);
-                      }}
-                    >
-                      <Phone size={10} /> Call Now
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+    <div className="parent-content-wrap parent-emergency-container">
+      {/* ========================================================
+          1. HEADER AREA
+          ======================================================== */}
+      <div className="parent-emergency-header">
+        <div className="parent-emergency-title-group">
+          <div className="parent-emergency-asterisk-icon">
+            <span style={{ fontSize: "1.4rem", fontWeight: 900, lineHeight: 1 }}>✱</span>
+          </div>
+          <div>
+            <h1 className="parent-emergency-title">
+              Emergency Clinics & Shelters
+            </h1>
+            <p className="parent-emergency-sub">
+              Identify nearest clinical help or NGO rescue hubs. View contact lines and coordinates mapping.
+            </p>
           </div>
         </div>
 
-        {/* Right Side: Map Canvas Component */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <h3 style={{ fontSize: "1.1rem", fontWeight: 800 }}>Coverage Map</h3>
-          
-          <div className="card" style={{
-            height: "450px",
-            backgroundColor: "#FAF8F2",
-            border: "1px solid var(--border-color)",
-            borderRadius: "20px",
-            position: "relative",
-            overflow: "hidden",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-            {/* Draw styled SVG grid representing map outline */}
-            <svg width="100%" height="100%" style={{ position: "absolute", top: 0, left: 0 }}>
-              {/* Decorative Roads */}
-              <path d="M 20 80 Q 200 120 400 60 T 600 240" fill="none" stroke="#E6DDD4" strokeWidth="24" strokeLinecap="round" />
-              <path d="M 120 20 L 150 400" fill="none" stroke="#E6DDD4" strokeWidth="18" strokeLinecap="round" />
-              <path d="M 450 10 L 400 420" fill="none" stroke="#E6DDD4" strokeWidth="18" strokeLinecap="round" />
-              
-              {/* Rivers / Lakes */}
-              <rect x="0" y="360" width="100%" height="90" fill="#E2EDF7" opacity="0.8" />
-              
-              {/* Grid indicators */}
-              <circle cx="280" cy="220" r="140" fill="none" stroke="rgba(224, 144, 37, 0.05)" strokeDasharray="5,5" strokeWidth="2" />
-            </svg>
+        <div className="parent-emergency-header-badges">
+          <span className="parent-emergency-badge-rapid">
+            <span className="parent-emergency-rapid-dot" /> 24/7 Rapid Response Network
+          </span>
+          <span className="parent-emergency-badge-verified">
+            <CheckCircle size={14} color="#92400E" /> Verified Facilities: 18
+          </span>
+        </div>
+      </div>
 
-            {/* Pins */}
-            {locations.map((loc) => {
-              const isNGO = loc.type === "ngo";
-              const isActive = activePin === loc.id;
-              
-              return (
-                <div
-                  key={loc.id}
-                  onClick={() => setActivePin(loc.id)}
-                  style={{
-                    position: "absolute",
-                    left: `${loc.lat}%`,
-                    top: `${loc.lng}%`,
-                    transform: "translate(-50%, -50%)",
-                    cursor: "pointer",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    zIndex: isActive ? 10 : 2
-                  }}
-                >
-                  {/* Pin Bubble */}
-                  <div style={{
-                    width: isActive ? "32px" : "24px",
-                    height: isActive ? "32px" : "24px",
-                    borderRadius: "50%",
-                    backgroundColor: isNGO ? "var(--primary-color)" : "var(--accent-coral)",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    boxShadow: isActive ? "0 4px 10px rgba(0,0,0,0.25)" : "0 2px 6px rgba(0,0,0,0.15)",
-                    border: "2px solid white",
-                    transition: "all var(--transition-fast)"
-                  }}>
-                    <MapPin size={isActive ? 16 : 12} />
-                  </div>
-                  
-                  {/* Pin label (conditional) */}
-                  {isActive && (
-                    <div className="animate-scale-up" style={{
-                      backgroundColor: "var(--primary-color)",
-                      color: "white",
-                      padding: "6px 12px",
-                      borderRadius: "8px",
-                      fontSize: "0.72rem",
-                      fontWeight: 800,
-                      marginTop: "6px",
-                      whiteSpace: "nowrap",
-                      boxShadow: "var(--shadow-md)"
-                    }}>
-                      {loc.name}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+      {/* ========================================================
+          2. TOLL-FREE HOTLINE BANNER
+          ======================================================== */}
+      <div className="parent-emergency-hotline-banner">
+        <div className="parent-emergency-hotline-left">
+          <div className="parent-emergency-hotline-icon">
+            <PhoneCall size={22} color="#BE123C" />
+          </div>
+          <div className="parent-emergency-hotline-text">
+            <h4>URGENT ANIMAL AMBULANCE TOLL-FREE HOTLINE: 1962 (National Stray Rescue Helpline)</h4>
+            <p>Available 24 hours daily across municipal zones for stray, injured, and critical animals.</p>
+          </div>
+        </div>
 
-            {/* Map Legends */}
-            <div style={{
-              position: "absolute",
-              bottom: "16px",
-              left: "16px",
-              backgroundColor: "white",
-              padding: "10px 14px",
-              borderRadius: "10px",
-              border: "1px solid var(--border-color)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "6px",
-              boxShadow: "var(--shadow-sm)"
-            }}>
-              <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "var(--text-muted)", letterSpacing: "0.05em", textTransform: "uppercase" }}>Map Legend</span>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem" }}>
-                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "var(--primary-color)" }} />
-                <span>NGO Rescue Nodes</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem" }}>
-                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "var(--accent-coral)" }} />
-                <span>Vet Clinic Nodes</span>
-              </div>
+        <a
+          href="tel:1962"
+          className="parent-emergency-hotline-btn"
+          onClick={() => addToast && addToast("Dialing National Animal Ambulance Hotline 1962...", "warning")}
+        >
+          <PhoneCall size={16} /> Dial 1962
+        </a>
+      </div>
+
+      {/* ========================================================
+          3. TOP 3 STAT KPI CARDS
+          ======================================================== */}
+      <div className="parent-emergency-stats-grid">
+        {/* Card 1: ICU Beds Free */}
+        <div className="parent-emergency-stat-card lavender">
+          <div className="parent-emergency-stat-top">
+            <span className="parent-emergency-stat-title">
+              <PlusSquare size={14} strokeWidth={2.5} /> ICU BEDS FREE
+            </span>
+            <span className="parent-emergency-stat-pill">Live</span>
+          </div>
+          <div className="parent-emergency-stat-val">14</div>
+          <div className="parent-emergency-stat-bottom">
+            <span className="parent-emergency-stat-sub">↑ 4 nodes with oxygen</span>
+            <div className="parent-emergency-stat-icon-circle">
+              <Shield size={18} strokeWidth={2.2} />
             </div>
-
           </div>
         </div>
 
+        {/* Card 2: Mobile Ambulances */}
+        <div className="parent-emergency-stat-card peach">
+          <div className="parent-emergency-stat-top">
+            <span className="parent-emergency-stat-title">
+              <Truck size={14} strokeWidth={2.5} /> MOBILE AMBULANCES
+            </span>
+            <span className="parent-emergency-stat-pill">8 Active</span>
+          </div>
+          <div className="parent-emergency-stat-val">12m</div>
+          <div className="parent-emergency-stat-bottom">
+            <span className="parent-emergency-stat-sub">
+              Avg arrival in {user?.city ? `${user.city} Zone` : "Pune Zone"}
+            </span>
+            <div className="parent-emergency-stat-icon-circle">
+              <Activity size={18} strokeWidth={2.2} />
+            </div>
+          </div>
+        </div>
+
+        {/* Card 3: Rescue Foster Cap */}
+        <div className="parent-emergency-stat-card mint">
+          <div className="parent-emergency-stat-top">
+            <span className="parent-emergency-stat-title">
+              <PawPrint size={14} strokeWidth={2.5} /> RESCUE FOSTER CAP
+            </span>
+            <span className="parent-emergency-stat-pill">78% Full</span>
+          </div>
+          <div className="parent-emergency-stat-val">62</div>
+          <div className="parent-emergency-stat-bottom">
+            <span className="parent-emergency-stat-sub">24 Kennels open now</span>
+            <div className="parent-emergency-stat-icon-circle">
+              <HeartHandshake size={18} strokeWidth={2.2} />
+            </div>
+          </div>
+        </div>
       </div>
 
+      {/* ========================================================
+          4. SPLIT GRID HEADER ROW
+          ======================================================== */}
+      <div className="parent-emergency-split-head">
+        <div className="parent-emergency-col-title">
+          <Compass size={18} color="#FF6A00" />
+          <span>Nearby Care Facilities</span>
+          <span className="parent-emergency-col-sub">Showing 3 verified</span>
+        </div>
+
+        <div className="parent-emergency-col-title" style={{ justifyContent: "flex-end" }}>
+          <Map size={18} color="#FF6A00" />
+          <span>Coverage Map</span>
+          <span className="parent-emergency-metro-pill">
+            <Crosshair size={14} color="#EA580C" /> Pune Metro & Suburbs
+          </span>
+        </div>
+      </div>
+
+      {/* ========================================================
+          5. MAIN 2-COLUMN GRID (FACILITIES & INTERACTIVE MAP)
+          ======================================================== */}
+      <div className="parent-emergency-main-grid">
+        {/* Left Column: Facilities List */}
+        <div className="parent-emergency-facilities-list">
+          {facilities.map((fac) => {
+            const isClinic = fac.type === "clinic";
+            const isActive = activePin === fac.id;
+            return (
+              <div
+                key={fac.id}
+                className={`parent-emergency-facility-card ${isActive ? "active" : ""}`}
+                onClick={() => setActivePin(fac.id)}
+              >
+                <div className="parent-emergency-facility-top">
+                  <span className={`parent-emergency-facility-type ${isClinic ? "clinic" : "shelter"}`}>
+                    {isClinic ? "🩺 VET CLINIC" : "🏢 NGO SHELTER"}
+                  </span>
+                  <span className="parent-emergency-facility-distance">
+                    <span className="parent-emergency-facility-distance-dot" /> {fac.distance}
+                  </span>
+                </div>
+
+                <h3 className="parent-emergency-facility-name">{fac.name}</h3>
+
+                <div className="parent-emergency-facility-addr">
+                  <MapPin size={14} color="#EA580C" style={{ flexShrink: 0 }} />
+                  <span>{fac.addr}</span>
+                </div>
+
+                <div className="parent-emergency-facility-bottom">
+                  <span className="parent-emergency-facility-phone">
+                    <Phone size={14} color="#9CA3AF" />
+                    <span>{fac.phone}</span>
+                  </span>
+
+                  <button
+                    type="button"
+                    className="parent-emergency-call-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCall(fac.phone, fac.name);
+                    }}
+                  >
+                    Call Now
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Right Column: Stylized Interactive Coverage Map */}
+        <div className="parent-emergency-map-wrap">
+          {/* Top Left Floating GPS Pill */}
+          <div className="parent-emergency-map-top-pill">
+            <span>Live GPS Grid | 18.5204° N, 73.8567° E</span>
+          </div>
+
+          {/* Top Right Zoom Controls */}
+          <div className="parent-emergency-map-controls">
+            <button
+              type="button"
+              className="parent-emergency-map-btn"
+              onClick={() => setZoomLevel((z) => Math.min(z + 0.15, 1.45))}
+              title="Zoom in"
+            >
+              <Plus size={16} />
+            </button>
+            <button
+              type="button"
+              className="parent-emergency-map-btn"
+              onClick={() => setZoomLevel((z) => Math.max(z - 0.15, 0.85))}
+              title="Zoom out"
+            >
+              <Minus size={16} />
+            </button>
+            <button
+              type="button"
+              className="parent-emergency-map-btn"
+              onClick={() => setZoomLevel(1)}
+              title="Reset location center"
+            >
+              <Navigation size={14} />
+            </button>
+          </div>
+
+          {/* Map Vector Graphic (Road Network & Radials) */}
+          <svg
+            className="parent-emergency-map-svg"
+            viewBox="0 0 600 500"
+            preserveAspectRatio="none"
+            style={{ transform: `scale(${zoomLevel})`, transition: "transform 0.25s ease" }}
+          >
+            {/* Soft Radius Coverage Rings */}
+            <circle cx="300" cy="270" r="130" fill="none" stroke="#E5E0D8" strokeWidth="1" strokeDasharray="6 6" />
+            <circle cx="300" cy="270" r="230" fill="none" stroke="#E5E0D8" strokeWidth="1" strokeDasharray="8 8" />
+
+            {/* Stylized Intersecting Highways / Roadways */}
+            <path
+              d="M-50,260 Q 250,250 650,270"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="24"
+              strokeLinecap="round"
+            />
+            <path
+              d="M-50,260 Q 250,250 650,270"
+              fill="none"
+              stroke="#E8E2D7"
+              strokeWidth="18"
+              strokeLinecap="round"
+            />
+
+            <path
+              d="M380,-30 L 450,550"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="24"
+              strokeLinecap="round"
+            />
+            <path
+              d="M380,-30 L 450,550"
+              fill="none"
+              stroke="#E8E2D7"
+              strokeWidth="18"
+              strokeLinecap="round"
+            />
+
+            <path
+              d="M60,-30 Q 300,280 620,380"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="20"
+              strokeLinecap="round"
+            />
+            <path
+              d="M60,-30 Q 300,280 620,380"
+              fill="none"
+              stroke="#E8E2D7"
+              strokeWidth="14"
+              strokeLinecap="round"
+            />
+
+            {/* Diagonal Secondary Avenue */}
+            <path
+              d="M100,520 Q 340,300 580,200"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="16"
+              strokeLinecap="round"
+            />
+            <path
+              d="M100,520 Q 340,300 580,200"
+              fill="none"
+              stroke="#ECE6DB"
+              strokeWidth="10"
+              strokeLinecap="round"
+            />
+          </svg>
+
+          {/* Interactive Map Nodes (Pins) */}
+          {mapNodes.map((node) => {
+            const PinIcon = node.icon;
+            const isActive = activePin === node.id;
+            return (
+              <div
+                key={node.id}
+                className={`parent-emergency-pin ${node.pinType} ${isActive ? "active" : ""}`}
+                style={{ top: `${node.pinY}%`, left: `${node.pinX}%` }}
+                onClick={() => {
+                  setActivePin(node.id);
+                  if (node.phone) {
+                    addToast && addToast(`Selected ${node.name} on coverage map`, "info");
+                  }
+                }}
+                title={node.name}
+              >
+                <PinIcon size={18} strokeWidth={2.4} />
+              </div>
+            );
+          })}
+
+          {/* Map Legend Box */}
+          <div className="parent-emergency-legend">
+            <span className="parent-emergency-legend-title">MAP LEGEND</span>
+            <div className="parent-emergency-legend-row">
+              <span className="parent-emergency-legend-dot green" />
+              <span>NGO Rescue Nodes</span>
+            </div>
+            <div className="parent-emergency-legend-row">
+              <span className="parent-emergency-legend-dot red" />
+              <span>Vet Clinic Nodes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================
+          6. BOTTOM REPORT BANNER
+          ======================================================== */}
+      <div className="parent-emergency-bottom-banner">
+        <div className="parent-emergency-bottom-left">
+          <div className="parent-emergency-bottom-icon">
+            <LifeBuoy size={26} strokeWidth={2.2} />
+          </div>
+          <div className="parent-emergency-bottom-text">
+            <h4>Reporting a Lost or Injured Animal?</h4>
+            <p>
+              Stay calm. Secure the perimeter, note landmarks, and share live location directly with the rescue fleet.
+            </p>
+          </div>
+        </div>
+
+        <div className="parent-emergency-bottom-actions">
+          <button
+            type="button"
+            className="parent-emergency-btn-broadcast"
+            onClick={handleBroadcast}
+          >
+            <Crosshair size={16} /> Broadcast Pin
+          </button>
+
+          <button
+            type="button"
+            className="parent-emergency-btn-stray"
+            onClick={() => navigate("/parent/lost-alerts")}
+          >
+            <Flag size={16} /> Submit Stray Report
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

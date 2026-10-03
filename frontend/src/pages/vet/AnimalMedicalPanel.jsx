@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
+import { useAuth } from "../../context/AuthContext";
 import { 
   ArrowLeft, ShieldAlert, Award, FileText, Activity, Calendar, 
   Syringe, Sparkles, Upload, Download, Eye, FileSpreadsheet, PlusCircle, Trash2, CheckCircle, X
@@ -30,7 +31,8 @@ const MiniQR = ({ value }) => (
 const AnimalMedicalPanel = () => {
   const { petId } = useParams();
   const navigate = useNavigate();
-  const { animals, updateAnimal, updateAnimalPersisted, scheduleVetAppointment, addToast } = useApp();
+  const { animals, updateAnimal, updateAnimalPersisted, scheduleVetAppointment, scheduleVetAppointmentPersisted, addToast } = useApp();
+  const { user } = useAuth();
   
   const pet = animals.find(p => p.id === petId);
 
@@ -45,9 +47,9 @@ const AnimalMedicalPanel = () => {
   const [showPrescriptionPreview, setShowPrescriptionPreview] = useState(false);
   const [savedPrescription, setSavedPrescription] = useState(null);
 
-  const [vaccineForm, setVaccineForm] = useState({ vaccineType: "Anti-Rabies (Rabigen)", batchNo: "B-2026-X8", administratorName: "Dr. Dev Karve" });
+  const [vaccineForm, setVaccineForm] = useState({ vaccineType: "Anti-Rabies (Rabigen)", batchNo: "B-2026-X8", administratorName: user?.name || "Dr. Attending" });
   
-  const [treatmentForm, setTreatmentForm] = useState({ procedure: "", surgeonName: "Dr. Dev Karve", notes: "", outcome: "Successful/Stable" });
+  const [treatmentForm, setTreatmentForm] = useState({ procedure: "", surgeonName: user?.name || "Dr. Attending", notes: "", outcome: "Successful/Stable" });
   
   const [uploadedReports, setUploadedReports] = useState([
     { name: "Complete Blood Count (CBC) Report.pdf", date: "2026-07-10", flagged: false, followUpDate: "" }
@@ -55,6 +57,7 @@ const AnimalMedicalPanel = () => {
   const [flaggedDateMap, setFlaggedDateMap] = useState({});
 
   const [followupForm, setFollowupForm] = useState({ date: "", reason: "" });
+  const [isSubmittingFollowup, setIsSubmittingFollowup] = useState(false);
 
   const [showCertificate, setShowCertificate] = useState(null); // 'vaccination' or 'sterilization'
   const [showDischargeModal, setShowDischargeModal] = useState(false);
@@ -236,7 +239,7 @@ const AnimalMedicalPanel = () => {
     try {
       await appendTimelineEvent(`Surgery/Treatment Logged`, `Procedure: ${treatmentForm.procedure}. Outcome: ${treatmentForm.outcome}. Surgeon: ${treatmentForm.surgeonName}. Notes: ${treatmentForm.notes}`);
       addToast(`Treatment procedure saved for ${pet.name}`, "success");
-      setTreatmentForm({ procedure: "", surgeonName: "Dr. Dev Karve", notes: "", outcome: "Successful/Stable" });
+      setTreatmentForm({ procedure: "", surgeonName: user?.name || "Dr. Attending", notes: "", outcome: "Successful/Stable" });
     } catch (err) {}
     setIsSavingVetAction(false);
   };
@@ -285,14 +288,24 @@ const AnimalMedicalPanel = () => {
   };
 
   // 6. Schedule Follow-up
-  const handleFollowupSubmit = (e) => {
+  const handleFollowupSubmit = async (e) => {
     e.preventDefault();
-    if (!followupForm.date || !followupForm.reason) return;
+    if (!followupForm.date || !followupForm.reason || isSubmittingFollowup) return;
 
-    scheduleVetAppointment(pet.id, pet.name, pet.photo, followupForm.reason, followupForm.date);
-    appendTimelineEvent("Clinic Follow-up Scheduled", `Date: ${followupForm.date}. Reason: ${followupForm.reason}`);
-    
-    setFollowupForm({ date: "", reason: "" });
+    setIsSubmittingFollowup(true);
+    try {
+      if (scheduleVetAppointmentPersisted) {
+        await scheduleVetAppointmentPersisted(pet.id, pet.name, pet.photo, followupForm.reason, followupForm.date);
+      } else {
+        scheduleVetAppointment(pet.id, pet.name, pet.photo, followupForm.reason, followupForm.date);
+      }
+      await appendTimelineEvent("Clinic Follow-up Scheduled", `Date: ${followupForm.date}. Reason: ${followupForm.reason}`);
+      setFollowupForm({ date: "", reason: "" });
+    } catch (err) {
+      console.error("Failed to schedule appointment:", err);
+    } finally {
+      setIsSubmittingFollowup(false);
+    }
   };
 
   return (
@@ -629,7 +642,7 @@ const AnimalMedicalPanel = () => {
                         ))}
                       </div>
                       <div style={{ textAlign: "right", marginTop: "12px", fontSize: "0.75rem", color: "var(--text-muted)", fontStyle: "italic" }}>
-                        Authorized Signature: Dr. Dev Karve (CVO)
+                        Authorized Signature: {user?.name || "Attending Veterinarian"}
                       </div>
                     </div>
                   </div>
@@ -924,8 +937,13 @@ const AnimalMedicalPanel = () => {
                   />
                 </div>
 
-                <button type="submit" className="btn btn-primary" style={{ alignSelf: "flex-start", backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)" }}>
-                  Schedule follow-up
+                <button 
+                  type="submit" 
+                  className="btn btn-primary" 
+                  disabled={isSubmittingFollowup}
+                  style={{ alignSelf: "flex-start", backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)", opacity: isSubmittingFollowup ? 0.7 : 1 }}
+                >
+                  {isSubmittingFollowup ? "Scheduling..." : "Schedule follow-up"}
                 </button>
               </form>
             )}
@@ -1081,7 +1099,7 @@ const AnimalMedicalPanel = () => {
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <div style={{ fontFamily: "serif", fontSize: "0.9rem", fontStyle: "italic", borderBottom: "1px solid var(--text-muted)", paddingBottom: "2px" }}>
-                      Dr. Dev Karve (CVO)
+                      {user?.name || "Attending Veterinarian"}
                     </div>
                     <span style={{ fontSize: "0.68rem", color: "var(--text-muted)", fontWeight: 700 }}>Authorized Signatory</span>
                   </div>

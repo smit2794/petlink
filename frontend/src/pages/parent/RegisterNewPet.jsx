@@ -1,11 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
-import { PlusCircle, Upload, Info, CheckCircle, ArrowLeft } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import {
+  ArrowLeft,
+  ShieldCheck,
+  Upload,
+  Info,
+  Sparkles,
+  Lock,
+  Lightbulb,
+  PawPrint,
+  Check,
+  CreditCard
+} from "lucide-react";
 
 const RegisterNewPet = () => {
   const { registerPetPersisted, addToast } = useApp();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -19,6 +33,7 @@ const RegisterNewPet = () => {
     photoPreview: ""
   });
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const convertToBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -32,12 +47,19 @@ const RegisterNewPet = () => {
   const handlePhotoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const base64 = await convertToBase64(file);
-      setFormData({
-        ...formData,
-        photoFile: file,
-        photoPreview: base64
-      });
+      try {
+        const base64 = await convertToBase64(file);
+        setFormData((prev) => ({
+          ...prev,
+          photoFile: file,
+          photoPreview: base64
+        }));
+        if (errors.photo) {
+          setErrors((prev) => ({ ...prev, photo: null }));
+        }
+      } catch (err) {
+        addToast("Failed to process photo file", "error");
+      }
     }
   };
 
@@ -48,35 +70,39 @@ const RegisterNewPet = () => {
     if (!formData.name.trim()) tempErrors.name = "Pet name is required";
     if (!formData.breed.trim()) tempErrors.breed = "Breed is required";
     if (!formData.age.trim()) tempErrors.age = "Estimated age is required (e.g. '2 years')";
-    if (!formData.weight.trim()) tempErrors.weight = "Weight is required (e.g. '12 kg')";
+    if (!formData.weight.trim()) tempErrors.weight = "Weight is required (e.g. '14 kg')";
     if (!formData.photoPreview) tempErrors.photo = "Pet photo is required for digital collar tag validation";
 
     if (Object.keys(tempErrors).length > 0) {
       setErrors(tempErrors);
-      addToast("Failed to register. Please resolve form errors.", "error");
+      addToast("Failed to register. Please resolve highlighted form errors.", "error");
       return;
     }
+
+    setIsSubmitting(true);
 
     // Generate mock parameters
     const mockId = `PL-2026-${Math.floor(1000 + Math.random() * 9000)}`;
     const newPet = {
       id: mockId,
-      name: formData.name,
+      name: formData.name.trim(),
       species: formData.species,
-      breed: formData.breed,
+      breed: formData.breed.trim(),
       gender: formData.gender,
-      age: formData.age,
-      weight: formData.weight,
+      age: formData.age.trim(),
+      weight: formData.weight.trim(),
       photo: formData.photoPreview,
       status: "Adopted",
-      custodian: "Aarav Sharma (Home)",
+      custodian: user ? `${user.name} (Home)` : "Home Guardian",
+      ownerId: user?.id,
+      createdBy: user?.id,
       lastUpdated: "Just now",
       qrCode: `MOCK-QR-${mockId}`,
       timeline: [
         {
           date: new Date().toISOString().split("T")[0],
           title: "Registry Created",
-          description: `Direct domestic registration by Parent Aarav Sharma. Collar tag issued under ID ${mockId}.`
+          description: `Direct domestic registration by Parent ${user?.name || "Guardian"}. Collar tag issued under ID ${mockId}.`
         }
       ],
       healthSummary: {
@@ -89,227 +115,310 @@ const RegisterNewPet = () => {
 
     try {
       await registerPetPersisted(newPet);
+      addToast(`🎉 ${newPet.name} successfully registered with digital tag ${mockId}!`, "success");
       navigate("/parent/pets");
     } catch (err) {
-      // error toast already shown inside registerPetPersisted
+      setIsSubmitting(false);
     }
   };
 
-
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "28px", maxWidth: "600px", margin: "0 auto" }}>
-
-      {/* Header Back Link */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <button className="btn btn-outline btn-sm" onClick={() => navigate("/parent/pets")}>
-          <ArrowLeft size={14} /> Back
+    <div className="parent-content-wrap parent-register-container">
+      {/* 1. TOP NAVIGATION ROW */}
+      <div className="parent-register-nav-row">
+        <button
+          type="button"
+          className="parent-register-back-btn"
+          onClick={() => navigate("/parent/pets")}
+        >
+          <ArrowLeft size={16} /> Back
         </button>
-      </div>
 
-      {/* Title */}
-      <div>
-        <h1 style={{ fontSize: "1.7rem", fontWeight: 800, color: "var(--primary-color)", letterSpacing: "-0.02em" }}>
-          Register Family Pet
-        </h1>
-        <p style={{ color: "var(--text-muted)", fontSize: "0.92rem", marginTop: "4px" }}>
-          Create a digital identity collar tag for pets born or reared directly inside your household.
-        </p>
-      </div>
-
-      {/* Informational constraint warning callout */}
-      <div style={{
-        display: "flex",
-        gap: "12px",
-        padding: "16px 20px",
-        backgroundColor: "var(--accent-amber-light)",
-        color: "var(--accent-amber)",
-        borderRadius: "14px",
-        border: "1px solid rgba(224, 144, 37, 0.15)",
-        fontSize: "0.88rem",
-        lineHeight: 1.4
-      }}>
-        <Info size={20} style={{ flexShrink: 0, marginTop: "2px" }} />
-        <div>
-          <strong>Important Verification Policy:</strong> Vets and parents cannot register stray rescues.
-          If your pet was adopted through a shelter, do not fill this form—the NGO's approval automatically grants registry rights.
-          Use this form <strong>only</strong> for private household pets.
+        <div className="parent-register-protocol-pill">
+          <ShieldCheck size={14} /> Household Registry Protocol
         </div>
       </div>
 
-      {/* Registration Form Card */}
-      <div className="card" style={{ padding: "32px" }}>
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+      {/* 2. HERO HEADER CARD */}
+      <div className="parent-register-hero-card">
+        <div>
+          <span className="parent-register-hero-badge">
+            NEW DIGITAL PET COLLAR
+          </span>
+          <h1 className="parent-register-hero-title">
+            Register Family Pet
+          </h1>
+          <p className="parent-register-hero-sub">
+            Create a digital identity collar tag for pets born or reared directly inside your household.
+          </p>
+        </div>
 
-          {/* Photo Upload slot */}
-          <div className="form-group" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
-            <label className="form-label" style={{ alignSelf: "flex-start", fontWeight: 800 }}>Pet Photo Profile *</label>
-
-            {formData.photoPreview ? (
-              <div style={{ position: "relative", width: "120px", height: "120px" }}>
-                <img
-                  src={formData.photoPreview}
-                  alt="Preview"
-                  style={{ width: "120px", height: "120px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--accent-amber)" }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, photoFile: null, photoPreview: "" })}
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    backgroundColor: "var(--accent-coral)",
-                    color: "white",
-                    border: 0,
-                    borderRadius: "50%",
-                    width: "24px",
-                    height: "24px",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                  }}
-                >
-                  ✕
-                </button>
-              </div>
-            ) : (
-              <label style={{
-                width: "120px",
-                height: "120px",
-                borderRadius: "50%",
-                border: errors.photo ? "2px dashed var(--accent-coral)" : "2px dashed var(--border-color)",
-                backgroundColor: "#FCFAF6",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                color: "var(--text-muted)",
-                fontSize: "0.8rem",
-                transition: "all var(--transition-fast)"
-              }}>
-                <Upload size={20} style={{ marginBottom: "6px" }} />
-                <span>Upload Photo</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handlePhotoChange}
-                />
-              </label>
-            )}
-            {errors.photo && <span className="form-error" style={{ fontSize: "0.75rem" }}>{errors.photo}</span>}
-          </div>
-
-          {/* Name & Species */}
-          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "16px" }}>
-            <div className="form-group">
-              <label className="form-label">Pet Name *</label>
-              <input
-                type="text"
-                placeholder="e.g. Bruno"
-                className="form-control"
-                style={{ borderColor: errors.name ? "var(--accent-coral)" : "" }}
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              />
-              {errors.name && <span className="form-error">{errors.name}</span>}
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Species *</label>
-              <select
-                className="form-control"
-                value={formData.species}
-                onChange={(e) => setFormData({ ...formData, species: e.target.value })}
-              >
-                <option>Dog</option>
-                <option>Cat</option>
-                <option>Cow</option>
-                <option>Bird</option>
-                <option>Other</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Breed & Gender */}
-          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "16px" }}>
-            <div className="form-group">
-              <label className="form-label">Breed *</label>
-              <input
-                type="text"
-                placeholder="e.g. Indie / Persian Cat"
-                className="form-control"
-                style={{ borderColor: errors.breed ? "var(--accent-coral)" : "" }}
-                value={formData.breed}
-                onChange={(e) => setFormData({ ...formData, breed: e.target.value })}
-              />
-              {errors.breed && <span className="form-error">{errors.breed}</span>}
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Gender *</label>
-              <select
-                className="form-control"
-                value={formData.gender}
-                onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-              >
-                <option>Male</option>
-                <option>Female</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Age & Weight */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-            <div className="form-group">
-              <label className="form-label">Estimated Age *</label>
-              <input
-                type="text"
-                placeholder="e.g. 2 years / 6 months"
-                className="form-control"
-                style={{ borderColor: errors.age ? "var(--accent-coral)" : "" }}
-                value={formData.age}
-                onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-              />
-              {errors.age && <span className="form-error">{errors.age}</span>}
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Weight *</label>
-              <input
-                type="text"
-                placeholder="e.g. 14 kg / 4.2 kg"
-                className="form-control"
-                style={{ borderColor: errors.weight ? "var(--accent-coral)" : "" }}
-                value={formData.weight}
-                onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-              />
-              {errors.weight && <span className="form-error">{errors.weight}</span>}
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="btn btn-primary"
-            style={{
-              backgroundColor: "var(--accent-amber)",
-              borderColor: "var(--accent-amber)",
-              marginTop: "12px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "6px"
-            }}
-          >
-            <PlusCircle size={16} /> Register Digital Identity Card
-          </button>
-
-        </form>
+        <div className="parent-register-hero-icon-box">
+          <CreditCard size={36} color="#EA580C" strokeWidth={1.8} />
+          <div className="parent-register-hero-plus-badge">+</div>
+        </div>
       </div>
 
+      {/* 3. IMPORTANT VERIFICATION NOTICE BANNER */}
+      <div className="parent-register-notice-box">
+        <div className="parent-register-notice-icon">i</div>
+        <div className="parent-register-notice-text">
+          <strong>Important Verification Policy:</strong> Vets and parents cannot register stray rescues.
+          If your pet was adopted through a shelter, do not fill this form—the NGO's approval automatically
+          grants registry rights. Use this form <u>only</u> for private household pets.
+        </div>
+      </div>
+
+      {/* 4. MAIN 2-COLUMN GRID */}
+      <div className="parent-register-grid">
+        {/* Left Column: Form Card */}
+        <div className="parent-register-form-card">
+          <form onSubmit={handleSubmit}>
+            {/* Pet Photo Section */}
+            <div className="parent-register-photo-section">
+              <label className="parent-register-section-label">
+                Pet Photo Profile *
+              </label>
+
+              <div className="parent-register-photo-box">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handlePhotoChange}
+                  accept="image/*"
+                  style={{ display: "none" }}
+                />
+
+                <div
+                  className="parent-register-photo-uploader"
+                  onClick={() => fileInputRef.current?.click()}
+                  title="Click to upload pet portrait"
+                >
+                  {formData.photoPreview ? (
+                    <img
+                      src={formData.photoPreview}
+                      alt="Pet preview"
+                      className="parent-register-photo-preview"
+                    />
+                  ) : (
+                    <>
+                      <Upload size={22} color="#EA580C" />
+                      <span className="parent-register-photo-upload-label">
+                        Upload<br />Photo
+                      </span>
+                    </>
+                  )}
+                </div>
+
+                <div className="parent-register-photo-info">
+                  <h4>Clear front portrait recommended</h4>
+                  <p>
+                    JPG, PNG, or WEBP up to 5MB. This photo will be engraved onto the live NFC smart tag & lost-alert flyers.
+                  </p>
+                  {errors.photo && (
+                    <p style={{ color: "#DC2626", fontWeight: 700, marginTop: "6px" }}>
+                      ⚠️ {errors.photo}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Inputs Grid (2 columns) */}
+            <div className="parent-register-fields-grid">
+              {/* Pet Name */}
+              <div className="parent-register-field">
+                <label className="parent-register-field-label">Pet Name *</label>
+                <input
+                  type="text"
+                  className="parent-register-input"
+                  placeholder="e.g. Bruno"
+                  value={formData.name}
+                  onChange={(e) => {
+                    setFormData({ ...formData, name: e.target.value });
+                    if (errors.name) setErrors({ ...errors, name: null });
+                  }}
+                />
+                {errors.name && (
+                  <span style={{ color: "#DC2626", fontSize: "0.75rem", fontWeight: 700 }}>
+                    {errors.name}
+                  </span>
+                )}
+              </div>
+
+              {/* Species */}
+              <div className="parent-register-field">
+                <label className="parent-register-field-label">Species *</label>
+                <select
+                  className="parent-register-select"
+                  value={formData.species}
+                  onChange={(e) => setFormData({ ...formData, species: e.target.value })}
+                >
+                  <option value="Dog">Dog</option>
+                  <option value="Cat">Cat</option>
+                  <option value="Rabbit">Rabbit</option>
+                  <option value="Bird">Bird</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              {/* Breed */}
+              <div className="parent-register-field">
+                <label className="parent-register-field-label">Breed *</label>
+                <input
+                  type="text"
+                  className="parent-register-input"
+                  placeholder="e.g. Indie / Persian Cat"
+                  value={formData.breed}
+                  onChange={(e) => {
+                    setFormData({ ...formData, breed: e.target.value });
+                    if (errors.breed) setErrors({ ...errors, breed: null });
+                  }}
+                />
+                {errors.breed && (
+                  <span style={{ color: "#DC2626", fontSize: "0.75rem", fontWeight: 700 }}>
+                    {errors.breed}
+                  </span>
+                )}
+              </div>
+
+              {/* Gender */}
+              <div className="parent-register-field">
+                <label className="parent-register-field-label">Gender *</label>
+                <select
+                  className="parent-register-select"
+                  value={formData.gender}
+                  onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+
+              {/* Estimated Age */}
+              <div className="parent-register-field">
+                <label className="parent-register-field-label">Estimated Age *</label>
+                <input
+                  type="text"
+                  className="parent-register-input"
+                  placeholder="e.g. 2 years / 6 months"
+                  value={formData.age}
+                  onChange={(e) => {
+                    setFormData({ ...formData, age: e.target.value });
+                    if (errors.age) setErrors({ ...errors, age: null });
+                  }}
+                />
+                {errors.age && (
+                  <span style={{ color: "#DC2626", fontSize: "0.75rem", fontWeight: 700 }}>
+                    {errors.age}
+                  </span>
+                )}
+              </div>
+
+              {/* Weight */}
+              <div className="parent-register-field">
+                <label className="parent-register-field-label">Weight *</label>
+                <input
+                  type="text"
+                  className="parent-register-input"
+                  placeholder="e.g. 14 kg / 4.2 kg"
+                  value={formData.weight}
+                  onChange={(e) => {
+                    setFormData({ ...formData, weight: e.target.value });
+                    if (errors.weight) setErrors({ ...errors, weight: null });
+                  }}
+                />
+                {errors.weight && (
+                  <span style={{ color: "#DC2626", fontSize: "0.75rem", fontWeight: 700 }}>
+                    {errors.weight}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="parent-register-submit-btn"
+            >
+              <Sparkles size={18} />
+              <span>{isSubmitting ? "Registering Tag..." : "Register Digital Identity Card"}</span>
+            </button>
+          </form>
+        </div>
+
+        {/* Right Column: Sidecar Cards */}
+        <div className="parent-register-sidecar">
+          {/* Tag Preview Card */}
+          <div className="parent-register-preview-card">
+            <div className="parent-register-preview-head">
+              <span className="parent-register-preview-tag">
+                TAG PREVIEW
+              </span>
+              <span className="parent-register-nfc-pill">
+                <span className="parent-register-nfc-dot" /> Live NFC Tag
+              </span>
+            </div>
+
+            <div className="parent-register-inner-card">
+              <div className="parent-register-inner-pet-head">
+                <div className="parent-register-inner-avatar">
+                  {formData.photoPreview ? (
+                    <img
+                      src={formData.photoPreview}
+                      alt="Avatar"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <PawPrint size={24} color="#EA580C" />
+                  )}
+                </div>
+                <div>
+                  <h3 className="parent-register-inner-pet-name">
+                    {formData.name.trim() || "Pet Name"}
+                  </h3>
+                  <p className="parent-register-inner-pet-sub">
+                    {formData.species} • Household...
+                  </p>
+                </div>
+              </div>
+
+              <div className="parent-register-inner-stats">
+                <div className="parent-register-stat-box orange">
+                  <span className="parent-register-stat-label">REGISTRY STATUS</span>
+                  <span className="parent-register-stat-val">Ready to Issue</span>
+                </div>
+
+                <div className="parent-register-stat-box slate">
+                  <span className="parent-register-stat-label">QR MICROCHIP</span>
+                  <span className="parent-register-stat-val">V4 Encrypted</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="parent-register-lock-note">
+              <Lock size={14} color="#6366F1" style={{ marginTop: "2px", flexShrink: 0 }} />
+              <span>
+                Once registered, the digital ID collar code links directly to your family dashboard and emergency locator.
+              </span>
+            </div>
+          </div>
+
+          {/* Why Register Early Card */}
+          <div className="parent-register-why-card">
+            <div className="parent-register-why-head">
+              <div className="parent-register-why-icon-circle">
+                <Lightbulb size={16} color="#16A34A" />
+              </div>
+              <h4 className="parent-register-why-title">Why register early?</h4>
+            </div>
+            <p className="parent-register-why-text">
+              Registered family pets receive fast-track triage at network partner clinics and instant community push alerts if reported missing.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
-import { Heart, Shield, Stethoscope, ShieldAlert, Users, Award, Play, Globe } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { Heart, Shield, Stethoscope, ShieldAlert, Users, Award, Play, Globe, LogIn, UserPlus, LogOut, LayoutDashboard } from "lucide-react";
 
 const Landing = () => {
   const [animate, setAnimate] = useState(false);
   const { animals } = useApp();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const lostPet = animals.find(p => p.status === "Lost");
@@ -87,6 +89,117 @@ const Landing = () => {
       padding: "48px 24px",
       position: "relative"
     }}>
+      {/* Top Auth Navigation Bar */}
+      <header style={{
+        position: "absolute",
+        top: "20px",
+        left: "24px",
+        right: "24px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        zIndex: 50
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{
+            width: "32px",
+            height: "32px",
+            borderRadius: "8px",
+            backgroundColor: "var(--primary-color)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white"
+          }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 14c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-4.5-2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm9 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-4.5 7c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z" />
+            </svg>
+          </div>
+          <span style={{ fontWeight: 800, color: "var(--primary-color)", fontSize: "1.1rem" }}>PetLink</span>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          {user ? (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{
+                fontSize: "0.85rem",
+                color: "var(--text-main)",
+                fontWeight: 600,
+                backgroundColor: "white",
+                padding: "6px 14px",
+                borderRadius: "20px",
+                border: "1px solid var(--border-color)",
+                boxShadow: "var(--shadow-sm)"
+              }}>
+                Signed in as <strong style={{ color: "var(--primary-color)" }}>{user.name}</strong> ({user.role.toUpperCase()})
+              </span>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  if (user.role === "ngo") navigate("/ngo/overview");
+                  else if (user.role === "vet") navigate("/vet/queue");
+                  else navigate("/parent/pets");
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  fontSize: "0.85rem",
+                  padding: "8px 16px"
+                }}
+              >
+                <LayoutDashboard size={15} /> Open Portal
+              </button>
+              <button
+                className="btn btn-outline"
+                onClick={logout}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  fontSize: "0.85rem",
+                  padding: "8px 14px"
+                }}
+              >
+                <LogOut size={15} /> Logout
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <Link
+                to="/login"
+                className="btn btn-outline"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  fontSize: "0.85rem",
+                  padding: "8px 16px",
+                  textDecoration: "none",
+                  backgroundColor: "white"
+                }}
+              >
+                <LogIn size={15} /> Sign In
+              </Link>
+              <Link
+                to="/register"
+                className="btn btn-primary"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  fontSize: "0.85rem",
+                  padding: "8px 18px",
+                  textDecoration: "none"
+                }}
+              >
+                <UserPlus size={15} /> Register
+              </Link>
+            </div>
+          )}
+        </div>
+      </header>
+
       {/* Decorative Watermark Paw Elements */}
       <div style={{
         position: "absolute",

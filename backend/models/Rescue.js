@@ -17,6 +17,7 @@ const rescueSchema = new mongoose.Schema({
   x: Number,
   y: Number,
   photo: String,
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   timeline: [{ time: String, title: String, desc: String }]
 }, { timestamps: true });
 

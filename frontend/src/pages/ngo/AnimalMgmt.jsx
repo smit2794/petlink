@@ -1,16 +1,291 @@
 import React, { useState, useEffect } from "react";
 import { useApp } from "../../context/AppContext";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import PetQRCode from "../../components/PetQRCode";
 import {
   Search, Filter, ArrowLeft, Heart, FileText, Activity,
   Calendar, Layers, ShieldAlert, User, Eye, PawPrint, Tag, ClipboardList,
-  MessageSquare, Upload, Check
+  MessageSquare, Upload, Check, SlidersHorizontal, Star
 } from "lucide-react";
 
+// Pet Illustration Showcase Helper matching reference design
+const PetIllustration = ({ pet }) => {
+  const name = pet.name?.toLowerCase() || "";
+  const species = pet.species?.toLowerCase() || "";
+  const breed = pet.breed?.toLowerCase() || "";
+
+  const photo = pet.photo || pet.image;
+
+  // 1. If pet has their own registered/uploaded photo, display their real image
+  if (photo) {
+    return (
+      <div style={{ position: "relative", width: "100%", height: "100%" }}>
+        <img
+          src={photo}
+          alt={pet.name || "Pet"}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
+        {/* Floating circular orange paw badge at bottom right */}
+        <div style={{
+          position: "absolute",
+          bottom: "10px",
+          right: "10px",
+          width: "28px",
+          height: "28px",
+          borderRadius: "50%",
+          backgroundColor: "#FF6E14",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
+          zIndex: 3
+        }}>
+          <PawPrint size={14} color="white" />
+        </div>
+      </div>
+    );
+  }
+
+  // 2. miya / black cat with glowing cyan eyes
+  if (name.includes("miya") || (species === "cat" && breed.includes("black"))) {
+    return (
+      <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+        <path d="M22 42L28 18L44 32C47.8 31.4 52.2 31.4 56 32L72 18L78 42C83 50 84 62 78 72C72 82 58 86 50 86C42 86 28 82 22 72C16 62 17 50 22 42Z" fill="#151210" />
+        <path d="M31 24L34 33L26 31Z" fill="#FFAAA6" opacity="0.6" />
+        <path d="M69 24L74 31L66 33Z" fill="#FFAAA6" opacity="0.6" />
+        <ellipse cx="36" cy="54" rx="8" ry="7" fill="#2CE5F6" />
+        <ellipse cx="64" cy="54" rx="8" ry="7" fill="#2CE5F6" />
+        <ellipse cx="36" cy="54" rx="4" ry="6" fill="#0C2028" />
+        <ellipse cx="64" cy="54" rx="4" ry="6" fill="#0C2028" />
+        <circle cx="34" cy="51" r="2.5" fill="white" />
+        <circle cx="62" cy="51" r="2.5" fill="white" />
+        <circle cx="38" cy="56" r="1.2" fill="white" />
+        <circle cx="66" cy="56" r="1.2" fill="white" />
+        <polygon points="50,63 47,60 53,60" fill="#FFAAA6" />
+        <path d="M47 64C48 66 49.5 66.5 50 66.5C50.5 66.5 52 66 53 64" stroke="#FFAAA6" strokeWidth="1.2" strokeLinecap="round" />
+        <path d="M22 62L12 60M22 65L10 66M22 68L13 72" stroke="white" strokeWidth="1.2" strokeLinecap="round" opacity="0.75" />
+        <path d="M78 62L88 60M78 65L90 66M78 68L87 72" stroke="white" strokeWidth="1.2" strokeLinecap="round" opacity="0.75" />
+      </svg>
+    );
+  }
+
+  // 3. Stranger / sweet rabbit critter
+  if (name.includes("stranger") || species === "other" || species === "critter") {
+    return (
+      <svg width="105" height="105" viewBox="0 0 100 100" fill="none">
+        <ellipse cx="34" cy="28" rx="8" ry="22" fill="#F8CBA6" />
+        <ellipse cx="34" cy="28" rx="4.5" ry="16" fill="#FFB4B4" />
+        <ellipse cx="66" cy="28" rx="8" ry="22" fill="#F8CBA6" />
+        <ellipse cx="66" cy="28" rx="4.5" ry="16" fill="#FFB4B4" />
+        <circle cx="50" cy="62" r="28" fill="#F8CBA6" />
+        <ellipse cx="44" cy="67" rx="8" ry="6" fill="#FFF6EE" />
+        <ellipse cx="56" cy="67" rx="8" ry="6" fill="#FFF6EE" />
+        <ellipse cx="38" cy="58" rx="4.5" ry="5.5" fill="#2C1810" />
+        <circle cx="36.5" cy="56" r="2" fill="white" />
+        <circle cx="39.5" cy="60" r="1" fill="white" />
+        <ellipse cx="62" cy="58" rx="4.5" ry="5.5" fill="#2C1810" />
+        <circle cx="60.5" cy="56" r="2" fill="white" />
+        <circle cx="63.5" cy="60" r="1" fill="white" />
+        <polygon points="50,64 47,61 53,61" fill="#E86A7C" />
+        <path d="M47 67C48.5 69 49.5 69 50 68C50.5 69 51.5 69 53 67" stroke="#2C1810" strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="30" cy="66" r="4.5" fill="#FF8A8A" opacity="0.55" />
+        <circle cx="70" cy="66" r="4.5" fill="#FF8A8A" opacity="0.55" />
+      </svg>
+    );
+  }
+
+  // 4. Floppy Puppy (Scout - Playful Pup)
+  if (name.includes("scout") && (pet.id?.endsWith("030") || !pet.id?.endsWith("894"))) {
+    return (
+      <svg width="105" height="105" viewBox="0 0 100 100" fill="none">
+        <path d="M24 38C16 38 12 50 14 62C16 72 26 72 28 64C30 54 30 44 24 38Z" fill="#B34B1E" />
+        <path d="M76 38C84 38 88 50 86 62C84 72 74 72 72 64C70 54 70 44 76 38Z" fill="#B34B1E" />
+        <ellipse cx="50" cy="54" rx="27" ry="24" fill="#F49D56" />
+        <ellipse cx="50" cy="62" rx="14" ry="11" fill="#FFF5EA" />
+        <circle cx="39" cy="50" r="5" fill="#22140E" />
+        <circle cx="37.5" cy="48" r="2" fill="white" />
+        <circle cx="61" cy="50" r="5" fill="#22140E" />
+        <circle cx="59.5" cy="48" r="2" fill="white" />
+        <ellipse cx="50" cy="59" rx="4.5" ry="3.5" fill="#22140E" />
+        <path d="M46 64C48 66 52 66 54 64" stroke="#22140E" strokeWidth="1.8" strokeLinecap="round" />
+        <circle cx="31" cy="58" r="4" fill="#FF7B7B" opacity="0.5" />
+        <circle cx="69" cy="58" r="4" fill="#FF7B7B" opacity="0.5" />
+      </svg>
+    );
+  }
+
+  // 5. Corgi / Shiba Puppy (Scout - Cuddly Boy)
+  if (name.includes("scout") || name.includes("cuddly")) {
+    return (
+      <svg width="105" height="105" viewBox="0 0 100 100" fill="none">
+        <path d="M26 44L34 16L48 34Z" fill="#E89B2B" />
+        <path d="M30 40L35 22L44 34Z" fill="#FFD0A8" />
+        <path d="M74 44L66 16L52 34Z" fill="#E89B2B" />
+        <path d="M70 40L65 22L56 34Z" fill="#FFD0A8" />
+        <circle cx="50" cy="56" r="26" fill="#E89B2B" />
+        <path d="M50 44C42 44 32 50 32 62C32 72 40 78 50 78C60 78 68 72 68 62C68 50 58 44 50 44Z" fill="#FFF8EE" />
+        <circle cx="41" cy="54" r="4.5" fill="#26160A" />
+        <circle cx="39.5" cy="52" r="1.8" fill="white" />
+        <circle cx="59" cy="54" r="4.5" fill="#26160A" />
+        <circle cx="57.5" cy="52" r="1.8" fill="white" />
+        <polygon points="50,63 46,60 54,60" fill="#26160A" />
+        <path d="M47 67C48.5 68.5 51.5 68.5 53 67" stroke="#26160A" strokeWidth="1.6" strokeLinecap="round" />
+        <circle cx="34" cy="62" r="3.5" fill="#FF8877" opacity="0.45" />
+        <circle cx="66" cy="62" r="3.5" fill="#FF8877" opacity="0.45" />
+      </svg>
+    );
+  }
+
+  // 6. Desi Indie Dog (Sheru Test - Desi Indie)
+  if (name.includes("test") || breed.includes("indie")) {
+    return (
+      <svg width="105" height="105" viewBox="0 0 100 100" fill="none">
+        <path d="M22 36C15 36 12 48 16 60C19 68 28 68 28 58C28 48 27 40 22 36Z" fill="#D35400" />
+        <path d="M78 36C85 36 88 48 84 60C81 68 72 68 72 58C72 48 73 40 78 36Z" fill="#D35400" />
+        <ellipse cx="50" cy="54" rx="27" ry="24" fill="#E67E22" />
+        <ellipse cx="50" cy="62" rx="14" ry="11" fill="#FFF2E2" />
+        <circle cx="40" cy="50" r="5" fill="#1C1008" />
+        <circle cx="38.5" cy="48" r="2" fill="white" />
+        <circle cx="60" cy="50" r="5" fill="#1C1008" />
+        <circle cx="58.5" cy="48" r="2" fill="white" />
+        <ellipse cx="50" cy="59" rx="4.5" ry="3.5" fill="#1C1008" />
+        <path d="M46 64C48 66 52 66 54 64" stroke="#1C1008" strokeWidth="1.8" strokeLinecap="round" />
+        <circle cx="32" cy="58" r="3.5" fill="#FF7766" opacity="0.45" />
+        <circle cx="68" cy="58" r="3.5" fill="#FF7766" opacity="0.45" />
+      </svg>
+    );
+  }
+
+  // 7. Simba (Golden Champ)
+  if (name.includes("simba") || breed.includes("golden")) {
+    return (
+      <svg width="105" height="105" viewBox="0 0 100 100" fill="none">
+        <path d="M22 38C14 38 12 50 16 62C19 70 28 70 28 60C28 50 28 42 22 38Z" fill="#B76510" />
+        <path d="M78 38C86 38 88 50 84 62C81 70 72 70 72 60C72 50 72 42 78 38Z" fill="#B76510" />
+        <ellipse cx="50" cy="54" rx="27" ry="24" fill="#F5B041" />
+        <ellipse cx="50" cy="62" rx="14" ry="11" fill="#FFF8EE" />
+        <circle cx="39" cy="50" r="5" fill="#2C1608" />
+        <circle cx="37.5" cy="48" r="2" fill="white" />
+        <circle cx="61" cy="50" r="5" fill="#2C1608" />
+        <circle cx="59.5" cy="48" r="2" fill="white" />
+        <ellipse cx="50" cy="59" rx="4.5" ry="3.5" fill="#2C1608" />
+        <path d="M46 64C48 66 52 66 54 64" stroke="#2C1608" strokeWidth="1.8" strokeLinecap="round" />
+        <circle cx="32" cy="58" r="4" fill="#FF8555" opacity="0.45" />
+        <circle cx="68" cy="58" r="4" fill="#FF8555" opacity="0.45" />
+      </svg>
+    );
+  }
+
+  // 8. neno (Tiny Explorer) - fox / kitty puppy
+  if (name.includes("neno")) {
+    return (
+      <svg width="105" height="105" viewBox="0 0 100 100" fill="none">
+        <path d="M26 44L30 18L46 36Z" fill="#E65C00" />
+        <path d="M30 40L33 24L42 36Z" fill="#FFF0E6" />
+        <path d="M74 44L70 18L54 36Z" fill="#E65C00" />
+        <path d="M70 40L67 24L58 36Z" fill="#FFF0E6" />
+        <circle cx="50" cy="56" r="26" fill="#F8A055" />
+        <ellipse cx="50" cy="64" rx="15" ry="11" fill="#FFF7F0" />
+        <circle cx="41" cy="52" r="4.5" fill="#20120A" />
+        <circle cx="39.5" cy="50" r="1.8" fill="white" />
+        <circle cx="59" cy="52" r="4.5" fill="#20120A" />
+        <circle cx="57.5" cy="50" r="1.8" fill="white" />
+        <polygon points="50,61 47,58 53,58" fill="#20120A" />
+        <path d="M47 65C48.5 66.5 51.5 66.5 53 65" stroke="#20120A" strokeWidth="1.6" strokeLinecap="round" />
+        <circle cx="33" cy="60" r="4" fill="#FF7777" opacity="0.5" />
+        <circle cx="67" cy="60" r="4" fill="#FF7777" opacity="0.5" />
+      </svg>
+    );
+  }
+
+  // Fallback for cats
+  if (species === "cat") {
+    return (
+      <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+        <path d="M26 44L30 18L46 36Z" fill="#F39C12" />
+        <path d="M74 44L70 18L54 36Z" fill="#F39C12" />
+        <circle cx="50" cy="56" r="26" fill="#F5B041" />
+        <ellipse cx="50" cy="64" rx="14" ry="10" fill="#FFF9F0" />
+        <circle cx="40" cy="52" r="4.5" fill="#24140A" />
+        <circle cx="38.5" cy="50" r="1.8" fill="white" />
+        <circle cx="60" cy="52" r="4.5" fill="#24140A" />
+        <circle cx="58.5" cy="50" r="1.8" fill="white" />
+        <polygon points="50,60 47,57 53,57" fill="#E74C3C" />
+        <path d="M47 64C48.5 66 51.5 66 53 64" stroke="#24140A" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  // General puppy fallback
+  return (
+    <svg width="105" height="105" viewBox="0 0 100 100" fill="none">
+      <path d="M24 38C16 38 12 50 14 62C16 72 26 72 28 64C30 54 30 44 24 38Z" fill="#C0392B" />
+      <path d="M76 38C84 38 88 50 86 62C84 72 74 72 72 64C70 54 70 44 76 38Z" fill="#C0392B" />
+      <ellipse cx="50" cy="54" rx="27" ry="24" fill="#E67E22" />
+      <ellipse cx="50" cy="62" rx="14" ry="11" fill="#FFF5EA" />
+      <circle cx="39" cy="50" r="5" fill="#22140E" />
+      <circle cx="37.5" cy="48" r="2" fill="white" />
+      <circle cx="61" cy="50" r="5" fill="#22140E" />
+      <circle cx="59.5" cy="48" r="2" fill="white" />
+      <ellipse cx="50" cy="59" rx="4.5" ry="3.5" fill="#22140E" />
+      <path d="M46 64C48 66 52 66 54 64" stroke="#22140E" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+};
+
+// Container background color helper
+const getCardBg = (pet) => {
+  const name = pet.name?.toLowerCase() || "";
+  const species = pet.species?.toLowerCase() || "";
+  if (name.includes("miya") || (species === "cat" && pet.breed?.toLowerCase().includes("black"))) {
+    return "#1E1815";
+  }
+  if (name.includes("stranger")) return "#FFF0E6";
+  if (name.includes("scout") && pet.id?.endsWith("030")) return "#FFF9E6";
+  if (name.includes("scout")) return "#FFF6E5";
+  if (name.includes("test")) return "#FFF2EA";
+  if (name.includes("simba")) return "#FFFBEA";
+  if (name.includes("neno")) return "#FFF4EB";
+  return "#FFF5EE";
+};
+
+// Nickname badge text helper
+const getNicknameBadge = (pet) => {
+  const name = pet.name?.toLowerCase() || "";
+  const species = pet.species?.toLowerCase() || "";
+  if (name.includes("stranger") || species === "other") return "Sweet Critter";
+  if (name.includes("scout") && pet.id?.endsWith("030")) return "Playful Pup";
+  if (name.includes("scout")) return "Cuddly Boy";
+  if (name.includes("test")) return "Desi Indie";
+  if (name === "sheru") return "⭐ SUPER STAR";
+  if (name.includes("simba")) return "Golden Champ";
+  if (name.includes("miya") || species === "cat") return "Kitty Cutie";
+  if (name.includes("neno")) return "Tiny Explorer";
+  
+  const nicknames = ["Playful Pup", "Golden Champ", "Sweet Critter", "Desi Indie", "Cuddly Boy", "Tiny Explorer", "Gentle Giant", "Brave Heart"];
+  let hash = 0;
+  for (let i = 0; i < (pet.id || "").length; i++) {
+    hash = (hash + pet.id.charCodeAt(i)) % nicknames.length;
+  }
+  return nicknames[hash];
+};
+
+// Status badge class helper
+const getStatusBadgeClass = (status) => {
+  switch (status) {
+    case "Adopted": return "ngo-status-adopted";
+    case "In Shelter": return "ngo-status-shelter";
+    case "Under Treatment": return "ngo-status-treatment";
+    case "Rescued": return "ngo-status-rescued";
+    case "Available for Adoption": return "ngo-status-adoption";
+    default: return "ngo-status-adopted";
+  }
+};
 
 const AnimalMgmt = () => {
   const { animals, updateAnimal, updateAnimalPersisted, addAnimal, caseNotes, addCaseNote, addAnimalPersisted, foundReports, confirmFoundMatch, dismissFoundReport } = useApp();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,6 +293,7 @@ const AnimalMgmt = () => {
   const [speciesFilter, setSpeciesFilter] = useState("All");
   const [selectedPet, setSelectedPet] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
+  const [favorites, setFavorites] = useState({});
 
   // Extended Module States
   const [showImportModal, setShowImportModal] = useState(false);
@@ -89,7 +365,8 @@ const AnimalMgmt = () => {
           age: `${Math.floor(Math.random() * 4) + 1} years`,
           weight: randomSpecies === "Cow" ? "250 kg" : randomSpecies === "Dog" ? "15 kg" : "4 kg",
           photo: photo,
-          custodian: "Pune Central Animal Shelter",
+          custodian: user?.name || "Pune Central Animal Shelter",
+          createdBy: user?.id,
           status: "In Shelter",
           assignedVetId: "VET-1"
         };
@@ -278,7 +555,7 @@ const AnimalMgmt = () => {
             {/* Left Block: Picture Card */}
             <div className="card" style={{ display: "flex", flexDirection: "column", gap: "24px", alignItems: "center", alignSelf: "start" }}>
               <img
-                src={selectedPet.photo}
+                src={selectedPet.photo || selectedPet.image || "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400"}
                 alt={selectedPet.name}
                 style={{
                   width: "100%",
@@ -379,7 +656,7 @@ const AnimalMgmt = () => {
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                         <span style={{ color: "var(--text-muted)", fontWeight: 600 }}>Current Custodian</span>
-                        <strong style={{ color: "var(--text-main)", fontSize: "1.05rem" }}>{selectedPet.custodian || "Pune Central Shelter"}</strong>
+                        <strong style={{ color: "var(--text-main)", fontSize: "1.05rem" }}>{selectedPet.custodian || user?.name || "Shelter Ward"}</strong>
                       </div>
                     </div>
                   </div>
@@ -530,7 +807,7 @@ const AnimalMgmt = () => {
                       }}>
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <span style={{ fontSize: "0.9rem", fontWeight: 800 }}>Current Custodian</span>
-                          <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>{selectedPet.custodian || "Pune Central Shelter"}</span>
+                          <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>{selectedPet.custodian || user?.name || "Shelter Ward"}</span>
                         </div>
                         <span className="badge badge-adopted" style={{ fontSize: "0.6rem" }}>Active</span>
                       </div>
@@ -605,89 +882,135 @@ const AnimalMgmt = () => {
         </div>
       ) : (
         /* DIRECTORY CATALOG LIST - REDESIGNED PET PROFILE CARDS */
-        <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
 
-          {/* Header block with Bulk Import */}
+          {/* Header block with Title, Badge and Bulk Import */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
             <div>
-              <h1 style={{ fontSize: "1.7rem", fontWeight: 800, color: "var(--primary-color)", letterSpacing: "-0.02em" }}>
-                Animal Digital Identities
-              </h1>
-              <p style={{ color: "var(--text-muted)", fontSize: "0.92rem" }}>
-                Audit digital collars, scan NFC tag registries, and track treatment histories.
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+                <h1 style={{ fontSize: "1.75rem", fontWeight: 800, color: "#1C1614", letterSpacing: "-0.02em", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+                  Animal Digital Identities <span style={{ fontSize: "1.25rem" }}>🐾🐶🐱</span>
+                </h1>
+                <div className="ngo-header-badge">
+                  <span>🐱</span>
+                  <span>🐶</span>
+                  <Star size={13} fill="#E09025" color="#E09025" />
+                  <span>Happy Friends Club</span>
+                </div>
+              </div>
+              <p style={{ color: "#7D726D", fontSize: "0.92rem", marginTop: "6px", marginBottom: 0 }}>
+                Audit digital collars, scan NFC tag registries, and track treatment histories with our happy animal companions!
               </p>
             </div>
             <button
-              className="btn btn-outline"
+              className="ngo-bulk-btn"
               onClick={() => setShowImportModal(true)}
-              style={{ display: "flex", alignItems: "center", gap: "8px", borderColor: "var(--primary-color)", color: "var(--primary-color)" }}
             >
-              <Upload size={16} /> Bulk CSV Import
+              <Upload size={16} /> + Bulk CSV Import
             </button>
           </div>
 
-          {/* Header Filtering card */}
-          <div className="card" style={{ display: "flex", gap: "20px", flexWrap: "wrap", alignItems: "center", padding: "20px 32px" }}>
+          {/* Header Filtering Toolbar */}
+          <div className="ngo-filter-card">
             <div style={{ display: "flex", alignItems: "center", position: "relative", flex: 1, minWidth: "260px" }}>
-              <Search size={16} style={{ position: "absolute", left: "14px", color: "var(--text-muted)" }} />
+              <Search size={16} style={{ position: "absolute", left: "14px", color: "#8C7B75" }} />
               <input
                 type="text"
                 placeholder="Search catalog by name, tag ID, or breed..."
-                className="form-control"
-                style={{ width: "100%", paddingLeft: "40px", borderRadius: "30px" }}
+                style={{
+                  width: "100%",
+                  padding: "10px 16px 10px 42px",
+                  borderRadius: "9999px",
+                  border: "none",
+                  outline: "none",
+                  fontSize: "0.9rem",
+                  color: "#2C2420",
+                  backgroundColor: "transparent",
+                  fontFamily: "inherit"
+                }}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
 
-            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <Filter size={14} color="var(--text-muted)" />
-                <select
-                  className="form-control"
-                  style={{ padding: "8px 16px", fontSize: "0.85rem", borderRadius: "30px" }}
-                  value={speciesFilter}
-                  onChange={(e) => setSpeciesFilter(e.target.value)}
-                >
-                  <option value="All">All Species</option>
-                  <option value="Dog">Dogs</option>
-                  <option value="Cat">Cats</option>
-                  <option value="Cow">Cows</option>
-                  <option value="Bird">Birds</option>
-                </select>
-              </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+              <button
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "50%",
+                  border: "1px solid #EFEAE2",
+                  backgroundColor: "#FAF7F2",
+                  color: "#7A6F68",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer"
+                }}
+                title="Filter options"
+              >
+                <SlidersHorizontal size={15} />
+              </button>
 
               <select
-                className="form-control"
-                style={{ padding: "8px 16px", fontSize: "0.85rem", borderRadius: "30px" }}
+                style={{
+                  padding: "8px 18px",
+                  fontSize: "0.85rem",
+                  borderRadius: "9999px",
+                  border: "1px solid #EFEAE2",
+                  backgroundColor: "#FAF7F2",
+                  color: "#2C2420",
+                  fontWeight: 600,
+                  outline: "none",
+                  cursor: "pointer"
+                }}
+                value={speciesFilter}
+                onChange={(e) => setSpeciesFilter(e.target.value)}
+              >
+                <option value="All">All Species</option>
+                <option value="Dog">Dogs</option>
+                <option value="Cat">Cats</option>
+                <option value="Cow">Cows</option>
+                <option value="Bird">Birds</option>
+                <option value="Other">Other</option>
+              </select>
+
+              <select
+                style={{
+                  padding: "8px 18px",
+                  fontSize: "0.85rem",
+                  borderRadius: "9999px",
+                  border: "1px solid #EFEAE2",
+                  backgroundColor: "#FAF7F2",
+                  color: "#2C2420",
+                  fontWeight: 600,
+                  outline: "none",
+                  cursor: "pointer"
+                }}
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
                 <option value="All">All Statuses</option>
-                <option value="Rescued">Rescued</option>
-                <option value="Under Treatment">Under Treatment</option>
-                <option value="In Shelter">In Shelter</option>
-                <option value="Available for Adoption">Available for Adoption</option>
                 <option value="Adopted">Adopted</option>
+                <option value="In Shelter">In Shelter</option>
+                <option value="Under Treatment">Under Treatment</option>
+                <option value="Available for Adoption">Available for Adoption</option>
+                <option value="Rescued">Rescued</option>
               </select>
             </div>
           </div>
 
           {isLoading ? (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "28px" }}>
-              {[...Array(6)].map((_, idx) => (
-                <div key={idx} className="skeleton skeleton-card" style={{ height: "300px" }} />
+            <div className="ngo-animal-grid">
+              {[...Array(8)].map((_, idx) => (
+                <div key={idx} className="skeleton skeleton-card" style={{ height: "290px", borderRadius: "20px" }} />
               ))}
             </div>
           ) : (
-            /* REDESIGNED ANIMAL CARDS GRID */
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-              gap: "28px"
-            }}>
+            /* 4-COLUMN ANIMAL PROFILES GRID */
+            <div>
               {filteredAnimals.length === 0 ? (
-                <div className="empty-state" style={{ gridColumn: "1/-1" }}>
+                <div className="empty-state">
                   <div className="empty-state-icon">
                     <PawPrint size={32} />
                   </div>
@@ -698,158 +1021,114 @@ const AnimalMgmt = () => {
                   </button>
                 </div>
               ) : (
-                filteredAnimals.map((pet) => {
-                  const statusClass =
-                    pet.status === "Adopted" ? "adopted" :
-                      pet.status === "Available for Adoption" ? "adoption" :
-                        pet.status === "In Shelter" ? "shelter" :
-                          pet.status === "Under Treatment" ? "treatment" : "rescued";
+                <div className="ngo-animal-grid">
+                  {filteredAnimals.map((pet) => {
+                    const isFav = !!favorites[pet.id];
+                    const reportsCount = (foundReports || []).filter(r => r.animalId === pet.id && r.status === "Pending").length;
+                    const isParentPet = (pet.custodian || "").toLowerCase().includes("family") || (pet.custodian || "").toLowerCase().includes("home");
+                    const hasScanAlert = !isParentPet && reportsCount > 0;
 
-                  return (
-                    <div
-                      key={pet.id}
-                      className="card animate-slide-up"
-                      onClick={() => {
-                        setSelectedPet(pet);
-                        setActiveTab("overview");
-                      }}
-                      style={{
-                        padding: 0,
-                        overflow: "hidden",
-                        display: "flex",
-                        flexDirection: "column",
-                        cursor: "pointer",
-                        borderRadius: "20px 16px 20px 16px",
-                        position: "relative"
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = "translateY(-8px)";
-                        e.currentTarget.style.boxShadow = "var(--shadow-md)";
-                        const btn = e.currentTarget.querySelector(".view-profile-btn");
-                        if (btn) btn.style.opacity = 1;
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "none";
-                        e.currentTarget.style.boxShadow = "var(--shadow-sm)";
-                        const btn = e.currentTarget.querySelector(".view-profile-btn");
-                        if (btn) btn.style.opacity = 0;
-                      }}
-                    >
-                      {/* Photo wrapper */}
-                      <div style={{ position: "relative", width: "100%", height: "180px", overflow: "hidden" }}>
-                        <img
-                          src={pet.photo}
-                          alt={pet.name}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            transition: "transform 0.4s ease"
-                          }}
-                          className="pet-card-image"
-                        />
-
-                        {/* Overlapping status badge pill in bottom-left */}
-                        <div style={{
-                          position: "absolute",
-                          bottom: "12px",
-                          left: "12px",
-                          zIndex: 5
-                        }}>
-                          <span className={`badge badge-${statusClass}`} style={{ fontSize: "0.68rem", boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
-                            {pet.status}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Card details */}
-                      <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "10px", flexGrow: 1 }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                          <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-main)", display: "flex", alignItems: "center", gap: "8px" }}>
-                            {pet.name || "Unnamed"}
-                            {(() => {
-                              const cust = pet.custodian || "Pune Central Shelter";
-                              const isParentPet = cust.toLowerCase().includes("family") || cust.toLowerCase().includes("home");
-                              const reportsCount = isParentPet ? 0 : (foundReports || []).filter(r => r.animalId === pet.id && r.status === "Pending").length;
-                              return reportsCount > 0 && (
-                                <span
-                                  className="badge"
-                                  style={{
-                                    fontSize: "0.62rem",
-                                    backgroundColor: "var(--accent-coral)",
-                                    color: "white",
-                                    padding: "2px 6px",
-                                    animation: "pulse 1.5s infinite",
-                                    cursor: "pointer"
-                                  }}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate(`/ngo/found-reports?petId=${pet.id}`);
-                                  }}
-                                  title="Pending Found Scan Report Filed. Click to view reports."
-                                >
-                                  Scan Alert
-                                </span>
-                              );
-                            })()}
-                          </h3>
-                          <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted)", fontFamily: "monospace" }}>
-                            {pet.id}
-                          </span>
-                        </div>
-
-                        {/* Attribute icons row */}
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 12px", fontSize: "0.8rem", color: "var(--text-muted)", margin: "4px 0" }}>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontWeight: 600 }}>
-                            <PawPrint size={12} /> {pet.breed}
-                          </span>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontWeight: 600 }}>
-                            <Calendar size={12} /> {pet.age}
-                          </span>
-                        </div>
-
-                        <hr style={{ border: 0, borderBottom: "1px solid var(--border-color)", margin: "4px 0" }} />
-
-                        {/* Custodian tag */}
-                        <div style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          fontSize: "0.75rem",
-                          color: "var(--text-muted)",
-                          fontWeight: 600
-                        }}>
-                          <span>Updated: {pet.lastUpdated}</span>
-                          <span>{(() => {
-                            const cust = pet.custodian || "Pune Central Shelter";
-                            return cust.length > 18 ? cust.substring(0, 15) + "..." : cust;
-                          })()}</span>
-                        </div>
-                      </div>
-
-                      {/* Hover Overlay Button */}
+                    return (
                       <div
-                        className="view-profile-btn"
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          backgroundColor: "rgba(26,62,47,0.15)",
-                          backdropFilter: "blur(2px)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          opacity: 0,
-                          transition: "opacity 0.25s ease",
-                          zIndex: 10,
-                          pointerEvents: "none"
+                        key={pet.id}
+                        className="ngo-animal-card"
+                        onClick={() => {
+                          setSelectedPet(pet);
+                          setActiveTab("overview");
                         }}
                       >
-                        <span className="btn btn-primary btn-sm" style={{ pointerEvents: "auto", boxShadow: "var(--shadow-md)" }}>
-                          <Eye size={14} /> View profile
-                        </span>
+                        {/* 1. Top row */}
+                        <div className="ngo-card-top-row">
+                          <span className="ngo-card-pet-tag-name">{pet.name || "Pet"}</span>
+                          <button
+                            className="ngo-card-heart-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setFavorites(prev => ({ ...prev, [pet.id]: !prev[pet.id] }));
+                            }}
+                            title="Favorite pet"
+                          >
+                            <Heart size={16} fill={isFav ? "#FF6E14" : "none"} color={isFav ? "#FF6E14" : "#FFA048"} strokeWidth={2} />
+                          </button>
+                        </div>
+
+                        {/* 2. Pet Showcase Box */}
+                        <div className="ngo-pet-showcase" style={{ backgroundColor: getCardBg(pet) }}>
+                          <PetIllustration pet={pet} />
+
+                          {/* Floating Nickname Badge */}
+                          <div className="ngo-nickname-badge">
+                            {getNicknameBadge(pet)}
+                          </div>
+
+                          {/* Floating Status Pill */}
+                          <div className={`ngo-status-pill ${getStatusBadgeClass(pet.status)}`}>
+                            <PawPrint size={10} />
+                            <span>{pet.status}</span>
+                          </div>
+
+                          {/* Floating Scan Alert if present */}
+                          {hasScanAlert && (
+                            <div
+                              style={{
+                                position: "absolute",
+                                bottom: "10px",
+                                right: "10px",
+                                padding: "3px 8px",
+                                borderRadius: "9999px",
+                                backgroundColor: "var(--accent-coral)",
+                                color: "white",
+                                fontSize: "0.62rem",
+                                fontWeight: 800,
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "4px",
+                                boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                                animation: "pulse 1.5s infinite",
+                                cursor: "pointer",
+                                zIndex: 3
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/ngo/found-reports?petId=${pet.id}`);
+                              }}
+                              title="Pending Found Scan Report Filed"
+                            >
+                              Scan Alert
+                            </div>
+                          )}
+                        </div>
+
+                        {/* 3. Card Body Info */}
+                        <div className="ngo-card-body">
+                          <div className="ngo-card-title-row">
+                            <span className="ngo-card-name">{pet.name || "Unnamed"}</span>
+                            <span className="ngo-card-tag-id">{pet.id}</span>
+                          </div>
+
+                          <div className="ngo-card-details-row">
+                            <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                              <PawPrint size={12} color="#FF7A1A" />
+                              <span>{pet.breed || pet.species || "Companion"}</span>
+                            </span>
+                            <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                              <Calendar size={12} color="#8C7B75" />
+                              <span>{pet.age || "—"}</span>
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* 4. Card Footer */}
+                        <div className="ngo-card-footer">
+                          <span>Updated:</span>
+                          <span style={{ maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {pet.custodian || pet.lastUpdated || "Parent One (Home)"}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })
+                    );
+                  })}
+                </div>
               )}
             </div>
           )}

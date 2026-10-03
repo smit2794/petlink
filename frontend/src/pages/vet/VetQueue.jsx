@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
+import { useAuth } from "../../context/AuthContext";
 import { ClipboardList, AlertCircle, Clock, ArrowRight, ShieldAlert, Heart, Calendar, Search, Filter } from "lucide-react";
 
 // CountUp Component for Metric Animation
@@ -26,7 +27,8 @@ const CountUp = ({ target }) => {
 };
 
 const VetQueue = () => {
-  const { animals, vetAppointments, activeVetId, reassignVetCase } = useApp();
+  const { animals, vetAppointments, reassignVetCase } = useApp();
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
@@ -47,7 +49,8 @@ const VetQueue = () => {
     if (!isVetScope) return false;
     
     if (viewScope === "my") {
-      return pet.assignedVetId === activeVetId;
+      // Strict single real ownership model — match assignedVetId === user.id ONLY
+      return pet.assignedVetId === user?.id;
     }
     return true;
   });
@@ -323,7 +326,11 @@ const VetQueue = () => {
                       pet.status === "Rescued" ? "Awaiting Diagnosis" :
                       pet.status === "Under Treatment" ? "In Treatment" : "Awaiting Discharge";
                     const sender = pet.custodian || "Pune Municipal NGO";
-                    const assignedVetName = pet.assignedVetId === "VET-2" ? "Dr. Ananya Rao" : "Dr. Dev Karve";
+                    const assignedVetName = pet.assignedVetId === user?.id 
+                      ? `${user?.name} (You)`
+                      : pet.assignedVetId 
+                      ? "Assigned Clinician"
+                      : "Unassigned";
  
                     return (
                       <tr 
@@ -420,14 +427,14 @@ const VetQueue = () => {
                 <label className="form-label">Select Practitioner</label>
                 <select
                   className="form-control"
-                  defaultValue={selectedPetForReassign.assignedVetId}
+                  defaultValue={selectedPetForReassign.assignedVetId || user?.id}
                   onChange={(e) => {
                     reassignVetCase(selectedPetForReassign.id, e.target.value);
                     setSelectedPetForReassign(null);
                   }}
                 >
-                  <option value="VET-1">Dr. Dev Karve (CVO)</option>
-                  <option value="VET-2">Dr. Ananya Rao (Surgeon)</option>
+                  <option value={user?.id}>{user?.name} (Myself)</option>
+                  <option value="">Unassigned / Pool</option>
                 </select>
               </div>
 

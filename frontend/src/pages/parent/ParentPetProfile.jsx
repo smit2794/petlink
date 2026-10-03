@@ -2,15 +2,18 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PetQRCode from "../../components/PetQRCode";
 import { useApp } from "../../context/AppContext";
+import { useAuth } from "../../context/AuthContext";
 import {
   ArrowLeft, Heart, Calendar, ShieldCheck, FileText, Activity,
-  AlertTriangle, Download, Eye, Clock, ClipboardList, Info, Camera
+  AlertTriangle, Download, Eye, Clock, ClipboardList, Info, Camera,
+  ShieldAlert
 } from "lucide-react";
 
 const ParentPetProfile = () => {
   const { petId } = useParams();
   const navigate = useNavigate();
   const { animals, petMemories, addPetMemory, updateAnimalPersisted, addToast } = useApp();
+  const { user } = useAuth();
 
   const pet = animals.find((p) => p.id === petId);
   const [activeTab, setActiveTab] = useState("timeline");
@@ -48,7 +51,35 @@ const ParentPetProfile = () => {
       <div className="card" style={{ padding: "40px", textAlign: "center" }}>
         <h2 style={{ color: "var(--accent-coral)" }}>Pet Profile Not Found</h2>
         <p style={{ color: "var(--text-muted)", margin: "8px 0 20px" }}>The requested pet record does not exist in the shared registry.</p>
-        <button className="btn btn-primary" onClick={() => navigate("/parent/pets")}>Return Home</button>
+        <button className="btn btn-primary" onClick={() => navigate("/parent/pets")}>Return to My Pets</button>
+      </div>
+    );
+  }
+
+  // Strict ownership check — pet must belong to the logged-in parent
+  if (pet.ownerId !== user?.id) {
+    return (
+      <div className="card" style={{ padding: "48px 32px", textAlign: "center", maxWidth: "520px", margin: "40px auto" }}>
+        <div style={{
+          width: "56px",
+          height: "56px",
+          borderRadius: "50%",
+          backgroundColor: "rgba(224, 93, 93, 0.12)",
+          color: "var(--accent-coral)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "0 auto 16px"
+        }}>
+          <ShieldAlert size={28} />
+        </div>
+        <h2 style={{ color: "var(--text-main)", fontSize: "1.4rem", fontWeight: 800 }}>Access Restricted</h2>
+        <p style={{ color: "var(--text-muted)", margin: "10px 0 24px", fontSize: "0.92rem", lineHeight: 1.5 }}>
+          You do not have authorization to view or manage this pet profile. You may only access pets registered to your personal account.
+        </p>
+        <button className="btn btn-primary" onClick={() => navigate("/parent/pets")}>
+          Return to My Pets
+        </button>
       </div>
     );
   }

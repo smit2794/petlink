@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { useApp } from "../../context/AppContext";
+import { useAuth } from "../../context/AuthContext";
 import { MapPin, Phone, Calendar, CheckCircle2, AlertTriangle, ShieldCheck, XCircle, Clock } from "lucide-react";
 
 const ParentFoundReports = () => {
   const { foundReports, animals, confirmFoundMatch, dismissFoundReport } = useApp();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("pending");
 
-  // Get all parent-custodied pets
-  const parentPets = (animals || []).filter((p) => {
-    const cust = p.custodian || "";
-    return cust.toLowerCase().includes("family") || cust.toLowerCase().includes("home");
-  });
+  // Get only pets strictly owned by this parent
+  const parentPets = (animals || []).filter((p) => p.ownerId === user?.id);
   const parentPetIds = parentPets.map((p) => p.id);
 
   // Filter reports targeting parent's pets

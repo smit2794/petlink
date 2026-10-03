@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
+import { useAuth } from "../../context/AuthContext";
 import { MapPin, Phone, Clock, AlertTriangle, CheckCircle2, ShieldAlert, XCircle, ArrowLeft, PawPrint } from "lucide-react";
 
 // Report status badge with icon
@@ -12,6 +13,7 @@ const getReportStatusBadge = (status) => {
 
 const NGOFoundReports = () => {
   const { foundReports, animals, confirmFoundMatch, dismissFoundReport } = useApp();
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -31,7 +33,14 @@ const NGOFoundReports = () => {
 
   const ngoPets = (animals || []).filter((p) => {
     const cust = p.custodian || "";
-    return !cust.toLowerCase().includes("family") && !cust.toLowerCase().includes("home");
+    const isParentOwned = p.ownerId || cust.toLowerCase().includes("family") || cust.toLowerCase().includes("home");
+    if (isParentOwned) return false;
+    // If specific NGO account logged in, match by createdBy or custodian name if set
+    if (user?.name && (p.createdBy === user.id || cust.toLowerCase().includes(user.name.toLowerCase()))) {
+      return true;
+    }
+    // Also include shelter animals not owned by parents
+    return !p.ownerId;
   });
   const ngoPetIds = ngoPets.map((p) => p.id);
 

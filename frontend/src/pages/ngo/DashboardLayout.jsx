@@ -1,17 +1,20 @@
 import React, { useState } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
+import { useAuth } from "../../context/AuthContext";
 import {
   Menu, X, Home, Navigation, Dog,
   Users, CheckSquare, HeartHandshake, FileBarChart, Bell,
   Search, ArrowLeft, CheckCircle, Info, AlertTriangle, AlertCircle, Calendar,
-  PawPrint
+  PawPrint, LogOut, Settings
 } from "lucide-react";
 
 const ShelterIcon = Home;
 
 const DashboardLayout = () => {
   const { toasts, removeToast } = useApp();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const location = useLocation();
@@ -42,10 +45,11 @@ const DashboardLayout = () => {
       ]
     },
     {
-      category: "Financials",
+      category: "Financials & Settings",
       links: [
         { path: "/ngo/donations", label: "Donations Ledger", icon: HeartHandshake },
-        { path: "/ngo/reports", label: "Reports & Audits", icon: FileBarChart }
+        { path: "/ngo/reports", label: "Reports & Audits", icon: FileBarChart },
+        { path: "/ngo/settings", label: "Settings", icon: Settings }
       ]
     }
   ];
@@ -65,7 +69,7 @@ const DashboardLayout = () => {
       {/* 1. Left Sidebar - Desktop */}
       <aside style={{
         width: "260px",
-        backgroundColor: "var(--primary-color)",
+        backgroundColor: "#1D1311",
         color: "var(--text-white)",
         display: "flex",
         flexDirection: "column",
@@ -74,63 +78,63 @@ const DashboardLayout = () => {
         top: 0,
         height: "100vh",
         zIndex: 100,
-        boxShadow: "4px 0 24px rgba(0,0,0,0.12)",
-        borderRight: "1px solid rgba(255,255,255,0.04)"
+        boxShadow: "4px 0 24px rgba(0,0,0,0.2)",
+        borderRight: "1px solid rgba(255,255,255,0.05)"
       }} className="sidebar-desktop">
         {/* Sidebar Logo */}
         <div style={{
-          padding: "28px 24px",
+          padding: "24px 22px",
           display: "flex",
           alignItems: "center",
           gap: "12px",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.08)"
+          borderBottom: "1px solid rgba(255, 255, 255, 0.06)"
         }}>
           <div style={{
             width: "38px",
             height: "38px",
-            borderRadius: "12px",
-            background: "linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1))",
+            borderRadius: "50%",
+            background: "linear-gradient(135deg, #FF7A1A, #FF5500)",
             color: "white",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            border: "1px solid rgba(255,255,255,0.2)",
+            boxShadow: "0 4px 12px rgba(255, 107, 0, 0.35)",
             flexShrink: 0
           }}>
             <PawPrint size={20} />
           </div>
-          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.1 }}>
-            <span style={{ fontSize: "1.1rem", fontWeight: 800, letterSpacing: "-0.03em" }}>
-              PetLink
+          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.15 }}>
+            <span style={{ fontSize: "1.05rem", fontWeight: 900, letterSpacing: "0.02em", color: "#FFFFFF" }}>
+              PET CARE
             </span>
-            <span style={{ fontSize: "0.72rem", fontWeight: 500, opacity: 0.6, letterSpacing: "0.08em", textTransform: "uppercase" }}>
-              NGO Portal
+            <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "#FF7A1A", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+              NGO PORTAL
             </span>
           </div>
         </div>
 
         {/* Sidebar Navigation grouped by Categories */}
-        <nav style={{ flex: 1, padding: "20px 12px", display: "flex", flexDirection: "column", gap: "4px", overflowY: "auto" }}>
+        <nav style={{ flex: 1, padding: "18px 12px", display: "flex", flexDirection: "column", gap: "2px", overflowY: "auto" }}>
           {groupedLinks.map((cat, catIdx) => (
             <div key={catIdx}>
-              {/* Category Separator — skip before first group */}
+              {/* Category Separator */}
               {catIdx > 0 && (
                 <div style={{
                   height: "1px",
-                  backgroundColor: "rgba(255,255,255,0.07)",
-                  margin: "12px 8px 14px"
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  margin: "10px 8px 12px"
                 }} />
               )}
               {/* Category Uppercase Label */}
               <span style={{
-                fontSize: "0.65rem",
+                fontSize: "0.68rem",
                 fontWeight: 800,
-                letterSpacing: "0.14em",
+                letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "rgba(255, 255, 255, 0.35)",
+                color: "#8C7B75",
                 paddingLeft: "16px",
                 display: "block",
-                marginBottom: "8px"
+                marginBottom: "6px"
               }}>
                 {cat.category}
               </span>
@@ -148,25 +152,24 @@ const DashboardLayout = () => {
                         alignItems: "center",
                         gap: "10px",
                         padding: "10px 16px",
-                        borderRadius: "12px",
+                        borderRadius: "9999px",
                         fontSize: "0.88rem",
                         fontWeight: isActive ? 700 : 500,
                         transition: "all var(--transition-fast)",
-                        backgroundColor: isActive ? "rgba(255,255,255,0.15)" : "transparent",
-                        color: isActive ? "white" : "rgba(255, 255, 255, 0.65)",
-                        borderLeft: isActive ? "3px solid rgba(255,255,255,0.7)" : "3px solid transparent",
+                        backgroundColor: isActive ? "#FF6E14" : "transparent",
+                        color: isActive ? "#FFFFFF" : "#A89992",
                         textDecoration: "none"
                       }}
                       onMouseEnter={(e) => {
                         if (!isActive) {
-                          e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.07)";
-                          e.currentTarget.style.color = "rgba(255,255,255,0.9)";
+                          e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.06)";
+                          e.currentTarget.style.color = "#FFFFFF";
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (!isActive) {
                           e.currentTarget.style.backgroundColor = "transparent";
-                          e.currentTarget.style.color = "rgba(255, 255, 255, 0.65)";
+                          e.currentTarget.style.color = "#A89992";
                         }
                       }}
                     >
@@ -178,7 +181,7 @@ const DashboardLayout = () => {
                           width: "6px",
                           height: "6px",
                           borderRadius: "50%",
-                          backgroundColor: "rgba(255,255,255,0.8)"
+                          backgroundColor: "#FFFFFF"
                         }} />
                       )}
                     </NavLink>
@@ -189,32 +192,68 @@ const DashboardLayout = () => {
           ))}
         </nav>
 
-        {/* Sidebar Footer Link */}
-        <div style={{ padding: "16px 12px", borderTop: "1px solid rgba(255, 255, 255, 0.08)" }}>
+        {/* Sidebar Footer — Portal Settings & Exit Link */}
+        <div style={{ padding: "14px 12px 18px", borderTop: "1px solid rgba(255, 255, 255, 0.06)", display: "flex", flexDirection: "column", gap: "10px" }}>
+          <Link
+            to="/ngo/settings"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              padding: "8px 12px",
+              borderRadius: "14px",
+              backgroundColor: "rgba(255, 255, 255, 0.04)",
+              textDecoration: "none",
+              transition: "background var(--transition-fast)"
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.08)"}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.04)"}
+          >
+            <div style={{
+              width: "32px",
+              height: "32px",
+              borderRadius: "50%",
+              backgroundColor: "#F59E0B",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#1D1311",
+              flexShrink: 0
+            }}>
+              <Settings size={16} />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}>
+              <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#FFFFFF" }}>
+                Portal Settings
+              </span>
+              <span style={{ fontSize: "0.7rem", color: "#8C7B75" }}>
+                v2.4 Production
+              </span>
+            </div>
+          </Link>
+
           <Link
             to="/"
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "10px",
-              padding: "10px 16px",
-              borderRadius: "12px",
-              fontSize: "0.88rem",
+              gap: "8px",
+              padding: "6px 14px",
+              borderRadius: "10px",
+              fontSize: "0.82rem",
               fontWeight: 500,
-              color: "rgba(255,255,255,0.55)",
+              color: "#8C7B75",
               transition: "all var(--transition-fast)",
               textDecoration: "none"
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.07)";
-              e.currentTarget.style.color = "rgba(255,255,255,0.9)";
+              e.currentTarget.style.color = "#FFFFFF";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.color = "rgba(255,255,255,0.55)";
+              e.currentTarget.style.color = "#8C7B75";
             }}
           >
-            <ArrowLeft size={16} /> Exit to Selector
+            <ArrowLeft size={14} /> Exit to Selector
           </Link>
         </div>
       </aside>
@@ -334,16 +373,15 @@ const DashboardLayout = () => {
         {/* NGO Top Bar */}
         <header style={{
           height: "72px",
-          backgroundColor: "var(--card-bg)",
-          borderBottom: "1px solid var(--border-color)",
+          backgroundColor: "#FAF7F2",
+          borderBottom: "1px solid #EAE3D8",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           padding: "0 40px",
           position: "sticky",
           top: 0,
-          zIndex: 90,
-          boxShadow: "0 1px 0 var(--border-color)"
+          zIndex: 90
         }}>
           {/* Hamburger button on Tablet/Mobile */}
           <button
@@ -351,7 +389,7 @@ const DashboardLayout = () => {
             style={{
               background: "none",
               border: 0,
-              color: "var(--text-main)",
+              color: "#1D1311",
               cursor: "pointer",
               display: "none",
               padding: "6px",
@@ -363,65 +401,74 @@ const DashboardLayout = () => {
           </button>
 
           {/* Search box */}
-          <div style={{ display: "flex", alignItems: "center", position: "relative", maxWidth: "300px", width: "100%" }} className="search-desktop">
-            <Search size={15} style={{ position: "absolute", left: "14px", color: "var(--text-muted)" }} />
+          <div style={{ display: "flex", alignItems: "center", position: "relative", maxWidth: "340px", width: "100%" }} className="search-desktop">
+            <Search size={15} style={{ position: "absolute", left: "14px", color: "#8C7B75" }} />
             <input
               type="text"
               placeholder="Search NGO database..."
               style={{
                 width: "100%",
-                padding: "9px 14px 9px 38px",
-                borderRadius: "30px",
-                border: "1.5px solid var(--border-color)",
-                fontSize: "0.88rem",
+                padding: "9px 16px 9px 38px",
+                borderRadius: "9999px",
+                border: "1px solid #E5DFD4",
+                fontSize: "0.86rem",
                 outline: "none",
-                backgroundColor: "var(--bg-color)",
-                color: "var(--text-main)",
-                transition: "border-color var(--transition-fast)",
+                backgroundColor: "#EFEAE1",
+                color: "#1D1311",
+                transition: "all var(--transition-fast)",
                 fontFamily: "inherit"
               }}
-              onFocus={(e) => e.target.style.borderColor = "var(--secondary-color)"}
-              onBlur={(e) => e.target.style.borderColor = "var(--border-color)"}
+              onFocus={(e) => {
+                e.target.style.borderColor = "#FF7A1A";
+                e.target.style.backgroundColor = "#FFFFFF";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "#E5DFD4";
+                e.target.style.backgroundColor = "#EFEAE1";
+              }}
             />
           </div>
 
           {/* Top Bar Actions */}
-          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
             {/* Notification Bell */}
             <div style={{ position: "relative" }}>
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
                 style={{
-                  background: "none",
-                  border: 0,
-                  color: "var(--text-main)",
+                  width: "38px",
+                  height: "38px",
+                  borderRadius: "50%",
+                  backgroundColor: "#1D1311",
+                  border: "1px solid #1D1311",
+                  color: "#FFFFFF",
                   cursor: "pointer",
                   position: "relative",
-                  padding: "8px",
                   display: "flex",
-                  borderRadius: "10px",
-                  transition: "background var(--transition-fast)"
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "all var(--transition-fast)"
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.background = "var(--secondary-light)"}
-                onMouseLeave={(e) => e.currentTarget.style.background = "none"}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#2C201C"}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#1D1311"}
               >
-                <Bell size={20} />
+                <Bell size={17} />
                 {toasts.length > 0 && (
                   <span style={{
                     position: "absolute",
-                    top: "4px",
-                    right: "4px",
-                    width: "16px",
-                    height: "16px",
+                    top: "-2px",
+                    right: "-2px",
+                    width: "14px",
+                    height: "14px",
                     borderRadius: "50%",
-                    backgroundColor: "var(--accent-coral)",
+                    backgroundColor: "#FF6E14",
                     color: "white",
-                    fontSize: "0.6rem",
+                    fontSize: "0.58rem",
                     fontWeight: 800,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    border: "2px solid white"
+                    border: "2px solid #FAF7F2"
                   }}>
                     {toasts.length}
                   </span>
@@ -484,32 +531,74 @@ const DashboardLayout = () => {
               )}
             </div>
 
-            {/* Profile Avatar */}
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            {/* Real NGO Profile Capsule */}
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              backgroundColor: "#FCE8D5",
+              border: "1px solid #F6D6B8",
+              borderRadius: "9999px",
+              padding: "4px 16px 4px 6px"
+            }}>
               <div style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "10px",
-                background: "linear-gradient(135deg, var(--secondary-color), var(--primary-color))",
-                color: "white",
+                width: "32px",
+                height: "32px",
+                borderRadius: "50%",
+                backgroundColor: "#FF6E14",
+                color: "#FFFFFF",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontWeight: 700,
-                fontSize: "0.85rem",
+                fontWeight: 900,
+                fontSize: "0.88rem",
                 flexShrink: 0
               }}>
-                PM
+                {user?.name ? user.name[0].toUpperCase() : "A"}
               </div>
               <div style={{ display: "flex", flexDirection: "column" }} className="profile-text">
-                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-main)", lineHeight: 1.2 }}>
-                  Pooja Mehta
+                <span style={{ fontSize: "0.62rem", fontWeight: 800, color: "#8C7B75", letterSpacing: "0.06em", textTransform: "uppercase", lineHeight: 1.1 }}>
+                  WELCOME BACK
                 </span>
-                <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 500 }}>
-                  Lead Coordinator
+                <span style={{ fontSize: "0.82rem", fontWeight: 800, color: "#1D1311", lineHeight: 1.2 }}>
+                  {user?.name || "animallove"} <span style={{ color: "#8C7B75", fontWeight: 600 }}>/ {user?.ngoProfile?.region || user?.city || "chorbajar"}</span>
                 </span>
               </div>
             </div>
+
+            {/* Logout Action */}
+            <button
+              onClick={() => {
+                logout();
+                navigate("/login");
+              }}
+              title="Sign out of NGO portal"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                background: "transparent",
+                border: "1.5px solid #DFD7CC",
+                padding: "7px 16px",
+                borderRadius: "9999px",
+                color: "#2C2420",
+                cursor: "pointer",
+                fontSize: "0.82rem",
+                fontWeight: 700,
+                transition: "all var(--transition-fast)"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "var(--accent-coral)";
+                e.currentTarget.style.color = "var(--accent-coral)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#DFD7CC";
+                e.currentTarget.style.color = "#2C2420";
+              }}
+            >
+              <LogOut size={14} />
+              <span>Logout</span>
+            </button>
           </div>
         </header>
 

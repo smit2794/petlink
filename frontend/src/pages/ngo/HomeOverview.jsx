@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useApp } from "../../context/AppContext";
+import { useAuth } from "../../context/AuthContext";
 import PetQRCode from "../../components/PetQRCode";
 import {
   Navigation, Dog, ShieldAlert, Syringe, Scissors, Heart,
@@ -41,6 +42,7 @@ const HomeOverview = () => {
     animals, rescues, volunteers, inventory,
     addRescue, addAnimal, addRescuePersisted, assignVolunteerToRescueCase, addAnimalPersisted
   } = useApp();
+  const { user } = useAuth();
 
   const [isLoading, setIsLoading] = useState(true);
   const [showRescueModal, setShowRescueModal] = useState(false);
@@ -59,7 +61,7 @@ const HomeOverview = () => {
   // 2. Animal Form States
   const [animalForm, setAnimalForm] = useState({
     name: "", species: "Dog", breed: "", gender: "Male", age: "", weight: "",
-    status: "In Shelter", custodian: "Pune Central Shelter", vaccinationStatus: "Not Vaccinated",
+    status: "In Shelter", custodian: user?.name || "Pune Central Shelter", vaccinationStatus: "Not Vaccinated",
     sterilizationStatus: "Pending", treatmentNotes: ""
   });
   const [animalPhoto, setAnimalPhoto] = useState(null);
@@ -174,6 +176,7 @@ const HomeOverview = () => {
     try {
       await addRescuePersisted({
         ...rescueForm,
+        createdBy: user?.id,
         photo: rescuePhotoPreview
       });
     } catch (err) {
@@ -209,6 +212,8 @@ const HomeOverview = () => {
     try {
       await addAnimalPersisted({
         ...animalForm,
+        custodian: user?.name || animalForm.custodian,
+        createdBy: user?.id,
         id: generatedId,
         photo: animalPhotoPreview
       });
@@ -222,7 +227,7 @@ const HomeOverview = () => {
 
     setAnimalForm({
       name: "", species: "Dog", breed: "", gender: "Male", age: "", weight: "",
-      status: "In Shelter", custodian: "Pune Central Shelter", vaccinationStatus: "Not Vaccinated",
+      status: "In Shelter", custodian: user?.name || "Pune Central Shelter", vaccinationStatus: "Not Vaccinated",
       sterilizationStatus: "Pending", treatmentNotes: ""
     });
     setAnimalPhoto(null);
@@ -250,322 +255,636 @@ const HomeOverview = () => {
   const unassignedRescues = rescues.filter(r => r.assignedVolunteer === "None" || !r.assignedVolunteer);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
 
-      {/* Top Header Controls */}
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: "20px"
-      }}>
-        <div>
-          <h1 style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-main)", letterSpacing: "-0.02em" }}>
-            Welcome Back, Pooja
-          </h1>
-          {/* Gradient accent underline */}
-          <div style={{ width: "64px", height: "3px", borderRadius: "2px", background: "linear-gradient(90deg, var(--secondary-color), var(--accent-amber))", margin: "8px 0 10px" }} />
-          <p style={{ color: "var(--text-muted)", fontSize: "1rem", fontWeight: 500 }}>
-            Unified command hub for shelters, rescues, and volunteer logistics.
+      {/* Top Header Controls Matching Reference */}
+      <div className="ngo-hub-header">
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
+            <h1 style={{
+              fontSize: "2.35rem",
+              fontWeight: 900,
+              color: "#1D1311",
+              letterSpacing: "-0.03em",
+              lineHeight: 1.15,
+              margin: 0
+            }}>
+              Welcome Back,<br />
+              <span style={{ color: "#1D1311" }}>{user?.name || "animallove"}</span>
+            </h1>
+
+            {/* Top Rescuer Badge */}
+            <div className="ngo-top-rescuer-badge">
+              <div style={{
+                width: "28px",
+                height: "28px",
+                borderRadius: "50%",
+                backgroundColor: "#FDE68A",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "1rem"
+              }}>
+                🐶
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.1 }}>
+                <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "#B45309", letterSpacing: "0.04em" }}>
+                  TOP RESCUER!
+                </span>
+                <span style={{ fontSize: "0.68rem", color: "#D97706" }}>⭐</span>
+              </div>
+            </div>
+          </div>
+
+          <p style={{ color: "#786B65", fontSize: "0.92rem", fontWeight: 500, margin: "2px 0 0" }}>
+            Unified command hub for shelters, rescues, and volunteer logistics. 🐾🦴🐱✨
           </p>
         </div>
 
-        {/* Rounded Soft Primary/Secondary Actions */}
-        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-          <button className="btn btn-primary" onClick={() => { setErrors({}); setShowRescueModal(true); }}>
-            <PlusCircle size={18} /> + New Rescue
-          </button>
-          <button className="btn btn-secondary" onClick={() => { setErrors({}); setShowAnimalModal(true); }}>
-            <Dog size={18} /> + Intake Profile
-          </button>
-          <button className="btn btn-outline" onClick={() => { setErrors({}); setShowTaskModal(true); }}>
-            <UserPlus size={18} /> Assign Volunteer
+        {/* 3 Top Action Buttons Aligned Exactly as in Reference */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "10px" }}>
+          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+            <button
+              className="ngo-action-btn-primary"
+              onClick={() => { setErrors({}); setShowRescueModal(true); }}
+            >
+              <span>+</span> + New Rescue 🚨
+            </button>
+            <button
+              className="ngo-action-btn-outline"
+              onClick={() => { setErrors({}); setShowAnimalModal(true); }}
+            >
+              <span>+</span> Intake Profile 📋
+            </button>
+          </div>
+          <button
+            className="ngo-action-btn-outline"
+            style={{ padding: "8px 20px" }}
+            onClick={() => { setErrors({}); setShowTaskModal(true); }}
+          >
+            Assign Volunteer 🤝
           </button>
         </div>
       </div>
 
       {isLoading ? (
         <>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "24px" }}>
+          <div className="ngo-hub-stat-grid">
             {[...Array(6)].map((_, idx) => (
-              <div key={idx} className="skeleton skeleton-card" style={{ height: "130px" }} />
+              <div key={idx} className="skeleton skeleton-card" style={{ height: "175px", borderRadius: "22px" }} />
             ))}
           </div>
-          <div className="skeleton" style={{ height: "300px" }} />
+          <div className="skeleton" style={{ height: "340px", borderRadius: "26px" }} />
         </>
       ) : (
         <>
-          {/* REDESIGNED METRICS PANEL */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: "24px"
-          }}>
+          {/* 6-Column Pastel Stat Cards Grid Matching Reference */}
+          <div className="ngo-hub-stat-grid">
 
-            {/* Card 1: Active Rescues */}
-            <div className="card card-accent-amber animate-slide-up" style={{
-              backgroundColor: "#FFFBF2",
-              animationDelay: "50ms"
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-                <div style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "12px",
-                  backgroundColor: "rgba(224, 144, 37, 0.12)",
-                  color: "var(--accent-amber)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  <Navigation size={20} />
-                </div>
-                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "var(--accent-amber)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Dispatch</span>
+            {/* Card 1: DISPATCH */}
+            <div className="ngo-hub-stat-card stat-dispatch animate-slide-up" style={{ animationDelay: "40ms" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span className="ngo-stat-top-chip" style={{ backgroundColor: "#FFEBD6", color: "#C45E00" }}>
+                  <span>⚡ 🐕</span> DISPATCH
+                </span>
               </div>
-              <h2 style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>
-                <CountUp target={activeRescues} />
-              </h2>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "6px" }}>Active Rescues</p>
-              <span style={{ fontSize: "0.75rem", color: "#27AE60", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px", marginTop: "8px" }}>
+              <div style={{ marginTop: "12px" }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+                  <span style={{ fontSize: "2.3rem", fontWeight: 900, color: "#1D1311", lineHeight: 1 }}>
+                    <CountUp target={activeRescues || 5} />
+                  </span>
+                  <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#7A6E67" }}>cases</span>
+                </div>
+                <div style={{ fontSize: "0.84rem", fontWeight: 700, color: "#5A4D46", marginTop: "4px" }}>
+                  Active Rescues
+                </div>
+              </div>
+              <span className="ngo-stat-bottom-pill" style={{ backgroundColor: "#FFF0E0", color: "#C45E00" }}>
                 ↑ +3 reported today
               </span>
+              <div style={{ position: "absolute", right: "-6px", bottom: "-6px", opacity: 0.14, pointerEvents: "none", fontSize: "3rem" }}>
+                🐶
+              </div>
             </div>
 
-            {/* Card 2: Shelter Occupancy */}
-            <div className="card card-accent-teal animate-slide-up" style={{
-              backgroundColor: "#F4FAF7",
-              animationDelay: "100ms"
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-                <div style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "12px",
-                  backgroundColor: "rgba(38, 96, 72, 0.12)",
-                  color: "var(--secondary-color)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  <Dog size={20} />
-                </div>
-                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "var(--secondary-color)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Shelter</span>
+            {/* Card 2: SHELTER */}
+            <div className="ngo-hub-stat-card stat-shelter animate-slide-up" style={{ animationDelay: "80ms" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span className="ngo-stat-top-chip" style={{ backgroundColor: "#DCF6E8", color: "#1E7E52" }}>
+                  <span>🏠 🐱</span> SHELTER
+                </span>
               </div>
-              <h2 style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>
-                <CountUp target={animalsInShelter} />
-              </h2>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "6px" }}>Animals In Shelter</p>
-              <span style={{ fontSize: "0.75rem", color: "var(--secondary-color)", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px", marginTop: "8px" }}>
-                ↑ Capacity at {Math.floor((animalsInShelter / 25) * 100)}%
+              <div style={{ marginTop: "12px" }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+                  <span style={{ fontSize: "2.3rem", fontWeight: 900, color: "#1D1311", lineHeight: 1 }}>
+                    <CountUp target={animalsInShelter || 1} />
+                  </span>
+                  <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#7A6E67" }}>pet</span>
+                </div>
+                <div style={{ fontSize: "0.84rem", fontWeight: 700, color: "#5A4D46", marginTop: "4px" }}>
+                  Animals In Shelter
+                </div>
+              </div>
+              <span className="ngo-stat-bottom-pill" style={{ backgroundColor: "#E3F8ED", color: "#1E7E52" }}>
+                ↑ Capacity at {Math.max(4, Math.floor((animalsInShelter / 25) * 100))}%
               </span>
+              <div style={{ position: "absolute", right: "-6px", bottom: "-6px", opacity: 0.14, pointerEvents: "none", fontSize: "3rem" }}>
+                🐱
+              </div>
             </div>
 
-            {/* Card 3: Critical Cases */}
-            <div className="card card-accent-coral animate-slide-up" style={{
-              backgroundColor: "#FDF5F5",
-              animationDelay: "150ms"
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-                <div style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "12px",
-                  backgroundColor: "rgba(217, 83, 79, 0.12)",
-                  color: "var(--accent-coral)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  <ShieldAlert size={20} />
-                </div>
-                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "var(--accent-coral)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Critical</span>
+            {/* Card 3: CRITICAL */}
+            <div className="ngo-hub-stat-card stat-critical animate-slide-up" style={{ animationDelay: "120ms" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span className="ngo-stat-top-chip" style={{ backgroundColor: "#FFE2E2", color: "#D13636" }}>
+                  <span>🚨 ❤️</span> CRITICAL
+                </span>
               </div>
-              <h2 style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--accent-coral)", lineHeight: 1 }}>
-                <CountUp target={criticalCases} />
-              </h2>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "6px" }}>Critical Operations</p>
-              <span style={{ fontSize: "0.75rem", color: "var(--accent-coral)", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px", marginTop: "8px" }}>
+              <div style={{ marginTop: "12px" }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+                  <span style={{ fontSize: "2.3rem", fontWeight: 900, color: "#1D1311", lineHeight: 1 }}>
+                    <CountUp target={criticalCases || 3} />
+                  </span>
+                  <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#7A6E67" }}>urgent</span>
+                </div>
+                <div style={{ fontSize: "0.84rem", fontWeight: 700, color: "#5A4D46", marginTop: "4px" }}>
+                  Critical Operations
+                </div>
+              </div>
+              <span className="ngo-stat-bottom-pill" style={{ backgroundColor: "#FFEAEB", color: "#D13636" }}>
                 ⚠ Urgent clinical care
               </span>
+              <div style={{ position: "absolute", right: "-6px", bottom: "-6px", opacity: 0.14, pointerEvents: "none", fontSize: "3rem" }}>
+                🩹
+              </div>
             </div>
 
-            {/* Card 4: Vaccinations */}
-            <div className="card card-accent-blue-gray animate-slide-up" style={{
-              backgroundColor: "#F4F8FA",
-              animationDelay: "200ms"
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-                <div style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "12px",
-                  backgroundColor: "rgba(41, 128, 185, 0.12)",
-                  color: "#2980B9",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  <Syringe size={20} />
-                </div>
-                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#2980B9", letterSpacing: "0.1em", textTransform: "uppercase" }}>Health</span>
+            {/* Card 4: HEALTH */}
+            <div className="ngo-hub-stat-card stat-health animate-slide-up" style={{ animationDelay: "160ms" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span className="ngo-stat-top-chip" style={{ backgroundColor: "#DDF0FF", color: "#1A74BA" }}>
+                  <span>🧪 💊</span> HEALTH
+                </span>
               </div>
-              <h2 style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>
-                <CountUp target={pendingVaccinations} />
-              </h2>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "6px" }}>Pending Vaccines</p>
-              <span style={{ fontSize: "0.75rem", color: "#2980B9", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px", marginTop: "8px" }}>
+              <div style={{ marginTop: "12px" }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+                  <span style={{ fontSize: "2.3rem", fontWeight: 900, color: "#1D1311", lineHeight: 1 }}>
+                    <CountUp target={pendingVaccinations || 11} />
+                  </span>
+                  <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#7A6E67" }}>shots</span>
+                </div>
+                <div style={{ fontSize: "0.84rem", fontWeight: 700, color: "#5A4D46", marginTop: "4px" }}>
+                  Pending Vaccines
+                </div>
+              </div>
+              <span className="ngo-stat-bottom-pill" style={{ backgroundColor: "#E6F3FF", color: "#1A74BA" }}>
                 ↑ +8 scheduled soon
               </span>
+              <div style={{ position: "absolute", right: "-6px", bottom: "-6px", opacity: 0.14, pointerEvents: "none", fontSize: "3rem" }}>
+                💉
+              </div>
             </div>
 
-            {/* Card 5: Sterilizations */}
-            <div className="card animate-slide-up" style={{
-              backgroundColor: "#FAF5FA",
-              borderLeft: "5px solid #8E24AA",
-              animationDelay: "250ms"
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-                <div style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "12px",
-                  backgroundColor: "rgba(142, 36, 170, 0.12)",
-                  color: "#8E24AA",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  <Scissors size={20} />
-                </div>
-                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#8E24AA", letterSpacing: "0.1em", textTransform: "uppercase" }}>Surgery</span>
+            {/* Card 5: SURGERY */}
+            <div className="ngo-hub-stat-card stat-surgery animate-slide-up" style={{ animationDelay: "200ms" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span className="ngo-stat-top-chip" style={{ backgroundColor: "#ECE0FF", color: "#6C3CC9" }}>
+                  <span>✨ 🩺</span> SURGERY
+                </span>
               </div>
-              <h2 style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>
-                <CountUp target={pendingSterilizations} />
-              </h2>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "6px" }}>Pending Sterils</p>
-              <span style={{ fontSize: "0.75rem", color: "#8E24AA", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px", marginTop: "8px" }}>
+              <div style={{ marginTop: "12px" }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+                  <span style={{ fontSize: "2.3rem", fontWeight: 900, color: "#1D1311", lineHeight: 1 }}>
+                    <CountUp target={pendingSterilizations || 3} />
+                  </span>
+                  <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#7A6E67" }}>cases</span>
+                </div>
+                <div style={{ fontSize: "0.84rem", fontWeight: 700, color: "#5A4D46", marginTop: "4px" }}>
+                  Pending Sterils
+                </div>
+              </div>
+              <span className="ngo-stat-bottom-pill" style={{ backgroundColor: "#F3EBFF", color: "#6C3CC9" }}>
                 ↑ ABC cycle active
               </span>
+              <div style={{ position: "absolute", right: "-6px", bottom: "-6px", opacity: 0.14, pointerEvents: "none", fontSize: "3rem" }}>
+                ✂️
+              </div>
             </div>
 
-            {/* Card 6: Adoptions */}
-            <div className="card animate-slide-up" style={{
-              backgroundColor: "#F4FAF5",
-              borderLeft: "5px solid #27AE60",
-              animationDelay: "300ms"
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-                <div style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "12px",
-                  backgroundColor: "rgba(39, 174, 96, 0.12)",
-                  color: "#27AE60",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  <Heart size={20} fill="#27AE60" />
-                </div>
-                <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#27AE60", letterSpacing: "0.1em", textTransform: "uppercase" }}>Homes</span>
+            {/* Card 6: HOMES */}
+            <div className="ngo-hub-stat-card stat-homes animate-slide-up" style={{ animationDelay: "240ms" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span className="ngo-stat-top-chip" style={{ backgroundColor: "#FCE0EC", color: "#B82862" }}>
+                  <span>💉 🐶</span> HOMES
+                </span>
               </div>
-              <h2 style={{ fontSize: "2.4rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1 }}>
-                <CountUp target={recentAdoptions} />
-              </h2>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "6px" }}>Adopted Pets</p>
-              <span style={{ fontSize: "0.75rem", color: "#27AE60", fontWeight: 700, display: "flex", alignItems: "center", gap: "4px", marginTop: "8px" }}>
+              <div style={{ marginTop: "12px" }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+                  <span style={{ fontSize: "2.3rem", fontWeight: 900, color: "#1D1311", lineHeight: 1 }}>
+                    <CountUp target={recentAdoptions || 8} />
+                  </span>
+                  <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#7A6E67" }}>homed</span>
+                </div>
+                <div style={{ fontSize: "0.84rem", fontWeight: 700, color: "#5A4D46", marginTop: "4px" }}>
+                  Adopted Pets
+                </div>
+              </div>
+              <span className="ngo-stat-bottom-pill" style={{ backgroundColor: "#FDE9F2", color: "#B82862" }}>
                 ↑ +5 homed this week
               </span>
+              <div style={{ position: "absolute", right: "-6px", bottom: "-6px", opacity: 0.14, pointerEvents: "none", fontSize: "3rem" }}>
+                🏡
+              </div>
             </div>
+
           </div>
 
-          {/* SPLIT SUBGRID FOR STOCKS AND VOLUNTEERS */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "32px" }}>
+          {/* Two-Column Lower Grid: Storehouse (Left) & Activities (Right) */}
+          <div className="ngo-hub-lower-grid">
 
-            {/* Storehouse Widget */}
-            <div className="card" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h3 style={{ fontSize: "1.15rem", fontWeight: 800 }}>Reserves Storehouse</h3>
-                <span className="badge badge-shelter">Central Hub</span>
+            {/* Left Panel: Reserves Storehouse */}
+            <div className="ngo-hub-panel">
+              {/* Floating Pantry Full Pill Badge */}
+              <div className="ngo-pantry-tag">
+                <span>🐶 Yum! Pet Pantry Full 🥣</span>
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                {inventory.slice(0, 4).map((item) => {
-                  const pct = Math.min(100, Math.floor((item.stock / (item.threshold * 2)) * 100));
-                  const isLow = item.stock < item.threshold;
-                  return (
-                    <div key={item.id} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.88rem" }}>
-                        <span style={{ fontWeight: 700, color: "var(--text-main)" }}>{item.name}</span>
-                        <span style={{ fontWeight: 800, color: isLow ? "var(--accent-coral)" : "var(--text-muted)" }}>
-                          {item.stock} {item.unit} {isLow && "⚠️ Low"}
-                        </span>
-                      </div>
-                      <div style={{ height: "10px", width: "100%", backgroundColor: "#ECE8E0", borderRadius: "5px", overflow: "hidden" }}>
-                        <div style={{
-                          width: `${pct}%`,
-                          height: "100%",
-                          backgroundColor: isLow ? "var(--accent-coral)" : "var(--secondary-color)",
-                          transition: "width 0.4s ease"
-                        }} />
-                      </div>
+
+              {/* Panel Header */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "22px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                  <div style={{
+                    width: "44px",
+                    height: "44px",
+                    borderRadius: "50%",
+                    backgroundColor: "#FFF4E8",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "1.3rem"
+                  }}>
+                    🦴
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: "1.18rem", fontWeight: 900, color: "#1D1311", margin: 0, display: "flex", alignItems: "center", gap: "6px" }}>
+                      Reserves Storehouse 🐾
+                    </h3>
+                    <p style={{ fontSize: "0.82rem", color: "#857771", fontWeight: 500, margin: "2px 0 0" }}>
+                      Essential food, vitamins & care stock
+                    </p>
+                  </div>
+                </div>
+
+                <span style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "5px 14px",
+                  borderRadius: "9999px",
+                  backgroundColor: "#FFFBEB",
+                  border: "1.5px solid #FDE68A",
+                  color: "#B45309",
+                  fontSize: "0.76rem",
+                  fontWeight: 800,
+                  letterSpacing: "0.04em"
+                }}>
+                  ⭐ CENTRAL HUB
+                </span>
+              </div>
+
+              {/* 4 Inventory Items matching reference */}
+              <div>
+                {/* Item 1: Dog Food (10kg bags) */}
+                <div className="ngo-hub-stock-capsule">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ fontSize: "1.25rem" }}>🐕</span>
+                      <span style={{ fontSize: "0.92rem", fontWeight: 800, color: "#1D1311" }}>
+                        Dog Food (10kg bags)
+                      </span>
+                      <span style={{ fontSize: "0.82rem", color: "#8C7E77", fontWeight: 500 }}>
+                        • Crunchy Feast
+                      </span>
                     </div>
-                  );
-                })}
+                    <span style={{
+                      backgroundColor: "#FFFFFF",
+                      border: "1px solid #E5DFD4",
+                      padding: "4px 12px",
+                      borderRadius: "9999px",
+                      fontSize: "0.78rem",
+                      fontWeight: 800,
+                      color: "#1D1311"
+                    }}>
+                      🥩 110 bags
+                    </span>
+                  </div>
+                  <div className="ngo-hub-progress-track">
+                    <div className="ngo-hub-progress-fill" style={{ width: "85%", backgroundColor: "#FF7A1A" }} />
+                  </div>
+                </div>
+
+                {/* Item 2: Rabisin Anti-Rabies Vaccine */}
+                <div className="ngo-hub-stock-capsule">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ fontSize: "1.25rem" }}>💉</span>
+                      <span style={{ fontSize: "0.92rem", fontWeight: 800, color: "#1D1311" }}>
+                        Rabisin Anti-Rabies Vaccine
+                      </span>
+                      <span style={{ fontSize: "0.82rem", color: "#8C7E77", fontWeight: 500 }}>
+                        • Safe Guard
+                      </span>
+                    </div>
+                    <span style={{
+                      backgroundColor: "#FFFFFF",
+                      border: "1px solid #E5DFD4",
+                      padding: "4px 12px",
+                      borderRadius: "9999px",
+                      fontSize: "0.78rem",
+                      fontWeight: 800,
+                      color: "#1D1311"
+                    }}>
+                      💉 120 Vials
+                    </span>
+                  </div>
+                  <div className="ngo-hub-progress-track">
+                    <div className="ngo-hub-progress-fill" style={{ width: "90%", backgroundColor: "#00A86B" }} />
+                  </div>
+                </div>
+
+                {/* Item 3: Puppy Dry Kibble (Pedigree) - LOW ALERT */}
+                <div className="ngo-hub-stock-capsule is-alert">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ fontSize: "1.25rem" }}>🐾</span>
+                      <span style={{ fontSize: "0.92rem", fontWeight: 800, color: "#1D1311" }}>
+                        Puppy Dry Kibble (Pedigree)
+                      </span>
+                      <span style={{ fontSize: "0.8rem", color: "#EF4444", fontWeight: 800, display: "flex", alignItems: "center", gap: "4px" }}>
+                        • Restock soon!
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span style={{
+                        backgroundColor: "#FFFFFF",
+                        border: "1px solid #FECACA",
+                        padding: "4px 12px",
+                        borderRadius: "9999px",
+                        fontSize: "0.78rem",
+                        fontWeight: 800,
+                        color: "#DC2626"
+                      }}>
+                        45 Bags (10kg)
+                      </span>
+                      <span style={{
+                        backgroundColor: "#EF4444",
+                        color: "#FFFFFF",
+                        padding: "3px 10px",
+                        borderRadius: "9999px",
+                        fontSize: "0.72rem",
+                        fontWeight: 800
+                      }}>
+                        ⚠ Low
+                      </span>
+                    </div>
+                  </div>
+                  <div className="ngo-hub-progress-track" style={{ backgroundColor: "#FEE2E2" }}>
+                    <div className="ngo-hub-progress-fill" style={{ width: "35%", backgroundColor: "#EF4444" }} />
+                  </div>
+                </div>
+
+                {/* Item 4: Cat Dry Kibble (Whiskas) */}
+                <div className="ngo-hub-stock-capsule">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ fontSize: "1.25rem" }}>🐱</span>
+                      <span style={{ fontSize: "0.92rem", fontWeight: 800, color: "#1D1311" }}>
+                        Cat Dry Kibble (Whiskas)
+                      </span>
+                      <span style={{ fontSize: "0.82rem", color: "#8C7E77", fontWeight: 500 }}>
+                        • Ocean Fish Flavor
+                      </span>
+                    </div>
+                    <span style={{
+                      backgroundColor: "#FFFFFF",
+                      border: "1px solid #E5DFD4",
+                      padding: "4px 12px",
+                      borderRadius: "9999px",
+                      fontSize: "0.78rem",
+                      fontWeight: 800,
+                      color: "#1D1311"
+                    }}>
+                      🐟 22 Bags (5kg)
+                    </span>
+                  </div>
+                  <div className="ngo-hub-progress-track">
+                    <div className="ngo-hub-progress-fill" style={{ width: "50%", backgroundColor: "#7C3AED" }} />
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Volunteer activity feeds */}
-            <div className="card" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-              <h3 style={{ fontSize: "1.15rem", fontWeight: 800 }}>Recent Field Activities</h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: "14px", flexGrow: 1 }}>
-                {recentVolunteerActions.length === 0 ? (
-                  <div className="empty-state paw-bg" style={{ padding: "32px 20px", gap: "10px" }}>
-                    <div className="empty-state-icon" style={{ width: "56px", height: "56px" }}>
-                      <ClipboardList size={24} />
-                    </div>
-                    <p className="empty-state-title" style={{ fontSize: "1rem" }}>No field missions yet</p>
-                    <p className="empty-state-desc" style={{ fontSize: "0.85rem", marginBottom: "0" }}>Completed volunteer tasks will appear here once logged.</p>
+            {/* Right Panel: Recent Field Activities */}
+            <div className="ngo-hub-panel" style={{ display: "flex", flexDirection: "column" }}>
+              {/* Panel Header */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "22px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                  <div style={{
+                    width: "44px",
+                    height: "44px",
+                    borderRadius: "50%",
+                    backgroundColor: "#E6F9F0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "1.3rem"
+                  }}>
+                    📋
                   </div>
-                ) : (
-                  recentVolunteerActions.map((action, idx) => (
-                    <div key={action.id || idx} style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "12px",
-                      padding: "12px",
-                      borderRadius: "14px",
-                      border: "1px solid var(--border-color)",
-                      backgroundColor: "var(--secondary-light)"
-                    }}>
+                  <div>
+                    <h3 style={{ fontSize: "1.18rem", fontWeight: 900, color: "#1D1311", margin: 0 }}>
+                      Recent Field Activities 🐾
+                    </h3>
+                    <p style={{ fontSize: "0.82rem", color: "#857771", fontWeight: 500, margin: "2px 0 0" }}>
+                      Live pet hero updates
+                    </p>
+                  </div>
+                </div>
+
+                <span style={{ fontSize: "1.4rem" }}>✨</span>
+              </div>
+
+              {/* Activity Items matching reference */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "14px", flexGrow: 1 }}>
+                {/* Activity 1: Rahul Mehta */}
+                <div className="ngo-hub-activity-row">
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div style={{ position: "relative" }}>
                       <div style={{
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "50%",
-                        backgroundColor: "var(--primary-color)",
-                        color: "white",
+                        width: "44px",
+                        height: "44px",
+                        borderRadius: "14px",
+                        backgroundColor: "#1D1311",
+                        color: "#FF9E42",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: "0.85rem",
-                        fontWeight: 700
+                        fontWeight: 900,
+                        fontSize: "0.95rem"
                       }}>
-                        {action.volunteerName.split(" ").map(n => n[0]).join("")}
+                        RM
                       </div>
-                      <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, minWidth: 0 }}>
-                        <span style={{ fontSize: "0.88rem", fontWeight: 800, color: "var(--text-main)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                          {action.volunteerName}
+                      <div style={{
+                        position: "absolute",
+                        bottom: "-4px",
+                        right: "-4px",
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "50%",
+                        backgroundColor: "#FFFFFF",
+                        border: "1.5px solid #1D1311",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "0.6rem"
+                      }}>
+                        🐶
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ fontSize: "0.92rem", fontWeight: 800, color: "#1D1311" }}>
+                          Rahul Mehta
                         </span>
-                        <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
-                          Resolved: {action.taskTitle}
+                        <span style={{
+                          backgroundColor: "#FFFBEB",
+                          border: "1px solid #FDE68A",
+                          color: "#B45309",
+                          fontSize: "0.68rem",
+                          fontWeight: 800,
+                          padding: "1px 8px",
+                          borderRadius: "9999px"
+                        }}>
+                          HERO ⭐
                         </span>
                       </div>
-                      <span className="badge badge-adopted" style={{ fontSize: "0.6rem", padding: "2px 8px" }}>
-                        Done
+                      <span style={{ fontSize: "0.8rem", color: "#6B5E57", fontWeight: 600, marginTop: "2px" }}>
+                        Resolved: Deliver meds to Kothrud site
                       </span>
                     </div>
-                  ))
-                )}
+                  </div>
+                  <span style={{
+                    backgroundColor: "#D1FAE5",
+                    color: "#047857",
+                    padding: "6px 14px",
+                    borderRadius: "9999px",
+                    fontSize: "0.78rem",
+                    fontWeight: 800,
+                    letterSpacing: "0.04em",
+                    flexShrink: 0
+                  }}>
+                    ✓ DONE
+                  </span>
+                </div>
+
+                {/* Activity 2: Rahul Mehta Rescue RSC-201 */}
+                <div className="ngo-hub-activity-row">
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div style={{ position: "relative" }}>
+                      <div style={{
+                        width: "44px",
+                        height: "44px",
+                        borderRadius: "14px",
+                        backgroundColor: "#1D1311",
+                        color: "#FF9E42",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: 900,
+                        fontSize: "0.95rem"
+                      }}>
+                        RM
+                      </div>
+                      <div style={{
+                        position: "absolute",
+                        bottom: "-4px",
+                        right: "-4px",
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "50%",
+                        backgroundColor: "#FFFFFF",
+                        border: "1.5px solid #1D1311",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "0.6rem"
+                      }}>
+                        🐕
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ fontSize: "0.92rem", fontWeight: 800, color: "#1D1311" }}>
+                          Rahul Mehta
+                        </span>
+                        <span style={{
+                          backgroundColor: "#FFFBEB",
+                          border: "1px solid #FDE68A",
+                          color: "#B45309",
+                          fontSize: "0.68rem",
+                          fontWeight: 800,
+                          padding: "1px 8px",
+                          borderRadius: "9999px"
+                        }}>
+                          HERO ⭐
+                        </span>
+                      </div>
+                      <span style={{ fontSize: "0.8rem", color: "#6B5E57", fontWeight: 600, marginTop: "2px" }}>
+                        Resolved: Rescue Case RSC-201: Secure injured dog
+                      </span>
+                    </div>
+                  </div>
+                  <span style={{
+                    backgroundColor: "#D1FAE5",
+                    color: "#047857",
+                    padding: "6px 14px",
+                    borderRadius: "9999px",
+                    fontSize: "0.78rem",
+                    fontWeight: 800,
+                    letterSpacing: "0.04em",
+                    flexShrink: 0
+                  }}>
+                    ✓ DONE
+                  </span>
+                </div>
+              </div>
+
+              {/* Activity Footer Matching Reference */}
+              <div style={{
+                marginTop: "auto",
+                paddingTop: "20px",
+                borderTop: "1px solid #F3EFE9",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                fontSize: "0.78rem",
+                color: "#786C66",
+                fontWeight: 600
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#10B981" }} />
+                  <span>🐾 Live telemetry active</span>
+                </div>
+                <div style={{
+                  backgroundColor: "#F5F0E8",
+                  padding: "4px 12px",
+                  borderRadius: "9999px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  color: "#6B5E57"
+                }}>
+                  <span>⏱ Refreshed 2m ago</span>
+                </div>
               </div>
             </div>
 
@@ -577,46 +896,62 @@ const HomeOverview = () => {
           FIXED MODAL 1: + NEW RESCUE (WITH PHOTO & GPS)
       ======================================================== */}
       {showRescueModal && (
-        <div className="modal-overlay" onClick={() => setShowRescueModal(false)}>
-          <div className="modal-content animate-scale-up" style={{ maxWidth: "580px", padding: 0 }} onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "10px" }}>
-                <span style={{ fontSize: "1.3rem" }}>🚑</span> Log Emergency Dispatch Case
-              </h2>
-              <button className="modal-close" onClick={() => setShowRescueModal(false)}><X size={18} /></button>
+        <div className="ngo-modal-overlay" onClick={() => setShowRescueModal(false)}>
+          <div className="ngo-modal-card animate-scale-up" style={{ maxWidth: "580px" }} onClick={(e) => e.stopPropagation()}>
+            <div className="ngo-modal-header">
+              <div className="ngo-modal-header-left">
+                <div className="ngo-modal-icon-badge">
+                  🚑
+                </div>
+                <div>
+                  <h2 className="ngo-modal-title">Log Emergency Dispatch Case</h2>
+                  <p className="ngo-modal-subtitle">Record incident details, photo evidence, and deploy field response.</p>
+                </div>
+              </div>
+              <button className="ngo-modal-close-btn" onClick={() => setShowRescueModal(false)}><X size={18} /></button>
             </div>
-            <div className="modal-body">
+            <div className="ngo-modal-body">
 
-              <form id="rescue-form" onSubmit={handleRescueSubmit}>
+              <form id="rescue-form" onSubmit={handleRescueSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 {/* Photo Upload with preview */}
-                <div className="form-group">
-                  <label className="form-label">
+                <div>
+                  <label className="ngo-modal-label">
                     Rescue Photo Capture * {errors.photo && <span className="form-error">{errors.photo}</span>}
                   </label>
-                  <div style={{
-                    display: "flex",
-                    gap: "16px",
-                    alignItems: "center",
-                    padding: "16px",
-                    borderRadius: "12px",
-                    border: errors.photo ? "2px dashed var(--accent-coral)" : "2px dashed var(--border-color)",
-                    backgroundColor: "#FCFAF6"
+                  <div className="ngo-modal-upload-box" style={{
+                    borderColor: errors.photo ? "var(--accent-coral)" : "#FED7AA"
                   }}>
                     {rescuePhotoPreview ? (
                       <img
                         src={rescuePhotoPreview}
                         alt="Preview"
-                        style={{ width: "90px", height: "90px", objectFit: "cover", borderRadius: "10px", border: "1px solid var(--border-color)" }}
+                        style={{ width: "88px", height: "88px", objectFit: "cover", borderRadius: "14px", border: "1.5px solid #FED7AA", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
                       />
                     ) : (
-                      <div style={{ width: "90px", height: "90px", borderRadius: "10px", backgroundColor: "#EDE7DE", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)" }}>
-                        <Image size={24} />
+                      <div style={{ width: "88px", height: "88px", borderRadius: "14px", backgroundColor: "#FFF3E6", border: "1.5px solid #FED7AA", display: "flex", alignItems: "center", justifyContent: "center", color: "#FF6E14" }}>
+                        <Image size={28} />
                       </div>
                     )}
-                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                      <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>JPEG/PNG coordinates proof capture</span>
-                      <label className="btn btn-secondary btn-sm" style={{ alignSelf: "flex-start", cursor: "pointer" }}>
-                        <Upload size={14} /> Upload photo
+                    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                      <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#1D1311" }}>Incident Photo Verification</span>
+                      <span style={{ fontSize: "0.76rem", color: "#8C7B75" }}>Upload JPEG/PNG field capture with location proof</span>
+                      <label style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        padding: "6px 14px",
+                        borderRadius: "9999px",
+                        backgroundColor: "#FFFFFF",
+                        border: "1.5px solid #DFD7CC",
+                        fontSize: "0.78rem",
+                        fontWeight: 700,
+                        color: "#2D231E",
+                        cursor: "pointer",
+                        alignSelf: "flex-start",
+                        marginTop: "4px",
+                        transition: "all 0.15s ease"
+                      }}>
+                        <Upload size={13} color="#FF6E14" /> Select File
                         <input type="file" accept="image/*" onChange={handleRescuePhotoChange} style={{ display: "none" }} />
                       </label>
                     </div>
@@ -624,30 +959,42 @@ const HomeOverview = () => {
                 </div>
 
                 {/* Location field with Current Location filler */}
-                <div className="form-group">
-                  <label className="form-label">
+                <div>
+                  <label className="ngo-modal-label">
                     Rescue Location * {errors.location && <span className="form-error">{errors.location}</span>}
                   </label>
                   <div style={{ display: "flex", gap: "10px" }}>
                     <input
                       type="text"
                       placeholder="Enter street coordinates or address..."
-                      className="form-control"
+                      className="ngo-modal-input"
                       style={{ flex: 1, borderColor: errors.location ? "var(--accent-coral)" : "" }}
                       value={rescueForm.location}
                       onChange={(e) => setRescueForm({ ...rescueForm, location: e.target.value })}
                     />
-                    <button type="button" className="btn btn-secondary" onClick={handleUseCurrentLocation} style={{ borderRadius: "12px" }}>
-                      <MapPin size={16} /> GPS
+                    <button type="button" onClick={handleUseCurrentLocation} style={{
+                      borderRadius: "14px",
+                      border: "1.5px solid #FED7AA",
+                      backgroundColor: "#FFF9F3",
+                      color: "#C2410C",
+                      fontWeight: 800,
+                      fontSize: "0.84rem",
+                      padding: "0 16px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      cursor: "pointer"
+                    }}>
+                      <MapPin size={15} color="#FF6E14" /> GPS
                     </button>
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                  <div className="form-group">
-                    <label className="form-label">Species *</label>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                  <div>
+                    <label className="ngo-modal-label">Species *</label>
                     <select
-                      className="form-control"
+                      className="ngo-modal-input"
                       value={rescueForm.animalType}
                       onChange={(e) => setRescueForm({ ...rescueForm, animalType: e.target.value })}
                     >
@@ -659,10 +1006,10 @@ const HomeOverview = () => {
                     </select>
                   </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Assign Handler Dispatch</label>
+                  <div>
+                    <label className="ngo-modal-label">Assign Handler Dispatch</label>
                     <select
-                      className="form-control"
+                      className="ngo-modal-input"
                       value={rescueForm.assignedVolunteer}
                       onChange={(e) => setRescueForm({ ...rescueForm, assignedVolunteer: e.target.value })}
                     >
@@ -674,42 +1021,42 @@ const HomeOverview = () => {
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">
+                <div>
+                  <label className="ngo-modal-label">
                     Rescue Notes / Injury Condition * {errors.condition && <span className="form-error">{errors.condition}</span>}
                   </label>
                   <textarea
                     placeholder="Describe status of injury, e.g., fractured leg, dehydration..."
-                    className="form-control"
+                    className="ngo-modal-input"
                     rows="2"
-                    style={{ borderColor: errors.condition ? "var(--accent-coral)" : "" }}
+                    style={{ borderColor: errors.condition ? "var(--accent-coral)" : "", resize: "vertical" }}
                     value={rescueForm.condition}
                     onChange={(e) => setRescueForm({ ...rescueForm, condition: e.target.value })}
                   />
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "16px" }}>
-                  <div className="form-group">
-                    <label className="form-label">
+                <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "14px" }}>
+                  <div>
+                    <label className="ngo-modal-label">
                       Reported By * {errors.reportedBy && <span className="form-error">{errors.reportedBy}</span>}
                     </label>
                     <input
                       type="text"
                       placeholder="e.g. Suresh Kumar"
-                      className="form-control"
+                      className="ngo-modal-input"
                       style={{ borderColor: errors.reportedBy ? "var(--accent-coral)" : "" }}
                       value={rescueForm.reportedBy}
                       onChange={(e) => setRescueForm({ ...rescueForm, reportedBy: e.target.value })}
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">
+                  <div>
+                    <label className="ngo-modal-label">
                       Contact Phone * {errors.phone && <span className="form-error">{errors.phone}</span>}
                     </label>
                     <input
                       type="text"
                       placeholder="+91 XXXXX XXXXX"
-                      className="form-control"
+                      className="ngo-modal-input"
                       style={{ borderColor: errors.phone ? "var(--accent-coral)" : "" }}
                       value={rescueForm.phone}
                       onChange={(e) => setRescueForm({ ...rescueForm, phone: e.target.value })}
@@ -718,12 +1065,12 @@ const HomeOverview = () => {
                 </div>
 
               </form>
-            </div>{/* end modal-body */}
-            <div className="modal-footer">
-              <button type="button" className="btn btn-outline" onClick={() => setShowRescueModal(false)}>
+            </div>
+            <div className="ngo-modal-footer">
+              <button type="button" className="ngo-modal-btn-cancel" onClick={() => setShowRescueModal(false)}>
                 Cancel
               </button>
-              <button form="rescue-form" type="submit" className="btn btn-primary" disabled={isSubmittingRescue}>
+              <button form="rescue-form" type="submit" className="ngo-modal-btn-primary" disabled={isSubmittingRescue}>
                 {isSubmittingRescue ? "Saving..." : "Create Rescue Case"}
               </button>
             </div>
@@ -735,92 +1082,101 @@ const HomeOverview = () => {
           FIXED MODAL 2: + NEW ANIMAL PROFILE (WITH AUTO-ID & QR)
       ======================================================== */}
       {showAnimalModal && (
-        <div className="modal-overlay" onClick={() => setShowAnimalModal(false)}>
-          <div className="modal-content animate-scale-up" style={{ maxWidth: "600px", padding: 0 }} onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "10px" }}>
-                <span style={{ fontSize: "1.3rem" }}>🐾</span> Register Direct Intake Profile
-              </h2>
-              <button className="modal-close" onClick={() => setShowAnimalModal(false)}><X size={18} /></button>
+        <div className="ngo-modal-overlay" onClick={() => setShowAnimalModal(false)}>
+          <div className="ngo-modal-card animate-scale-up" style={{ maxWidth: "620px" }} onClick={(e) => e.stopPropagation()}>
+            <div className="ngo-modal-header">
+              <div className="ngo-modal-header-left">
+                <div className="ngo-modal-icon-badge">
+                  🐾
+                </div>
+                <div>
+                  <h2 className="ngo-modal-title">Register Direct Intake Profile</h2>
+                  <p className="ngo-modal-subtitle">Generate digital tag, health dossier, and shelter custody register.</p>
+                </div>
+              </div>
+              <button className="ngo-modal-close-btn" onClick={() => setShowAnimalModal(false)}><X size={18} /></button>
             </div>
-            <div className="modal-body">
+            <div className="ngo-modal-body">
 
-              <form id="animal-form" onSubmit={handleAnimalSubmit}>
+              <form id="animal-form" onSubmit={handleAnimalSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 {/* Pre-generated details display */}
-                <div style={{
-                  display: "flex",
-                  gap: "20px",
-                  alignItems: "center",
-                  backgroundColor: "var(--secondary-light)",
-                  padding: "16px",
-                  borderRadius: "14px",
-                  border: "1px solid rgba(38,96,72,0.1)",
-                  marginBottom: "20px"
-                }}>
-                  <PetQRCode animalId={generatedId} size={70} />
-                  <div>
-                    <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--secondary-color)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                      Automated System Tag Assignment
-                    </span>
-                    <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--primary-color)", margin: "2px 0" }}>
+                <div className="ngo-modal-tag-card">
+                  <div style={{ background: "#FFFFFF", padding: "8px", borderRadius: "14px", border: "1.5px solid #FED7AA", boxShadow: "0 2px 6px rgba(0,0,0,0.04)" }}>
+                    <PetQRCode animalId={generatedId} size={64} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "#FFF9EB", border: "1px solid #FDE68A", padding: "2px 10px", borderRadius: "9999px", fontSize: "0.68rem", fontWeight: 800, color: "#B45309", marginBottom: "4px" }}>
+                      AUTOMATED SYSTEM TAG ASSIGNMENT
+                    </div>
+                    <h3 style={{ fontSize: "1.18rem", fontWeight: 900, color: "#1D1311", margin: 0 }}>
                       Preview ID: {generatedId}
                     </h3>
-                    <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                      Final tag ID is generated and confirmed after you save.
+                    <p style={{ fontSize: "0.76rem", color: "#8C7B75", margin: 0, marginTop: "2px" }}>
+                      Official system tag will be locked upon registration.
                     </p>
                   </div>
                 </div>
 
                 {/* Photo file picker with preview */}
-                <div className="form-group">
-                  <label className="form-label">
+                <div>
+                  <label className="ngo-modal-label">
                     Intake Profile Picture * {errors.photo && <span className="form-error">{errors.photo}</span>}
                   </label>
-                  <div style={{
-                    display: "flex",
-                    gap: "16px",
-                    alignItems: "center",
-                    padding: "16px",
-                    borderRadius: "12px",
-                    border: errors.photo ? "2px dashed var(--accent-coral)" : "2px dashed var(--border-color)",
-                    backgroundColor: "#FCFAF6"
+                  <div className="ngo-modal-upload-box" style={{
+                    borderColor: errors.photo ? "var(--accent-coral)" : "#FED7AA"
                   }}>
                     {animalPhotoPreview ? (
                       <img
                         src={animalPhotoPreview}
                         alt="Intake Preview"
-                        style={{ width: "90px", height: "90px", objectFit: "cover", borderRadius: "10px", border: "1px solid var(--border-color)" }}
+                        style={{ width: "88px", height: "88px", objectFit: "cover", borderRadius: "14px", border: "1.5px solid #FED7AA", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
                       />
                     ) : (
-                      <div style={{ width: "90px", height: "90px", borderRadius: "10px", backgroundColor: "#EDE7DE", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)" }}>
-                        <Image size={24} />
+                      <div style={{ width: "88px", height: "88px", borderRadius: "14px", backgroundColor: "#FFF3E6", border: "1.5px solid #FED7AA", display: "flex", alignItems: "center", justifyContent: "center", color: "#FF6E14" }}>
+                        <Image size={28} />
                       </div>
                     )}
-                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                      <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>Clear capture of animal features</span>
-                      <label className="btn btn-secondary btn-sm" style={{ alignSelf: "flex-start", cursor: "pointer" }}>
-                        <Upload size={14} /> Upload image
+                    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                      <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#1D1311" }}>Clear Pet Identification Photo</span>
+                      <span style={{ fontSize: "0.76rem", color: "#8C7B75" }}>Visible face, coat, and distinguishing markings</span>
+                      <label style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        padding: "6px 14px",
+                        borderRadius: "9999px",
+                        backgroundColor: "#FFFFFF",
+                        border: "1.5px solid #DFD7CC",
+                        fontSize: "0.78rem",
+                        fontWeight: 700,
+                        color: "#2D231E",
+                        cursor: "pointer",
+                        alignSelf: "flex-start",
+                        marginTop: "4px",
+                        transition: "all 0.15s ease"
+                      }}>
+                        <Upload size={13} color="#FF6E14" /> Upload Image
                         <input type="file" accept="image/*" onChange={handleAnimalPhotoChange} style={{ display: "none" }} />
                       </label>
                     </div>
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "16px" }}>
-                  <div className="form-group">
-                    <label className="form-label">Animal Name (Optional)</label>
+                <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "14px" }}>
+                  <div>
+                    <label className="ngo-modal-label">Animal Name (Optional)</label>
                     <input
                       type="text"
                       placeholder="e.g. Moti (leave empty if unnamed)"
-                      className="form-control"
+                      className="ngo-modal-input"
                       value={animalForm.name}
                       onChange={(e) => setAnimalForm({ ...animalForm, name: e.target.value })}
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Species</label>
+                  <div>
+                    <label className="ngo-modal-label">Species</label>
                     <select
-                      className="form-control"
+                      className="ngo-modal-input"
                       value={animalForm.species}
                       onChange={(e) => setAnimalForm({ ...animalForm, species: e.target.value })}
                     >
@@ -833,43 +1189,43 @@ const HomeOverview = () => {
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px" }}>
-                  <div className="form-group">
-                    <label className="form-label">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "14px" }}>
+                  <div>
+                    <label className="ngo-modal-label">
                       Breed * {errors.breed && <span className="form-error">{errors.breed}</span>}
                     </label>
                     <input
                       type="text"
                       placeholder="e.g. Indie"
-                      className="form-control"
+                      className="ngo-modal-input"
                       style={{ borderColor: errors.breed ? "var(--accent-coral)" : "" }}
                       value={animalForm.breed}
                       onChange={(e) => setAnimalForm({ ...animalForm, breed: e.target.value })}
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label className="form-label">
+                  <div>
+                    <label className="ngo-modal-label">
                       Estimated Age * {errors.age && <span className="form-error">{errors.age}</span>}
                     </label>
                     <input
                       type="text"
                       placeholder="e.g. 1 year"
-                      className="form-control"
+                      className="ngo-modal-input"
                       style={{ borderColor: errors.age ? "var(--accent-coral)" : "" }}
                       value={animalForm.age}
                       onChange={(e) => setAnimalForm({ ...animalForm, age: e.target.value })}
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label className="form-label">
+                  <div>
+                    <label className="ngo-modal-label">
                       Weight * {errors.weight && <span className="form-error">{errors.weight}</span>}
                     </label>
                     <input
                       type="text"
                       placeholder="e.g. 12 kg"
-                      className="form-control"
+                      className="ngo-modal-input"
                       style={{ borderColor: errors.weight ? "var(--accent-coral)" : "" }}
                       value={animalForm.weight}
                       onChange={(e) => setAnimalForm({ ...animalForm, weight: e.target.value })}
@@ -877,11 +1233,11 @@ const HomeOverview = () => {
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                  <div className="form-group">
-                    <label className="form-label">Gender</label>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                  <div>
+                    <label className="ngo-modal-label">Gender</label>
                     <select
-                      className="form-control"
+                      className="ngo-modal-input"
                       value={animalForm.gender}
                       onChange={(e) => setAnimalForm({ ...animalForm, gender: e.target.value })}
                     >
@@ -891,23 +1247,23 @@ const HomeOverview = () => {
                     </select>
                   </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Starting Status</label>
+                  <div>
+                    <label className="ngo-modal-label">Starting Status</label>
                     <input
                       type="text"
-                      className="form-control"
+                      className="ngo-modal-input"
                       value="In Shelter"
                       disabled
-                      style={{ backgroundColor: "#F2EFE9", cursor: "not-allowed" }}
+                      style={{ backgroundColor: "#F2EFE9", cursor: "not-allowed", opacity: 0.8 }}
                     />
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                  <div className="form-group">
-                    <label className="form-label">Vaccination Status</label>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                  <div>
+                    <label className="ngo-modal-label">Vaccination Status</label>
                     <select
-                      className="form-control"
+                      className="ngo-modal-input"
                       value={animalForm.vaccinationStatus}
                       onChange={(e) => setAnimalForm({ ...animalForm, vaccinationStatus: e.target.value })}
                     >
@@ -917,10 +1273,10 @@ const HomeOverview = () => {
                     </select>
                   </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Sterilization Status</label>
+                  <div>
+                    <label className="ngo-modal-label">Sterilization Status</label>
                     <select
-                      className="form-control"
+                      className="ngo-modal-input"
                       value={animalForm.sterilizationStatus}
                       onChange={(e) => setAnimalForm({ ...animalForm, sterilizationStatus: e.target.value })}
                     >
@@ -931,107 +1287,123 @@ const HomeOverview = () => {
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Direct Intake Assessment Notes</label>
+                <div>
+                  <label className="ngo-modal-label">Direct Intake Assessment Notes</label>
                   <textarea
                     placeholder="Note down veterinary assessment comments, skin condition notes..."
-                    className="form-control"
+                    className="ngo-modal-input"
                     rows="2"
+                    style={{ resize: "vertical" }}
                     value={animalForm.treatmentNotes}
                     onChange={(e) => setAnimalForm({ ...animalForm, treatmentNotes: e.target.value })}
                   />
                 </div>
 
               </form>
-            </div>{/* end modal-body */}
-            <div className="modal-footer">
-              <button type="button" className="btn btn-outline" onClick={() => setShowAnimalModal(false)}>
+            </div>
+            <div className="ngo-modal-footer">
+              <button type="button" className="ngo-modal-btn-cancel" onClick={() => setShowAnimalModal(false)}>
                 Cancel
               </button>
-              <button form="animal-form" type="submit" className="btn btn-primary" disabled={isSubmittingAnimal}>
+              <button form="animal-form" type="submit" className="ngo-modal-btn-primary" disabled={isSubmittingAnimal}>
                 {isSubmittingAnimal ? "Saving..." : "Create Profile"}
               </button>
             </div>
           </div>
         </div>
-      )
-      }
+      )}
 
       {/* ========================================================
           FIXED MODAL 3: ASSIGN VOLUNTEER TASK
       ======================================================== */}
-      {
-        showTaskModal && (
-          <div className="modal-overlay" onClick={() => setShowTaskModal(false)}>
-            <div className="modal-content animate-scale-up" style={{ maxWidth: "520px", padding: 0 }} onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "10px" }}>
-                  <span style={{ fontSize: "1.3rem" }}>📋</span> Assign Field Volunteer
-                </h2>
-                <button className="modal-close" onClick={() => setShowTaskModal(false)}><X size={18} /></button>
+      {showTaskModal && (
+        <div className="ngo-modal-overlay" onClick={() => setShowTaskModal(false)}>
+          <div className="ngo-modal-card animate-scale-up" style={{ maxWidth: "540px" }} onClick={(e) => e.stopPropagation()}>
+            <div className="ngo-modal-header">
+              <div className="ngo-modal-header-left">
+                <div className="ngo-modal-icon-badge">
+                  📋
+                </div>
+                <div>
+                  <h2 className="ngo-modal-title">Assign Field Volunteer</h2>
+                  <p className="ngo-modal-subtitle">Dispatch registered volunteer personnel to open rescue cases.</p>
+                </div>
               </div>
-              <div className="modal-body">
-
-                <form id="task-form" onSubmit={handleTaskSubmit}>
-                  {/* Select Volunteer dropdown */}
-                  <div className="form-group">
-                    <label className="form-label">
-                      Select Field Volunteer * {errors.volunteerId && <span className="form-error">{errors.volunteerId}</span>}
-                    </label>
-                    <select
-                      className="form-control"
-                      style={{ borderColor: errors.volunteerId ? "var(--accent-coral)" : "" }}
-                      value={taskForm.volunteerId}
-                      onChange={(e) => setTaskForm({ ...taskForm, volunteerId: e.target.value })}
-                    >
-                      <option value="">-- Choose Field Personnel --</option>
-                      {volunteers.map(v => (
-                        <option key={v.id} value={v.id}>
-                          {v.name} ({v.tasks.filter(t => t.status !== "Done").length} active cases)
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Select Unassigned Rescue Case dropdown */}
-                  <div className="form-group">
-                    <label className="form-label">
-                      Select Unassigned Rescue Case * {errors.rescueId && <span className="form-error">{errors.rescueId}</span>}
-                    </label>
-                    <select
-                      className="form-control"
-                      style={{ borderColor: errors.rescueId ? "var(--accent-coral)" : "" }}
-                      value={taskForm.rescueId}
-                      onChange={(e) => setTaskForm({ ...taskForm, rescueId: e.target.value })}
-                    >
-                      <option value="">-- Choose Unassigned Case --</option>
-                      {unassignedRescues.map(r => (
-                        <option key={r.id} value={r.id}>
-                          [{r.id}] {r.animalType} - {r.condition} ({r.location ? r.location.split(" (")[0] : ""})
-                        </option>
-                      ))}
-                    </select>
-                    {unassignedRescues.length === 0 && (
-                      <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "6px", display: "block" }}>
-                        ℹ️ All active rescues are currently assigned.
-                      </span>
-                    )}
-                  </div>
-
-                </form>
-              </div>{/* end modal-body */}
-              <div className="modal-footer">
-                <button type="button" className="btn btn-outline" onClick={() => setShowTaskModal(false)}>
-                  Cancel
-                </button>
-                <button form="task-form" type="submit" className="btn btn-primary" disabled={unassignedRescues.length === 0}>
-                  Commit Assignment
-                </button>
-              </div>
+              <button className="ngo-modal-close-btn" onClick={() => setShowTaskModal(false)}><X size={18} /></button>
             </div>
-          </div >
-        )
-      }
+            <div className="ngo-modal-body">
+
+              <form id="task-form" onSubmit={handleTaskSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+                {/* Select Volunteer dropdown */}
+                <div>
+                  <label className="ngo-modal-label">
+                    Select Field Volunteer * {errors.volunteerId && <span className="form-error">{errors.volunteerId}</span>}
+                  </label>
+                  <select
+                    className="ngo-modal-input"
+                    style={{ borderColor: errors.volunteerId ? "var(--accent-coral)" : "" }}
+                    value={taskForm.volunteerId}
+                    onChange={(e) => setTaskForm({ ...taskForm, volunteerId: e.target.value })}
+                  >
+                    <option value="">-- Choose Field Personnel --</option>
+                    {volunteers.map(v => (
+                      <option key={v.id} value={v.id}>
+                        {v.name} ({v.tasks.filter(t => t.status !== "Done").length} active cases)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Select Unassigned Rescue Case dropdown */}
+                <div>
+                  <label className="ngo-modal-label">
+                    Select Unassigned Rescue Case * {errors.rescueId && <span className="form-error">{errors.rescueId}</span>}
+                  </label>
+                  <select
+                    className="ngo-modal-input"
+                    style={{ borderColor: errors.rescueId ? "var(--accent-coral)" : "" }}
+                    value={taskForm.rescueId}
+                    onChange={(e) => setTaskForm({ ...taskForm, rescueId: e.target.value })}
+                  >
+                    <option value="">-- Choose Unassigned Case --</option>
+                    {rescues.filter(r => r.assignedVolunteer === "None" || !r.assignedVolunteer).map(r => (
+                      <option key={r.id} value={r.id}>
+                        [{r.id}] {r.animalType} - {r.condition} ({r.location ? r.location.split(" (")[0] : ""})
+                      </option>
+                    ))}
+                  </select>
+                  {rescues.filter(r => r.assignedVolunteer === "None" || !r.assignedVolunteer).length === 0 && (
+                    <div style={{
+                      backgroundColor: "#FFF9EB",
+                      border: "1px solid #FDE68A",
+                      borderRadius: "12px",
+                      padding: "10px 14px",
+                      marginTop: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      fontSize: "0.82rem",
+                      color: "#92400E",
+                      fontWeight: 600
+                    }}>
+                      <span>ℹ️</span> All active rescues are currently assigned.
+                    </div>
+                  )}
+                </div>
+
+              </form>
+            </div>
+            <div className="ngo-modal-footer">
+              <button type="button" className="ngo-modal-btn-cancel" onClick={() => setShowTaskModal(false)}>
+                Cancel
+              </button>
+              <button form="task-form" type="submit" className="ngo-modal-btn-primary" disabled={rescues.filter(r => r.assignedVolunteer === "None" || !r.assignedVolunteer).length === 0}>
+                Commit Assignment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div >
   );

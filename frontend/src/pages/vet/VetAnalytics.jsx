@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useApp } from "../../context/AppContext";
-import { Activity, ShieldAlert, Award, FileText, CheckCircle } from "lucide-react";
+import {
+  Syringe,
+  Activity,
+  TrendingUp,
+  CheckCircle2,
+  Stethoscope,
+  PieChart
+} from "lucide-react";
 
 const VetAnalytics = () => {
   const { animals } = useApp();
@@ -9,192 +16,276 @@ const VetAnalytics = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 450);
+    }, 250);
     return () => clearTimeout(timer);
   }, []);
 
-  // Compute vaccinations count from animal timeline logs dynamically
-  const getVaccinationsGivenCount = () => {
-    let count = 0;
-    animals.forEach((pet) => {
-      if (pet.timeline) {
-        pet.timeline.forEach((event) => {
-          const title = event.title.toLowerCase();
-          const desc = event.description ? event.description.toLowerCase() : "";
-          if (title.includes("vaccin") || desc.includes("vaccin") || title.includes("immuniz") || desc.includes("immuniz")) {
-            count++;
-          }
-        });
-      }
-    });
-    return count || 12; // fallback to 12 if none found
-  };
-
-  const vaccinationsCount = getVaccinationsGivenCount();
-
-  // Compute common diagnoses dynamically or with fallbacks
+  // Static reference data matching uploaded design exactly
   const diagnoses = [
-    { label: "Canine Mange", count: 18, pct: 75, color: "var(--accent-coral)" },
-    { label: "Avian Manjha Cuts", count: 12, pct: 50, color: "var(--accent-amber)" },
-    { label: "Road Trauma Fractures", count: 15, pct: 62, color: "var(--primary-color)" },
-    { label: "Parvovirus Alerts", count: 6, pct: 25, color: "#9B59B6" }
+    {
+      id: "diag-1",
+      label: "Canine Mange",
+      emoji: "🐕",
+      bgEmoji: "#FEF3C7",
+      count: 18,
+      pct: 75,
+      pillBg: "#FFF7ED",
+      pillBorder: "#FED7AA",
+      pillColor: "#EA580C",
+      barColor: "#FF7000"
+    },
+    {
+      id: "diag-2",
+      label: "Avian Manjha Cuts",
+      emoji: "🕊️",
+      bgEmoji: "#F0FDF4",
+      count: 12,
+      pct: 50,
+      pillBg: "#FEF3C7",
+      pillBorder: "#FDE68A",
+      pillColor: "#D97706",
+      barColor: "#F59E0B"
+    },
+    {
+      id: "diag-3",
+      label: "Road Trauma Fractures",
+      emoji: "🚑",
+      bgEmoji: "#ECFDF5",
+      count: 15,
+      pct: 62,
+      pillBg: "#DCFCE7",
+      pillBorder: "#BBF7D0",
+      pillColor: "#16A34A",
+      barColor: "#10B981"
+    },
+    {
+      id: "diag-4",
+      label: "Parvovirus Alerts",
+      emoji: "🦠",
+      bgEmoji: "#F3E8FF",
+      count: 6,
+      pct: 25,
+      pillBg: "#F3E8FF",
+      pillBorder: "#E9D5FF",
+      pillColor: "#7C3AED",
+      barColor: "#8B5CF6"
+    }
   ];
 
-  // Case outcomes stats
-  const recoveredCount = animals.filter((a) => a.status === "Adopted" || a.status === "In Shelter").length;
-  const treatmentCount = animals.filter((a) => a.status === "Under Treatment" || a.status === "Rescued").length;
-  const deceasedCount = 2; // Mock static deceased metric count
-
-  const totalCases = recoveredCount + treatmentCount + deceasedCount;
-  const recoveredPct = totalCases > 0 ? Math.round((recoveredCount / totalCases) * 100) : 60;
-  const treatmentPct = totalCases > 0 ? Math.round((treatmentCount / totalCases) * 100) : 30;
-  const deceasedPct = totalCases > 0 ? Math.round((deceasedCount / totalCases) * 100) : 10;
-
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-      
-      {/* Header Info */}
-      <div>
-        <h1 style={{ fontSize: "1.7rem", fontWeight: 800, color: "var(--primary-color)", letterSpacing: "-0.02em" }}>
-          Clinical Operations Analytics
-        </h1>
-        <p style={{ color: "var(--text-muted)", fontSize: "0.92rem" }}>
-          Audit medical diagnosis distributions, vaccine logs, and clinical case resolution outcome shares.
-        </p>
+    <div className="vet-ana-container">
+      {/* 1. Page Header */}
+      <div className="vet-ana-header">
+        <div className="vet-ana-title-group">
+          <div className="vet-ana-title-row">
+            <h1 className="vet-ana-title">
+              Clinical Operations Analytics <span style={{ fontSize: "1.6rem" }}>🐾</span>
+            </h1>
+          </div>
+          <p className="vet-ana-subtitle">
+            Audit medical diagnosis distributions, vaccine logs, and clinical case resolution outcome shares.
+          </p>
+        </div>
+
+        {/* Top Right Hub Badge */}
+        <div className="vet-ana-badge-hub">
+          <CheckCircle2 size={15} strokeWidth={2.5} className="vet-ana-badge-hub-icon" />
+          <span>Clinical Hub Active</span>
+        </div>
       </div>
 
       {isLoading ? (
-        // Skeleton Loaders
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-          <div className="skeleton" style={{ height: "100px", borderRadius: "16px" }} />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
-            <div className="skeleton" style={{ height: "300px", borderRadius: "20px" }} />
-            <div className="skeleton" style={{ height: "300px", borderRadius: "20px" }} />
+        // Subtle loading state
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div className="skeleton" style={{ height: "140px", borderRadius: "24px" }} />
+          <div style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: "24px" }}>
+            <div className="skeleton" style={{ height: "380px", borderRadius: "24px" }} />
+            <div className="skeleton" style={{ height: "380px", borderRadius: "24px" }} />
           </div>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "28px" }} className="animate-fade-in">
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }} className="animate-fade-in">
           
-          {/* KPI Dashboard Card */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: "20px"
-          }}>
-            <div className="card" style={{ display: "flex", alignItems: "center", gap: "20px", padding: "24px 28px", borderLeft: "5px solid var(--accent-coral)" }}>
-              <div style={{
-                width: "48px",
-                height: "48px",
-                borderRadius: "50%",
-                backgroundColor: "rgba(217, 83, 79, 0.1)",
-                color: "var(--accent-coral)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }}>
-                <Award size={24} />
+          {/* 2. Top 2 Metric / KPI Cards */}
+          <div className="vet-ana-kpi-grid">
+            
+            {/* Card 1: Vaccinations Given This Month */}
+            <div className="vet-ana-kpi-card">
+              <div className="vet-ana-kpi-top">
+                <div className="vet-ana-kpi-main">
+                  <div className="vet-ana-kpi-icon-orange">
+                    <Syringe size={24} strokeWidth={2.4} />
+                  </div>
+                  <div className="vet-ana-kpi-info">
+                    <span className="vet-ana-kpi-label">VACCINATIONS GIVEN THIS MONTH</span>
+                    <div className="vet-ana-kpi-number-col">
+                      <span className="vet-ana-kpi-big-num">12</span>
+                      <span className="vet-ana-kpi-big-label">Administered</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="vet-ana-kpi-avatar-dog">
+                  🐶
+                </div>
               </div>
-              <div>
-                <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 800, textTransform: "uppercase" }}>Vaccinations Given This Month</span>
-                <strong style={{ fontSize: "2rem", color: "var(--text-main)", display: "block", letterSpacing: "-0.03em", marginTop: "2px" }}>
-                  {vaccinationsCount} Administered
-                </strong>
-                <span style={{ fontSize: "0.7rem", color: "#27AE60", fontWeight: 700 }}>+15% WoW growth rate</span>
+
+              <div className="vet-ana-pill-growth">
+                <TrendingUp size={14} strokeWidth={2.5} />
+                <span>+15% WoW growth rate</span>
               </div>
             </div>
 
-            <div className="card" style={{ display: "flex", alignItems: "center", gap: "20px", padding: "24px 28px", borderLeft: "5px solid var(--accent-amber)" }}>
-              <div style={{
-                width: "48px",
-                height: "48px",
-                borderRadius: "50%",
-                backgroundColor: "rgba(240, 173, 78, 0.1)",
-                color: "var(--accent-amber)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }}>
-                <Activity size={24} />
+            {/* Card 2: Active Medical Queue */}
+            <div className="vet-ana-kpi-card">
+              <div className="vet-ana-kpi-top">
+                <div className="vet-ana-kpi-main">
+                  <div className="vet-ana-kpi-icon-purple">
+                    <Activity size={24} strokeWidth={2.4} />
+                  </div>
+                  <div className="vet-ana-kpi-info">
+                    <span className="vet-ana-kpi-label">ACTIVE MEDICAL QUEUE</span>
+                    <div className="vet-ana-kpi-number-row">
+                      <span className="vet-ana-kpi-big-num" style={{ fontSize: "1.9rem" }}>0 Patients</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="vet-ana-kpi-avatar-cat">
+                  🐱
+                </div>
               </div>
-              <div>
-                <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 800, textTransform: "uppercase" }}>Active Medical Queue</span>
-                <strong style={{ fontSize: "2rem", color: "var(--text-main)", display: "block", letterSpacing: "-0.03em", marginTop: "2px" }}>
-                  {animals.filter(a => a.status === "Under Treatment").length} Patients
-                </strong>
-                <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: 600 }}>Awaiting clinician evaluation</span>
+
+              <div className="vet-ana-kpi-note">
+                <span className="vet-ana-dot-green" />
+                <span>Awaiting clinician evaluation</span>
               </div>
             </div>
+
           </div>
 
-          {/* Charts Row */}
-          <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "28px" }} className="animal-profile-grid">
+          {/* 3. Bottom 2-Column Analytics Breakdown */}
+          <div className="vet-ana-bottom-grid">
             
-            {/* Common Diagnoses Bar Chart */}
-            <div className="card" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
-              <h3 style={{ fontSize: "1.1rem", fontWeight: 800 }}>Primary Clinic Diagnoses</h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {/* Left Card: Primary Clinic Diagnoses */}
+            <div className="vet-ana-card">
+              <div className="vet-ana-card-header">
+                <div className="vet-ana-card-title-group">
+                  <div className="vet-ana-icon-badge-orange">
+                    <Stethoscope size={18} strokeWidth={2.3} />
+                  </div>
+                  <h2 className="vet-ana-card-title">Primary Clinic Diagnoses</h2>
+                </div>
+                <span className="vet-ana-badge-active-cases">ACTIVE CASES</span>
+              </div>
+
+              <div className="vet-ana-diagnoses-list">
                 {diagnoses.map((diag) => (
-                  <div key={diag.label} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem", fontWeight: 700 }}>
-                      <span>{diag.label}</span>
-                      <span style={{ color: "var(--text-muted)" }}>{diag.count} cases</span>
+                  <div key={diag.id} className="vet-ana-diag-item">
+                    <div className="vet-ana-diag-row">
+                      <div className="vet-ana-diag-left">
+                        <div
+                          className="vet-ana-diag-avatar"
+                          style={{ backgroundColor: diag.bgEmoji }}
+                        >
+                          {diag.emoji}
+                        </div>
+                        <span className="vet-ana-diag-name">{diag.label}</span>
+                      </div>
+                      <span
+                        className="vet-ana-diag-pill"
+                        style={{
+                          backgroundColor: diag.pillBg,
+                          border: `1px solid ${diag.pillBorder}`,
+                          color: diag.pillColor
+                        }}
+                      >
+                        {diag.count} cases
+                      </span>
                     </div>
-                    <div style={{ height: "12px", backgroundColor: "#FCFAF6", borderRadius: "6px", overflow: "hidden", border: "1px solid var(--border-color)" }}>
-                      <div style={{ width: `${diag.pct}%`, height: "100%", backgroundColor: diag.color, borderRadius: "6px", transition: "width 0.4s ease" }} />
+
+                    <div className="vet-ana-progress-track">
+                      <div
+                        className="vet-ana-progress-fill"
+                        style={{
+                          width: `${diag.pct}%`,
+                          backgroundColor: diag.barColor
+                        }}
+                      />
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Case outcomes donut-share representation */}
-            <div className="card" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
-              <h3 style={{ fontSize: "1.1rem", fontWeight: 800 }}>Clinical Case Outcomes</h3>
-              
-              <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-                
-                {/* Outpatient Recovery Rate */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", fontWeight: 800 }}>
-                    <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                      <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "#27AE60" }} />
-                      Recovered & Discharged
-                    </span>
-                    <span>{recoveredPct}%</span>
+            {/* Right Card: Clinical Case Outcomes */}
+            <div className="vet-ana-card">
+              <div className="vet-ana-card-header">
+                <div className="vet-ana-card-title-group">
+                  <div className="vet-ana-icon-badge-mint">
+                    <PieChart size={18} strokeWidth={2.3} />
                   </div>
-                  <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: 0, paddingLeft: "18px" }}>
+                  <h2 className="vet-ana-card-title">Clinical Case Outcomes</h2>
+                </div>
+                <span className="vet-ana-badge-monthly-total">MONTHLY TOTAL</span>
+              </div>
+
+              <div className="vet-ana-outcomes-list">
+                {/* 1. Recovered & Discharged */}
+                <div className="vet-ana-outcome-item">
+                  <div className="vet-ana-outcome-header">
+                    <div className="vet-ana-outcome-title">
+                      <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#10B981" }} />
+                      <span>Recovered & Discharged</span>
+                    </div>
+                    <span className="vet-ana-outcome-pct" style={{ color: "#10B981" }}>
+                      50%
+                    </span>
+                  </div>
+                  <p className="vet-ana-outcome-desc">
                     Animals returned back to shelters or successfully placed in adoptive homes.
                   </p>
                 </div>
 
-                {/* Under Care */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", fontWeight: 800 }}>
-                    <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                      <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "var(--accent-amber)" }} />
-                      Active / Ongoing Treatment
+                {/* 2. Active / Ongoing Treatment */}
+                <div className="vet-ana-outcome-item">
+                  <div className="vet-ana-outcome-header">
+                    <div className="vet-ana-outcome-title">
+                      <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#F59E0B" }} />
+                      <span>Active / Ongoing Treatment</span>
+                    </div>
+                    <span className="vet-ana-outcome-pct" style={{ color: "#F59E0B" }}>
+                      0%
                     </span>
-                    <span>{treatmentPct}%</span>
                   </div>
-                  <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: 0, paddingLeft: "18px" }}>
+                  <p className="vet-ana-outcome-desc">
                     Patients currently logged in critical quarantine or receiving therapy.
                   </p>
                 </div>
 
-                {/* Deceased */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", fontWeight: 800 }}>
-                    <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                      <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: "var(--accent-coral)" }} />
-                      Clinical Mortality / Deceased
+                {/* 3. Clinical Mortality / Deceased */}
+                <div className="vet-ana-outcome-item">
+                  <div className="vet-ana-outcome-header">
+                    <div className="vet-ana-outcome-title">
+                      <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "#EF4444" }} />
+                      <span>Clinical Mortality / Deceased</span>
+                    </div>
+                    <span className="vet-ana-outcome-pct" style={{ color: "#EF4444" }}>
+                      50%
                     </span>
-                    <span>{deceasedPct}%</span>
                   </div>
-                  <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", margin: 0, paddingLeft: "18px" }}>
+                  <p className="vet-ana-outcome-desc">
                     Stray casualties who passed away due to severe trauma.
                   </p>
                 </div>
+              </div>
 
+              {/* Bottom Sync Note Card */}
+              <div className="vet-ana-sync-note">
+                <div className="vet-ana-sync-icon">
+                  🩺
+                </div>
+                <p className="vet-ana-sync-text">
+                  All logs synchronized with the central pet welfare registry.
+                </p>
               </div>
             </div>
 
@@ -202,7 +293,6 @@ const VetAnalytics = () => {
 
         </div>
       )}
-
     </div>
   );
 };

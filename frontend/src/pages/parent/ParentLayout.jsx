@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
+import { useAuth } from "../../context/AuthContext";
 import {
   Menu, X, Home, Search, ArrowLeft, CheckCircle, Info, 
   AlertTriangle, AlertCircle, Bell, Heart, Calendar, 
-  MapPin, PlusCircle, Dog
+  MapPin, PlusCircle, Dog, LogOut, Stethoscope, PawPrint,
+  Flag, Sparkles, Radio, ClipboardList, Building2, User
 } from "lucide-react";
+import "../../styles/parent.css";
 
 const ParentLayout = () => {
   const { toasts, removeToast, foundReports, animals } = useApp();
+  const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [localNotifications, setLocalNotifications] = useState([
@@ -19,10 +23,10 @@ const ParentLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Dynamic scanned reports notification mapped to bell alerts
+  // Dynamic scanned reports notification mapped to bell alerts (strictly scoped to parent's owned pets)
   const unreadReports = (foundReports || []).filter(r => {
     const pet = (animals || []).find(a => a.id === r.animalId);
-    return pet && pet.custodian && (pet.custodian.toLowerCase().includes("family") || pet.custodian.toLowerCase().includes("home")) && r.status === "Pending";
+    return pet && pet.ownerId === user?.id && r.status === "Pending";
   }).map(r => {
     const pet = animals.find(a => a.id === r.animalId);
     return {
@@ -37,28 +41,29 @@ const ParentLayout = () => {
 
   const allNotifications = [...unreadReports, ...localNotifications];
 
-  // Navigation Links for Pet Parent App
+  // Navigation Links for Pet Parent App matching reference image
   const groupedLinks = [
     {
       category: "My Family",
       links: [
-        { path: "/parent/pets", label: "My Pets", icon: Heart },
-        { path: "/parent/appointments", label: "Vet Visits", icon: Calendar },
+        { path: "/parent/pets", label: "My Pets", icon: PawPrint },
+        { path: "/parent/appointments", label: "Vet Visits", icon: Stethoscope },
         { path: "/parent/lost", label: "Lost Pet Alerts", icon: AlertTriangle },
-        { path: "/parent/found-reports", label: "Found Pet Reports", icon: AlertCircle }
+        { path: "/parent/found-reports", label: "Found Pet Reports", icon: Flag }
       ]
     },
     {
       category: "Ecosystem",
       links: [
-        { path: "/parent/adopt", label: "Adopt a Pet", icon: Dog },
-        { path: "/parent/emergency", label: "Emergency & Nearby", icon: MapPin }
+        { path: "/parent/vets", label: "Find a Vet", icon: Building2 },
+        { path: "/parent/adopt", label: "Adopt a Pet", icon: Heart },
+        { path: "/parent/emergency", label: "Emergency & Nearby", icon: Sparkles }
       ]
     },
     {
       category: "Registries",
       links: [
-        { path: "/parent/register", label: "Register Family Pet", icon: PlusCircle }
+        { path: "/parent/register", label: "Register Family Pet", icon: ClipboardList }
       ]
     }
   ];
@@ -74,60 +79,27 @@ const ParentLayout = () => {
   };
 
   return (
-    <div className="ngo-layout" style={{ display: "flex", minHeight: "100vh" }}>
-      {/* 1. Left Sidebar - Desktop (Amber/Gold Accented) */}
-      <aside style={{
-        width: "260px",
-        backgroundColor: "var(--primary-color)", // deep forest green remains, but active buttons are styled amber/gold
-        color: "var(--text-white)",
-        display: "flex",
-        flexDirection: "column",
-        flexShrink: 0,
-        position: "sticky",
-        top: 0,
-        height: "100vh",
-        zIndex: 100,
-        boxShadow: "4px 0 20px rgba(0,0,0,0.05)",
-        borderRight: "1px solid rgba(255,255,255,0.04)"
-      }} className="sidebar-desktop">
+    <div className="parent-shell">
+      {/* 1. Left Sidebar - Desktop (Dark Charcoal / Orange Accented) */}
+      <aside className="parent-sidebar sidebar-desktop">
         {/* Sidebar Logo */}
-        <div style={{
-          padding: "28px 24px",
-          display: "flex",
-          alignItems: "center",
-          gap: "12px",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.06)"
-        }}>
-          <div style={{
-            width: "36px",
-            height: "36px",
-            borderRadius: "50%",
-            backgroundColor: "white",
-            color: "var(--accent-amber)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-            <Heart size={20} fill="var(--accent-amber)" stroke="var(--accent-amber)" />
+        <div className="parent-sidebar-logo-area">
+          <div className="parent-sidebar-logo-badge">
+            <PawPrint size={20} color="white" />
           </div>
-          <span style={{ fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.03em" }}>
-            PetLink <span style={{ fontWeight: 300, opacity: 0.8, color: "var(--accent-amber)" }}>CARE</span>
-          </span>
+          <div>
+            <div className="parent-sidebar-brand-title">
+              PetLink <span className="parent-sidebar-brand-care">CARE</span>
+            </div>
+            <span className="parent-sidebar-brand-sub">FAMILY COMPANION</span>
+          </div>
         </div>
 
         {/* Sidebar Navigation */}
-        <nav style={{ flex: 1, padding: "24px 16px", display: "flex", flexDirection: "column", gap: "20px", overflowY: "auto" }}>
+        <nav className="parent-sidebar-nav">
           {groupedLinks.map((cat, catIdx) => (
             <div key={catIdx} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <span style={{
-                fontSize: "0.68rem",
-                fontWeight: 800,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "rgba(255, 255, 255, 0.4)",
-                paddingLeft: "16px",
-                marginBottom: "6px"
-              }}>
+              <span className="parent-sidebar-cat-label">
                 {cat.category}
               </span>
               
@@ -138,27 +110,9 @@ const ParentLayout = () => {
                   <NavLink
                     key={link.path}
                     to={link.path}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "12px",
-                      padding: "10px 18px",
-                      borderRadius: "30px",
-                      fontSize: "0.9rem",
-                      fontWeight: 600,
-                      transition: "all var(--transition-fast)",
-                      backgroundColor: isActive ? "var(--accent-amber)" : "transparent",
-                      color: isActive ? "white" : "rgba(255, 255, 255, 0.7)",
-                      opacity: isActive ? 1 : 0.85
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) e.currentTarget.style.backgroundColor = "transparent";
-                    }}
+                    className={`parent-nav-item ${isActive ? "active" : ""}`}
                   >
-                    <LinkIcon size={16} />
+                    <LinkIcon size={17} />
                     {link.label}
                   </NavLink>
                 );
@@ -168,29 +122,15 @@ const ParentLayout = () => {
         </nav>
 
         {/* Sidebar Footer Link */}
-        <div style={{ padding: "20px 16px", borderTop: "1px solid rgba(255, 255, 255, 0.06)" }}>
+        <div className="parent-sidebar-footer">
           <Link
             to="/"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              padding: "12px 18px",
-              borderRadius: "30px",
-              fontSize: "0.9rem",
-              fontWeight: 600,
-              color: "white",
-              opacity: 0.8,
-              transition: "all var(--transition-fast)"
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.05)"}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+            className="parent-exit-link"
           >
             <ArrowLeft size={16} /> Exit to Selector
           </Link>
         </div>
       </aside>
-
       {/* Mobile Drawer Navigation (Conditional) */}
       {mobileMenuOpen && (
         <div className="animate-fade-in" style={{
@@ -205,7 +145,7 @@ const ParentLayout = () => {
         }}>
           <div className="animate-slide-in-right" style={{
             width: "280px",
-            backgroundColor: "var(--primary-color)",
+            backgroundColor: "#170F0A",
             height: "100%",
             padding: "24px",
             display: "flex",
@@ -233,15 +173,7 @@ const ParentLayout = () => {
                         key={link.path}
                         to={link.path}
                         onClick={() => setMobileMenuOpen(false)}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "12px",
-                          padding: "10px 16px",
-                          borderRadius: "30px",
-                          color: "white",
-                          backgroundColor: isActive ? "var(--accent-amber)" : "transparent"
-                        }}
+                        className={`parent-nav-item ${isActive ? "active" : ""}`}
                       >
                         <LinkIcon size={16} />
                         {link.label}
@@ -263,20 +195,9 @@ const ParentLayout = () => {
       )}
 
       {/* 2. Main Content Container */}
-      <div className="ngo-content" style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+      <div style={{ flexGrow: 1, display: "flex", flexDirection: "column", minWidth: 0, backgroundColor: "#FAF7F2" }}>
         {/* Parent Top Bar */}
-        <header style={{
-          height: "76px",
-          backgroundColor: "var(--card-bg)",
-          borderBottom: "1px solid var(--border-color)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 48px",
-          position: "sticky",
-          top: 0,
-          zIndex: 90
-        }}>
+        <header className="parent-topbar">
           {/* Hamburger button on Mobile */}
           <button
             onClick={() => setMobileMenuOpen(true)}
@@ -293,48 +214,26 @@ const ParentLayout = () => {
           </button>
 
           {/* Portal Indicators & Title */}
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <span style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "8px" }} className="profile-text">
+          <div className="parent-topbar-left">
+            <span className="parent-topbar-title">
               🏡 Pet Family Dashboard
             </span>
-            <span className="badge" style={{ backgroundColor: "var(--accent-amber-light)", color: "var(--accent-amber)", fontSize: "0.75rem", border: "1px solid var(--accent-amber)", fontWeight: 700 }}>
-              Pet Parent App
+            <span className="parent-badge-app">
+              PET PARENT APP
             </span>
           </div>
 
           {/* Top Bar Actions */}
-          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+          <div className="parent-topbar-right">
             {/* Dynamic Parent Notification dropdown */}
             <div style={{ position: "relative" }}>
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                style={{
-                  background: "none",
-                  border: 0,
-                  color: "var(--text-main)",
-                  cursor: "pointer",
-                  position: "relative",
-                  padding: "6px",
-                  display: "flex"
-                }}
+                className="parent-bell-btn"
               >
                 <Bell size={20} />
                 {allNotifications.filter(n => n.unread).length > 0 && (
-                  <span style={{
-                    position: "absolute",
-                    top: "0px",
-                    right: "0px",
-                    width: "18px",
-                    height: "18px",
-                    borderRadius: "50%",
-                    backgroundColor: "var(--accent-coral)",
-                    color: "white",
-                    fontSize: "0.65rem",
-                    fontWeight: 800,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                  }}>
+                  <span className="parent-bell-badge">
                     {allNotifications.filter(n => n.unread).length}
                   </span>
                 )}
@@ -348,17 +247,18 @@ const ParentLayout = () => {
                   right: 0,
                   width: "320px",
                   padding: "20px",
-                  borderRadius: "var(--radius-md)",
+                  borderRadius: "16px",
                   zIndex: 200,
                   maxHeight: "350px",
                   overflowY: "auto",
-                  border: "1px solid var(--border-color)"
+                  border: "1px solid #E5E7EB",
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.1)"
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px", alignItems: "center" }}>
-                    <h4 style={{ fontWeight: 800, fontSize: "0.95rem" }}>Updates Feed</h4>
+                    <h4 style={{ fontWeight: 800, fontSize: "0.95rem", margin: 0 }}>Updates Feed</h4>
                     {allNotifications.filter(n => n.unread).length > 0 && (
                       <span 
-                        style={{ fontSize: "0.75rem", color: "var(--accent-amber)", cursor: "pointer", fontWeight: 700 }} 
+                        style={{ fontSize: "0.75rem", color: "#FF6A00", cursor: "pointer", fontWeight: 700 }} 
                         onClick={() => setLocalNotifications(prev => prev.map(n => ({ ...n, unread: false })))}
                       >
                         Mark All Read
@@ -375,9 +275,9 @@ const ParentLayout = () => {
                           gap: "4px",
                           padding: "10px 12px",
                           borderRadius: "10px",
-                          backgroundColor: notif.unread ? "var(--accent-amber-light)" : "#FCFAF6",
+                          backgroundColor: notif.unread ? "#FFF7ED" : "#FCFAF6",
                           fontSize: "0.8rem",
-                          border: "1px solid var(--border-color)",
+                          border: "1px solid #E5E7EB",
                           transition: "background-color 0.2s ease",
                           cursor: notif.path ? "pointer" : "default"
                         }}
@@ -389,10 +289,10 @@ const ParentLayout = () => {
                         }}
                       >
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <strong style={{ color: "var(--text-main)", fontSize: "0.82rem" }}>{notif.title}</strong>
-                          <span style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>{notif.time}</span>
+                          <strong style={{ color: "#1F2937", fontSize: "0.82rem" }}>{notif.title}</strong>
+                          <span style={{ fontSize: "0.68rem", color: "#9CA3AF" }}>{notif.time}</span>
                         </div>
-                        <p style={{ color: "var(--text-muted)", fontSize: "0.78rem", margin: 0 }}>{notif.desc}</p>
+                        <p style={{ color: "#6B7280", fontSize: "0.78rem", margin: 0 }}>{notif.desc}</p>
                       </div>
                     ))}
                   </div>
@@ -400,36 +300,47 @@ const ParentLayout = () => {
               )}
             </div>
 
-            {/* Profile Avatar */}
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <div style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
-                backgroundColor: "var(--accent-amber)",
-                color: "white",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 700,
-                fontSize: "0.95rem"
-              }}>
-                AS
+            {/* Real Parent Profile Matching Reference */}
+            <div className="parent-user-pill">
+              <div className="parent-user-avatar">
+                {user?.name ? user.name.slice(0, 1).toUpperCase() : "P"}
               </div>
-              <div style={{ display: "flex", flexDirection: "column" }} className="profile-text">
-                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-main)", lineHeight: 1.2 }}>
-                  Aarav Sharma
+              <div className="parent-user-info">
+                <span className="parent-user-name">
+                  {user?.name || "parent"}
                 </span>
-                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 500 }}>
-                  Pet Owner / Parent
+                <span className="parent-user-sub">
+                  {user?.city ? `${user.city} • Pet Parent` : "ahmedabad • Pet Parent"}
                 </span>
               </div>
             </div>
+
+            {/* User Icon Circle Button */}
+            <button
+              className="parent-user-icon-btn"
+              title="Parent profile"
+              onClick={() => navigate("/parent/pets")}
+            >
+              <User size={17} />
+            </button>
+
+            {/* Logout Action */}
+            <button
+              onClick={() => {
+                logout();
+                navigate("/login");
+              }}
+              title="Sign out of Parent portal"
+              className="parent-logout-btn"
+            >
+              <LogOut size={14} />
+              <span>Logout</span>
+            </button>
           </div>
         </header>
 
         {/* Parent Page Content */}
-        <main style={{ padding: "40px 48px", flexGrow: 1 }} className="ngo-page-body animate-fade-in">
+        <main style={{ flexGrow: 1, backgroundColor: "#FAF7F2" }} className="animate-fade-in">
           <Outlet />
         </main>
       </div>

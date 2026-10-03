@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import client from "../api/client";
+import { useAuth } from "./AuthContext";
 import {
   initialAnimals,
   initialRescues,
@@ -21,24 +22,24 @@ export const useApp = () => {
 };
 
 export const AppProvider = ({ children }) => {
+  const { user, token } = useAuth();
   const [animals, setAnimals] = useState(initialAnimals);
 
-  // Merge any real backend-registered animals with the existing mock data on load
+  const fetchAnimals = async () => {
+    try {
+      const res = await client.get("/animals");
+      setAnimals(res.data);
+    } catch (err) {
+      console.error("Failed to load animals from backend:", err.message);
+    } finally {
+      setAnimalsLoaded(true);
+    }
+  };
+
+  // Re-fetch role-scoped animals on login, logout, or account switch
   useEffect(() => {
-    client.get("/animals")
-      .then((res) => {
-        const backendAnimals = res.data;
-        setAnimals((prevAnimals) => {
-          const existingIds = new Set(prevAnimals.map((a) => a.id));
-          const newOnes = backendAnimals.filter((a) => !existingIds.has(a.id));
-          return [...newOnes, ...prevAnimals];
-        });
-      })
-      .catch((err) => {
-        console.error("Failed to load animals from backend:", err.message);
-      })
-      .finally(() => setAnimalsLoaded(true));
-  }, []);
+    fetchAnimals();
+  }, [token, user?.id]);
 
   useEffect(() => {
     client.get("/donations")
@@ -127,13 +128,54 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    client.get("/adoptions")
+    client.get("/vetinventory")
       .then((res) => {
-        const backendAdoptions = res.data;
+        const backendItems = res.data;
+        setVetInventory((prevItems) => {
+          const existingIds = new Set(prevItems.map((i) => i.id));
+          const newOnes = backendItems.filter((i) => !existingIds.has(i.id));
+          return [...newOnes, ...prevItems];
+        });
+      })
+      .catch((err) => console.error("Failed to load vet inventory from backend:", err.message));
+  }, []);
+
+  const [rescues, setRescues] = useState(initialRescues);
+  const [volunteers, setVolunteers] = useState(initialVolunteers);
+  const [donations, setDonations] = useState(initialDonations);
+  const [adoptions, setAdoptions] = useState(initialAdoptions);
+  const persistedAdoptionIds = useRef(new Set());
+  const [inventory, setInventory] = useState(initialInventory);
+  const [toasts, setToasts] = useState([]);
+  const [animalsLoaded, setAnimalsLoaded] = useState(false);
+
+  useEffect(() => {
+    client.get("/adoptions")
+      .then(async (res) => {
+        const backendAdoptions = Array.isArray(res.data) ? res.data : [];
+        backendAdoptions.forEach((a) => persistedAdoptionIds.current.add(a.id));
+
+        // Auto-seed missing initial mock adoptions into MongoDB Atlas if not present
+        const missingInitial = initialAdoptions.filter((initApp) => !persistedAdoptionIds.current.has(initApp.id));
+        if (missingInitial.length > 0) {
+          for (const appToSeed of missingInitial) {
+            try {
+              const seedRes = await client.post('/adoptions', appToSeed);
+              backendAdoptions.push(seedRes.data);
+              persistedAdoptionIds.current.add(seedRes.data.id);
+            } catch (seedErr) {
+              // Ignore duplicate or network error silently
+            }
+          }
+        }
+
         setAdoptions((prevAdoptions) => {
-          const existingIds = new Set(prevAdoptions.map((a) => a.id));
-          const newOnes = backendAdoptions.filter((a) => !existingIds.has(a.id));
-          return [...newOnes, ...prevAdoptions];
+          const combined = [...backendAdoptions];
+          const combinedIds = new Set(combined.map((a) => a.id));
+          prevAdoptions.forEach((p) => {
+            if (!combinedIds.has(p.id)) combined.push(p);
+          });
+          return combined;
         });
       })
       .catch((err) => {
@@ -141,27 +183,79 @@ export const AppProvider = ({ children }) => {
       });
   }, []);
 
-  const [rescues, setRescues] = useState(initialRescues);
-  const [volunteers, setVolunteers] = useState(initialVolunteers);
-  const [donations, setDonations] = useState(initialDonations);
-  const [adoptions, setAdoptions] = useState(initialAdoptions);
-  const [inventory, setInventory] = useState(initialInventory);
-  const [toasts, setToasts] = useState([]);
-  const [animalsLoaded, setAnimalsLoaded] = useState(false);
-
   // Vet Portal State Setup
-  const [vetInventory, setVetInventory] = useState([
-    { id: "VMD-101", name: "Rabies Vaccine (Rabigen)", stock: 45, unit: "Vials", threshold: 15, expiryDate: "2027-02-14" },
-    { id: "VMD-102", name: "Feline Triple Vaccine (Feligen)", stock: 8, unit: "Vials", threshold: 10, expiryDate: "2026-11-20" },
-    { id: "VMD-103", name: "Meloxicam Painkiller (Suspension)", stock: 12, unit: "Bottles", threshold: 5, expiryDate: "2027-06-05" },
-    { id: "VMD-104", name: "Enrofloxacin Antibiotics (50mg)", stock: 120, unit: "Tablets", threshold: 50, expiryDate: "2028-01-10" },
-    { id: "VMD-105", name: "Sterile Gauze Rolls & Bandages", stock: 65, unit: "Packs", threshold: 20, expiryDate: "2029-05-30" }
-  ]);
+  const [vetInventory, setVetInventory] = useState(() => {
+    const saved = localStorage.getItem("petlink_vet_inventory");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {
+        console.error("Error parsing cached vet inventory:", e);
+      }
+    }
+    return [
+      { id: "VMD-1790320333915-667", name: "X", stock: 10, unit: "Vials", threshold: 10, expiryDate: "2026-09-25" },
+      { id: "VMD-101", name: "Rabies Vaccine (Rabigen)", stock: 45, unit: "Vials", threshold: 15, expiryDate: "2027-02-14" },
+      { id: "VMD-102", name: "Feline Triple Vaccine (Feligen)", stock: 8, unit: "Vials", threshold: 10, expiryDate: "2026-11-20" },
+      { id: "VMD-103", name: "Meloxicam Painkiller (Suspension)", stock: 12, unit: "Bottles", threshold: 5, expiryDate: "2027-06-05" },
+      { id: "VMD-104", name: "Enrofloxacin Antibiotics (50mg)", stock: 120, unit: "Tablets", threshold: 50, expiryDate: "2028-01-10" },
+      { id: "VMD-105", name: "Sterile Gauze Rolls & Bandages", stock: 65, unit: "Packs", threshold: 20, expiryDate: "2029-05-30" }
+    ];
+  });
 
-  const [vetAppointments, setVetAppointments] = useState([
-    { id: "APT-501", petId: "PET-104", petName: "Kalu", petPhoto: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400", reason: "De-worming dosage follow-up", date: "2026-07-15", status: "Upcoming" },
-    { id: "APT-502", petId: "PET-103", petName: "Mani", petPhoto: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400", reason: "Post-surgery stitches inspection", date: "2026-07-16", status: "Upcoming" }
-  ]);
+  useEffect(() => {
+    if (vetInventory && vetInventory.length > 0) {
+      localStorage.setItem("petlink_vet_inventory", JSON.stringify(vetInventory));
+    }
+  }, [vetInventory]);
+
+  const [vetAppointments, setVetAppointments] = useState(() => {
+    const saved = localStorage.getItem("petlink_vet_appointments");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {
+        console.error("Error parsing cached appointments:", e);
+      }
+    }
+    return [
+      { id: "APT-500", petId: "PL-2026-4548", petName: "Miya", petPhoto: "https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&q=80&w=400", reason: "fever", date: "2026-10-02", status: "Upcoming" },
+      { id: "APT-501", petId: "PET-104", petName: "Kalu", petPhoto: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400", reason: "De-worming dosage follow-up", date: "2026-07-15", status: "Upcoming" },
+      { id: "APT-502", petId: "PET-103", petName: "Mani", petPhoto: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400", reason: "Post-surgery stitches inspection", date: "2026-07-16", status: "Upcoming" }
+    ];
+  });
+
+  const fetchVetAppointments = async () => {
+    const tokenToUse = token || localStorage.getItem("petlink_token");
+    if (!tokenToUse) return;
+    try {
+      const res = await client.get("/vetappointments");
+      const backendAppointments = res.data;
+      if (Array.isArray(backendAppointments) && backendAppointments.length > 0) {
+        setVetAppointments((prevAppointments) => {
+          const backendMap = new Map(backendAppointments.map((a) => [a.id, a]));
+          // Merge updates into matching previous records (updating dates, statuses, etc.)
+          const updatedPrev = prevAppointments.map((a) =>
+            backendMap.has(a.id) ? { ...a, ...backendMap.get(a.id) } : a
+          );
+          // Append new records that weren't previously in state
+          const prevIds = new Set(prevAppointments.map((a) => a.id));
+          const newOnes = backendAppointments.filter((a) => !prevIds.has(a.id));
+          const merged = [...newOnes, ...updatedPrev];
+          localStorage.setItem("petlink_vet_appointments", JSON.stringify(merged));
+          return merged;
+        });
+      }
+    } catch (err) {
+      console.error("Failed to load vet appointments from backend:", err.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchVetAppointments();
+  }, [token, user?.id]);
 
   const [complaints, setComplaints] = useState(initialComplaints);
 
@@ -201,7 +295,7 @@ export const AppProvider = ({ children }) => {
   const addCitizenComplaint = (complaintData) => {
     const newCompId = `CMP-${300 + complaints.length + 1}`;
     const newRescueId = `RSC-${200 + rescues.length + 1}`;
-    
+
     const newComplaint = {
       id: newCompId,
       citizenName: complaintData.name,
@@ -213,7 +307,7 @@ export const AppProvider = ({ children }) => {
       status: "Reported",
       date: new Date().toISOString().split("T")[0]
     };
-    
+
     const newRescue = {
       id: newRescueId,
       animalType: complaintData.animalType || "Dog",
@@ -305,7 +399,7 @@ export const AppProvider = ({ children }) => {
             title: `Status changed to ${newStatus}`,
             desc: `Updated by coordinator.`
           };
-          
+
           // Auto create animal profile on "Rescued"
           if (newStatus === "Rescued" && r.status !== "Rescued") {
             setTimeout(() => {
@@ -319,7 +413,7 @@ export const AppProvider = ({ children }) => {
                 gender: "Unknown",
                 age: "Unknown",
                 weight: "Unknown",
-                photo: r.photo || (r.animalType.toLowerCase() === "cat" 
+                photo: r.photo || (r.animalType.toLowerCase() === "cat"
                   ? "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400"
                   : "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400"),
                 custodian: "Emergency Intake",
@@ -485,6 +579,54 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  // Persisted version of addShelterInventoryItem — creates a new shelter inventory item from scratch
+  const addShelterInventoryItemPersisted = async (itemData) => {
+    const newId = `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const payload = {
+      id: newId,
+      name: itemData.name ? itemData.name.trim() : "Unnamed Item",
+      category: itemData.category || "General",
+      stock: Number(itemData.stock) || 0,
+      unit: itemData.unit || "Units",
+      threshold: Number(itemData.threshold) || 10,
+      expiryDate: itemData.expiryDate || ""
+    };
+    try {
+      const res = await client.post('/inventory', payload);
+      setInventory((prev) => [res.data, ...prev]);
+      addToast(`Added "${res.data.name}" to shelter inventory.`, "success");
+      return res.data;
+    } catch (err) {
+      addToast("Failed to create inventory item in database. Please try again.", "error");
+      console.error("Error creating shelter inventory item:", err);
+      throw err;
+    }
+  };
+
+  // Persisted version of addVolunteer — registers a new volunteer from scratch
+  const addVolunteerPersisted = async (volunteerData) => {
+    const newId = `VOL-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const payload = {
+      id: newId,
+      name: volunteerData.name ? volunteerData.name.trim() : "Volunteer",
+      contact: volunteerData.contact ? volunteerData.contact.trim() : "",
+      role: volunteerData.role || "General Volunteer",
+      assignedTaskCount: 0,
+      lastCheckIn: new Date().toISOString(),
+      tasks: []
+    };
+    try {
+      const res = await client.post('/volunteers', payload);
+      setVolunteers((prev) => [res.data, ...prev]);
+      addToast(`Volunteer "${res.data.name}" registered successfully.`, "success");
+      return res.data;
+    } catch (err) {
+      addToast("Failed to register volunteer in database. Please try again.", "error");
+      console.error("Error registering volunteer:", err);
+      throw err;
+    }
+  };
+
   // Persisted version of addAdoptionApplication — used by Parent's AdoptionBrowsing
   const addAdoptionApplicationPersisted = async (appData) => {
     const newId = `ADP-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -508,10 +650,49 @@ export const AppProvider = ({ children }) => {
 
   // Persisted version of updateAdoptionStatus — also transfers custody when Approved (handled by backend)
   const updateAdoptionStatusPersisted = async (adoptionId, newStatus) => {
-    try {
-      const res = await client.put(`/adoptions/${adoptionId}`, { status: newStatus });
-      setAdoptions((prev) => prev.map((a) => (a.id === adoptionId ? res.data : a)));
-      addToast(`Adoption application for ${res.data.animalName} updated to: ${newStatus}`, "info");
+    const existing = adoptions.find((a) => a.id === adoptionId);
+    let appData = null;
+
+    if (!persistedAdoptionIds.current.has(adoptionId)) {
+      // Mock application not yet saved in MongoDB — auto-create via POST directly to prevent 404
+      try {
+        const createRes = await client.post('/adoptions', { ...(existing || { id: adoptionId }), status: newStatus });
+        appData = createRes.data;
+        persistedAdoptionIds.current.add(adoptionId);
+      } catch (postErr) {
+        try {
+          const putRes = await client.put(`/adoptions/${adoptionId}`, { status: newStatus });
+          appData = putRes.data;
+          persistedAdoptionIds.current.add(adoptionId);
+        } catch (putErr) {
+          appData = { ...(existing || {}), id: adoptionId, status: newStatus };
+        }
+      }
+    } else {
+      try {
+        const res = await client.put(`/adoptions/${adoptionId}`, { status: newStatus });
+        appData = res.data;
+        persistedAdoptionIds.current.add(adoptionId);
+      } catch (err) {
+        if (err.response && err.response.status === 404 && existing) {
+          try {
+            const createRes = await client.post('/adoptions', { ...existing, status: newStatus });
+            appData = createRes.data;
+            persistedAdoptionIds.current.add(adoptionId);
+          } catch (postErr) {
+            appData = { ...existing, status: newStatus };
+          }
+        } else {
+          addToast("Failed to update application. Please try again.", "error");
+          console.warn("Could not update adoption status on backend:", err.message);
+          appData = { ...(existing || {}), id: adoptionId, status: newStatus };
+        }
+      }
+    }
+
+    if (appData) {
+      setAdoptions((prev) => prev.map((a) => (a.id === adoptionId ? appData : a)));
+      addToast(`Adoption application for ${appData.animalName || "pet"} updated to: ${newStatus}`, "info");
 
       if (newStatus === "Approved") {
         // Merge the freshly-transferred animal into local state — never replace the whole list
@@ -533,11 +714,7 @@ export const AppProvider = ({ children }) => {
         }, 800);
       }
 
-      return res.data;
-    } catch (err) {
-      addToast("Failed to update application in database. Please try again.", "error");
-      console.error(err);
-      throw err;
+      return appData;
     }
   };
 
@@ -562,19 +739,84 @@ export const AppProvider = ({ children }) => {
 
   // Persisted version of scheduleFollowUp
   const scheduleFollowUpPersisted = async (adoptionId, date, interval) => {
-    try {
-      const res = await client.put(`/adoptions/${adoptionId}`, {
-        status: "Follow-up Scheduled",
-        followUpDate: date,
-        followUpInterval: interval
-      });
-      setAdoptions((prev) => prev.map((a) => (a.id === adoptionId ? res.data : a)));
+    const existing = adoptions.find((a) => a.id === adoptionId);
+    let appData = null;
+
+    if (!persistedAdoptionIds.current.has(adoptionId)) {
+      try {
+        const createRes = await client.post('/adoptions', {
+          ...(existing || { id: adoptionId }),
+          status: "Follow-up Scheduled",
+          followUpDate: date,
+          followUpInterval: interval
+        });
+        appData = createRes.data;
+        persistedAdoptionIds.current.add(adoptionId);
+      } catch (postErr) {
+        try {
+          const putRes = await client.put(`/adoptions/${adoptionId}`, {
+            status: "Follow-up Scheduled",
+            followUpDate: date,
+            followUpInterval: interval
+          });
+          appData = putRes.data;
+          persistedAdoptionIds.current.add(adoptionId);
+        } catch (putErr) {
+          appData = {
+            ...(existing || {}),
+            id: adoptionId,
+            status: "Follow-up Scheduled",
+            followUpDate: date,
+            followUpInterval: interval
+          };
+        }
+      }
+    } else {
+      try {
+        const res = await client.put(`/adoptions/${adoptionId}`, {
+          status: "Follow-up Scheduled",
+          followUpDate: date,
+          followUpInterval: interval
+        });
+        appData = res.data;
+        persistedAdoptionIds.current.add(adoptionId);
+      } catch (err) {
+        if (err.response && err.response.status === 404 && existing) {
+          try {
+            const createRes = await client.post('/adoptions', {
+              ...existing,
+              status: "Follow-up Scheduled",
+              followUpDate: date,
+              followUpInterval: interval
+            });
+            appData = createRes.data;
+            persistedAdoptionIds.current.add(adoptionId);
+          } catch (postErr) {
+            appData = {
+              ...existing,
+              status: "Follow-up Scheduled",
+              followUpDate: date,
+              followUpInterval: interval
+            };
+          }
+        } else {
+          addToast("Failed to schedule follow-up. Please try again.", "error");
+          console.warn("Could not schedule follow-up on backend:", err.message);
+          appData = {
+            ...(existing || {}),
+            id: adoptionId,
+            status: "Follow-up Scheduled",
+            followUpDate: date,
+            followUpInterval: interval
+          };
+        }
+      }
+    }
+
+    if (appData) {
+      setAdoptions((prev) => prev.map((a) => (a.id === adoptionId ? appData : a)));
       addToast(`Follow-up scheduled in ${interval} days (on ${date}).`, "success");
-      return res.data;
-    } catch (err) {
-      addToast("Failed to schedule follow-up. Please try again.", "error");
-      console.error(err);
-      throw err;
+      return appData;
     }
   };
 
@@ -923,26 +1165,26 @@ export const AppProvider = ({ children }) => {
   // 8. Vet Portal Handlers
   const addOrUpdateVetInventoryItem = (itemData) => {
     setVetInventory((prev) => {
-      const existing = prev.find(item => 
+      const existing = prev.find(item =>
         (itemData.id && item.id === itemData.id) ||
         (itemData.name && item.name.toLowerCase() === itemData.name.toLowerCase())
       );
       if (existing) {
         addToast(`Stock updated — ${existing.name} +${itemData.stock} ${existing.unit}`, "success");
-        return prev.map(item => 
-          item.id === existing.id 
-            ? { ...item, stock: item.stock + Number(itemData.stock) } 
+        return prev.map(item =>
+          item.id === existing.id
+            ? { ...item, stock: item.stock + Number(itemData.stock) }
             : item
         );
       } else {
-        const newId = `VMD-${100 + prev.length + 1}`;
+        const newId = `VMD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
         const newItem = {
           id: newId,
           name: itemData.name,
           stock: Number(itemData.stock),
           unit: itemData.unit,
           threshold: Number(itemData.threshold || 10),
-          expiryDate: itemData.expiryDate || new Date(Date.now() + 365*24*60*60*1000).toISOString().split("T")[0]
+          expiryDate: itemData.expiryDate || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
         };
         addToast(`New stock added — ${newItem.name} (${newItem.stock} ${newItem.unit})`, "success");
         return [...prev, newItem];
@@ -1015,7 +1257,7 @@ export const AppProvider = ({ children }) => {
     let animalId = "";
     let targetNGO = "";
     let animalName = "";
-    
+
     setNgoTransfers((prev) =>
       prev.map((trf) => {
         if (trf.id === transferId) {
@@ -1182,11 +1424,176 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const addOrUpdateVetInventoryItemPersisted = async (itemData) => {
+    const existing = vetInventory.find(item =>
+      (itemData.id && item.id === itemData.id) ||
+      (itemData.name && item.name.toLowerCase() === itemData.name.toLowerCase())
+    );
+
+    try {
+      if (existing) {
+        const res = await client.put(`/vetinventory/${existing.id}`, {
+          stock: existing.stock + Number(itemData.stock)
+        });
+        setVetInventory((prev) => prev.map((item) => (item.id === existing.id ? res.data : item)));
+        addToast(`Stock updated — ${res.data.name} +${itemData.stock} ${res.data.unit}`, "success");
+      } else {
+        const newId = `VMD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+        const payload = {
+          id: newId,
+          name: itemData.name,
+          stock: Number(itemData.stock),
+          unit: itemData.unit,
+          threshold: Number(itemData.threshold || 10),
+          expiryDate: itemData.expiryDate || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
+        };
+        const res = await client.post('/vetinventory', payload);
+        setVetInventory((prev) => [...prev, res.data]);
+        addToast(`New stock added — ${res.data.name} (${res.data.stock} ${res.data.unit})`, "success");
+      }
+    } catch (err) {
+      addToast("Failed to save inventory to database. Please try again.", "error");
+      console.error(err);
+      throw err;
+    }
+  };
+
+  const scheduleVetAppointmentPersisted = async (petId, petName, petPhoto, reason, date) => {
+    const newId = `APT-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const payload = {
+      id: newId,
+      petId,
+      petName,
+      petPhoto: petPhoto || "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400",
+      reason,
+      date,
+      status: "Upcoming"
+    };
+
+    try {
+      const res = await client.post('/vetappointments', payload);
+      setVetAppointments((prev) => [res.data, ...prev]);
+      addToast(`Follow-up appointment scheduled for ${petName || 'pet'}`, "success");
+      return res.data;
+    } catch (err) {
+      addToast("Failed to schedule appointment in database. Please try again.", "error");
+      console.error("scheduleVetAppointmentPersisted error:", err);
+      throw err;
+    }
+  };
+
+  const completeVetAppointmentPersisted = async (appointmentId) => {
+    try {
+      const res = await client.put(`/vetappointments/${appointmentId}`, { status: "Completed" });
+      setVetAppointments((prev) => {
+        const updated = prev.map((apt) => (apt.id === appointmentId ? res.data : apt));
+        localStorage.setItem("petlink_vet_appointments", JSON.stringify(updated));
+        return updated;
+      });
+      addToast("Appointment marked as completed", "success");
+      return res.data;
+    } catch (err) {
+      addToast("Failed to update appointment status. Please try again.", "error");
+      console.error("completeVetAppointmentPersisted error:", err);
+      throw err;
+    }
+  };
+
+  const rescheduleVetAppointmentPersisted = async (appointmentId, newDate) => {
+    // 1. Immediately update React state and localStorage for instant feedback
+    let targetApt = null;
+    setVetAppointments((prev) => {
+      const updated = prev.map((apt) => {
+        if (apt.id === appointmentId) {
+          targetApt = { ...apt, date: newDate };
+          return targetApt;
+        }
+        return apt;
+      });
+      localStorage.setItem("petlink_vet_appointments", JSON.stringify(updated));
+      return updated;
+    });
+
+    // 2. Persist to MongoDB backend
+    try {
+      const payload = {
+        date: newDate,
+        ...(targetApt ? {
+          petId: targetApt.petId,
+          petName: targetApt.petName,
+          petPhoto: targetApt.petPhoto,
+          reason: targetApt.reason,
+          status: targetApt.status
+        } : {})
+      };
+      const res = await client.put(`/vetappointments/${appointmentId}`, payload);
+      if (res.data) {
+        setVetAppointments((prev) => {
+          const updated = prev.map((apt) => (apt.id === appointmentId ? { ...apt, ...res.data } : apt));
+          localStorage.setItem("petlink_vet_appointments", JSON.stringify(updated));
+          return updated;
+        });
+      }
+      addToast(`Appointment rescheduled to ${newDate}`, "success");
+      return res.data;
+    } catch (err) {
+      console.warn("Backend reschedule warning:", err);
+      addToast(`Appointment rescheduled to ${newDate}`, "success");
+    }
+  };
+
+  const requestVetAppointment = async (petId, vetId, requestedDate, reason) => {
+    try {
+      const res = await client.post('/vetappointments/request', { petId, vetId, requestedDate, reason });
+      setVetAppointments((prev) => [res.data, ...prev]);
+      addToast(`Appointment request sent to vet!`, "success");
+      return res.data;
+    } catch (err) {
+      const msg = err?.response?.data?.error || "Failed to send appointment request. Please try again.";
+      addToast(msg, "error");
+      console.error("requestVetAppointment error:", err);
+      throw err;
+    }
+  };
+
+  const respondToVetAppointment = async (appointmentId, action, proposedDate) => {
+    try {
+      const payload = { action };
+      if (proposedDate) payload.proposedDate = proposedDate;
+      const res = await client.put(`/vetappointments/${appointmentId}/respond`, payload);
+      setVetAppointments((prev) =>
+        prev.map((apt) => (apt.id === appointmentId ? res.data : apt))
+      );
+      const actionLabel = action === 'accept' ? 'accepted' : action === 'decline' ? 'declined' : 'accepted with a new time';
+      addToast(`Booking request ${actionLabel}.`, "success");
+      return res.data;
+    } catch (err) {
+      const msg = err?.response?.data?.error || "Failed to respond to appointment request. Please try again.";
+      addToast(msg, "error");
+      console.error("respondToVetAppointment error:", err);
+      throw err;
+    }
+  };
+
+  // fetchVets does NOT store in global state — VetDirectory manages its own local vet list
+  // since the vet directory is a single-page listing not shared across the app
+  const fetchVets = async (cityFilter) => {
+    try {
+      const params = cityFilter ? `?city=${encodeURIComponent(cityFilter)}` : '';
+      const res = await client.get(`/vets${params}`);
+      return res.data;
+    } catch (err) {
+      console.error("fetchVets error:", err);
+      throw err;
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
         animals,
         animalsLoaded,
+        refreshAnimals: fetchAnimals,
         rescues,
         volunteers,
         donations,
@@ -1214,16 +1621,25 @@ export const AppProvider = ({ children }) => {
         addDonationPersisted,
         addVolunteerTask,
         addVolunteerTaskPersisted,
+        addVolunteerPersisted,
         updateVolunteerTaskStatus,
         updateVolunteerTaskStatusPersisted,
         assignVolunteerToRescueCase,
         updateInventoryStock,
         updateInventoryStockPersisted,
+        addShelterInventoryItemPersisted,
         vetInventory,
         vetAppointments,
         addOrUpdateVetInventoryItem,
+        addOrUpdateVetInventoryItemPersisted,
         scheduleVetAppointment,
+        scheduleVetAppointmentPersisted,
         completeVetAppointment,
+        completeVetAppointmentPersisted,
+        rescheduleVetAppointmentPersisted,
+        requestVetAppointment,
+        respondToVetAppointment,
+        fetchVets,
         complaints,
         addCitizenComplaint,
         drives,

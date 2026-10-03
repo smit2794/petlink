@@ -1,0 +1,1385 @@
+/* ========================================================
+   VET PORTAL STYLES (Dedicated Vet Stylesheet)
+======================================================== */
+
+.vet-apt-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Header & Dr. Paws Reminder */
+.vet-apt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.vet-apt-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vet-apt-title {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: #111827;
+  letter-spacing: -0.03em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vet-apt-subtitle {
+  color: #6B7280;
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+.vet-apt-reminder-card {
+  background: #FFF9EE;
+  border: 1.5px solid #FDE68A;
+  border-radius: 20px;
+  padding: 10px 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.06);
+}
+
+.vet-apt-reminder-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #FEF3C7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
+}
+
+.vet-apt-reminder-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #92400E;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.vet-apt-reminder-text {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #78350F;
+  margin: 2px 0 0;
+  line-height: 1.2;
+}
+
+/* Tabs */
+.vet-apt-tabs {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.vet-apt-tab-btn {
+  padding: 8px 22px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid #E5E7EB;
+  background: #FFFFFF;
+  color: #374151;
+  transition: all 0.15s ease;
+}
+
+.vet-apt-tab-btn:hover {
+  background: #F9FAFB;
+  border-color: #D1D5DB;
+}
+
+.vet-apt-tab-btn.active {
+  background: #FF6E14;
+  border-color: #FF6E14;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(255, 110, 20, 0.25);
+}
+
+/* Cards List */
+.vet-apt-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.vet-apt-card {
+  background: #FFFFFF;
+  border: 1.5px solid #EDE6DD;
+  border-left: 6px solid #FF7A1A;
+  border-radius: 22px;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.vet-apt-card:hover {
+  border-color: #E2D7CB;
+  border-left-color: #FF6E14;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+/* Patient Info & Avatar */
+.vet-apt-patient-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 250px;
+}
+
+.vet-apt-avatar-box {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: #FFF9EE;
+  border: 1.5px solid #EDE6DD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.vet-apt-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  object-fit: cover;
+  display: block;
+}
+
+.vet-apt-avatar-badge {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1.5px solid #EDE6DD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.vet-apt-patient-name {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #111827;
+  line-height: 1.2;
+}
+
+.vet-apt-id-pill {
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  border-radius: 9999px;
+  padding: 2px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #6B7280;
+  display: inline-block;
+}
+
+.vet-apt-reason {
+  font-size: 0.82rem;
+  color: #4B5563;
+  margin-top: 3px;
+}
+
+/* Date Pill */
+.vet-apt-date-pill {
+  background: #FFFDF9;
+  border: 1.5px solid #FDE68A;
+  border-radius: 9999px;
+  padding: 8px 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+/* Status Pill */
+.vet-apt-status-pill {
+  background: #FFF7ED;
+  border: 1.5px solid #FFEDD5;
+  border-radius: 9999px;
+  padding: 6px 16px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #EA580C;
+}
+
+.vet-apt-status-pill.completed {
+  background: #ECFDF5;
+  border-color: #A7F3D0;
+  color: #059669;
+}
+
+.vet-apt-status-pill.declined {
+  background: #F9FAFB;
+  border-color: #E5E7EB;
+  color: #9CA3AF;
+}
+
+/* Actions */
+.vet-apt-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.vet-apt-btn-chart {
+  background: #FFFFFF;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 9999px;
+  padding: 8px 18px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #374151;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.vet-apt-btn-chart:hover {
+  background: #F9FAFB;
+  border-color: #D1D5DB;
+}
+
+.vet-apt-btn-reschedule {
+  background: #FFFFFF;
+  border: 1.5px solid #FED7AA;
+  border-radius: 9999px;
+  padding: 8px 18px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #EA580C;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vet-apt-btn-reschedule:hover {
+  background: #FFF7ED;
+  border-color: #FDBA74;
+}
+
+.vet-apt-btn-complete {
+  background: #FF6E14;
+  border: none;
+  border-radius: 9999px;
+  padding: 8px 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 3px 8px rgba(255, 110, 20, 0.25);
+  transition: all 0.15s ease;
+}
+
+.vet-apt-btn-complete:hover {
+  background: #EA580C;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 110, 20, 0.35);
+}
+
+/* Footer */
+.vet-apt-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 18px;
+  font-size: 0.78rem;
+  color: #6B7280;
+  border-top: 1px solid #EDE6DD;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* ========================================================
+   CERTIFICATE ARCHIVE STYLES
+======================================================== */
+
+.vet-cert-container {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.vet-cert-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.vet-cert-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vet-cert-title {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: #111827;
+  letter-spacing: -0.03em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vet-cert-subtitle {
+  color: #6B7280;
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+/* CVO Verified Signatures Card */
+.vet-cert-cvo-card {
+  background: #FFFBEB;
+  border: 1.5px solid #FDE68A;
+  border-radius: 20px;
+  padding: 12px 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.06);
+}
+
+.vet-cert-cvo-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #FBBF24;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.vet-cert-cvo-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.vet-cert-cvo-desc {
+  font-size: 0.78rem;
+  color: #92400E;
+  margin: 2px 0 0 0;
+}
+
+/* Pill Search Bar */
+.vet-cert-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #FFFFFF;
+  border: 1.5px solid #EDE6DD;
+  border-radius: 9999px;
+  padding: 10px 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vet-cert-search-bar:focus-within {
+  border-color: #FF7A1A;
+  box-shadow: 0 0 0 3px rgba(255, 122, 26, 0.1);
+}
+
+.vet-cert-search-input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 0.9rem;
+  color: #111827;
+  background: transparent;
+  font-family: inherit;
+}
+
+.vet-cert-search-input::placeholder {
+  color: #9CA3AF;
+}
+
+.vet-cert-kbd {
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6B7280;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+}
+
+/* Table Card */
+.vet-cert-table-card {
+  background: #FFFFFF;
+  border: 1.5px solid #EDE6DD;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+}
+
+.vet-cert-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.vet-cert-th {
+  padding: 16px 24px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #374151;
+  border-bottom: 1.5px solid #EDE6DD;
+  background: #FAFAF9;
+}
+
+.vet-cert-td {
+  padding: 18px 24px;
+  border-bottom: 1px solid #F3F4F6;
+  vertical-align: middle;
+}
+
+.vet-cert-row:hover {
+  background-color: #FAF8F5;
+}
+
+.vet-cert-id {
+  font-weight: 800;
+  color: #111827;
+  font-size: 0.92rem;
+}
+
+.vet-cert-patient-name {
+  font-weight: 800;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.vet-cert-patient-id {
+  font-size: 0.78rem;
+  color: #9CA3AF;
+  font-family: monospace;
+}
+
+/* Document Type Badges */
+.vet-cert-badge-immunization {
+  background: #E0F2FE;
+  color: #0284C7;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  border-radius: 9999px;
+  padding: 5px 14px;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.vet-cert-badge-sterilization {
+  background: #DCFCE7;
+  color: #16A34A;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  border-radius: 9999px;
+  padding: 5px 14px;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+/* Reprint / View Action Button */
+.vet-cert-btn-reprint {
+  background: #FFFFFF;
+  border: 1.5px solid #F97316;
+  color: #EA580C;
+  border-radius: 9999px;
+  padding: 6px 16px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vet-cert-btn-reprint:hover {
+  background: #FFF7ED;
+  border-color: #EA580C;
+  transform: translateY(-1px);
+}
+
+/* Table Footer Ledger */
+.vet-cert-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: #FFFFFF;
+  border-top: 1px solid #EDE6DD;
+  font-size: 0.82rem;
+  color: #4B5563;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.vet-cert-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10B981;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.vet-cert-export-btn {
+  color: #EA580C;
+  font-weight: 700;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.82rem;
+  transition: opacity 0.15s ease;
+}
+
+.vet-cert-export-btn:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+/* ========================================================
+   MEDICINE INVENTORY (STOCK) STYLES
+======================================================== */
+
+.vet-inv-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.vet-inv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.vet-inv-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vet-inv-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.vet-inv-title {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: #111827;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.vet-inv-badge-active {
+  background: #DCFCE7;
+  color: #16A34A;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vet-inv-subtitle {
+  color: #6B7280;
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+.vet-inv-btn-add {
+  background: #FF6E14;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 22px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(255, 110, 20, 0.3);
+  transition: all 0.15s ease;
+}
+
+.vet-inv-btn-add:hover {
+  background: #EA580C;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(255, 110, 20, 0.4);
+}
+
+/* Notice Banner */
+.vet-inv-notice {
+  background: #FFF7F2;
+  border: 1.5px solid #FFEDD5;
+  border-radius: 16px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.vet-inv-notice-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: #FFEDD5;
+  color: #EA580C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.vet-inv-notice-text {
+  color: #C2410C;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Table Card */
+.vet-inv-table-card {
+  background: #FFFFFF;
+  border: 1.5px solid #EDE6DD;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+}
+
+.vet-inv-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #EDE6DD;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.vet-inv-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: 0.04em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.vet-inv-summary-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.vet-inv-summary-pill-optimal {
+  background: #DCFCE7;
+  color: #16A34A;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vet-inv-summary-pill-low {
+  background: #FEF3C7;
+  color: #D97706;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vet-inv-summary-pill-expiry {
+  background: #FEE2E2;
+  color: #DC2626;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vet-inv-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.vet-inv-th {
+  padding: 16px 24px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6B7280;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: 1.5px solid #EDE6DD;
+  background: #FAFAF9;
+}
+
+.vet-inv-td {
+  padding: 18px 24px;
+  border-bottom: 1px solid #F3F4F6;
+  vertical-align: middle;
+}
+
+.vet-inv-row:hover {
+  background-color: #FAF8F5;
+}
+
+.vet-inv-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #FFF7ED;
+  border: 1.5px solid #FED7AA;
+  color: #FF7A1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.vet-inv-item-name {
+  font-weight: 800;
+  color: #111827;
+  font-size: 0.92rem;
+}
+
+.vet-inv-item-id {
+  font-size: 0.72rem;
+  color: #9CA3AF;
+  font-family: monospace;
+}
+
+.vet-inv-stock-qty {
+  font-weight: 800;
+  color: #111827;
+  font-size: 0.92rem;
+}
+
+.vet-inv-reorder-limit {
+  font-size: 0.85rem;
+  color: #4B5563;
+  font-weight: 500;
+}
+
+.vet-inv-expiry-normal {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.vet-inv-expiry-danger {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #DC2626;
+}
+
+.vet-inv-alert-optimal {
+  background: #DCFCE7;
+  color: #16A34A;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: uppercase;
+}
+
+.vet-inv-alert-low {
+  background: #FEF3C7;
+  color: #D97706;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: uppercase;
+}
+
+.vet-inv-alert-expiry {
+  background: #FEE2E2;
+  color: #DC2626;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: uppercase;
+}
+
+.vet-inv-btn-restock {
+  background: #FFFFFF;
+  border: 1.5px solid #FF7A1A;
+  color: #FF7A1A;
+  border-radius: 9999px;
+  padding: 6px 18px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vet-inv-btn-restock:hover {
+  background: #FFF7ED;
+  border-color: #EA580C;
+  transform: translateY(-1px);
+}
+
+.vet-inv-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: #FFFFFF;
+  border-top: 1px solid #EDE6DD;
+  font-size: 0.8rem;
+  color: #6B7280;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ========================================================
+   CLINICAL OPERATIONS ANALYTICS STYLES
+======================================================== */
+
+.vet-ana-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.vet-ana-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.vet-ana-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vet-ana-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vet-ana-title {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: #111827;
+  letter-spacing: -0.03em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vet-ana-subtitle {
+  color: #6B7280;
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+.vet-ana-badge-hub {
+  background: #FFF7ED;
+  border: 1.5px solid #FED7AA;
+  color: #9A3412;
+  font-size: 0.76rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 6px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.vet-ana-badge-hub-icon {
+  color: #EA580C;
+  font-size: 0.85rem;
+}
+
+/* Top 2 KPI Cards Grid */
+.vet-ana-kpi-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 840px) {
+  .vet-ana-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.vet-ana-kpi-card {
+  background: #FFFFFF;
+  border: 1.5px solid #EDE6DD;
+  border-radius: 24px;
+  padding: 24px 28px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vet-ana-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+}
+
+.vet-ana-kpi-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.vet-ana-kpi-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.vet-ana-kpi-icon-orange {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: #FF7000;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(255, 112, 0, 0.25);
+}
+
+.vet-ana-kpi-icon-purple {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: #7C3AED;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+
+.vet-ana-kpi-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.vet-ana-kpi-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8C7E74;
+}
+
+.vet-ana-kpi-number-col {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+.vet-ana-kpi-big-num {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #111827;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.vet-ana-kpi-big-label {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #111827;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.vet-ana-kpi-avatar-dog {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #FEF3C7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.vet-ana-kpi-avatar-cat {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #FDF4FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.vet-ana-pill-growth {
+  background: #DCFCE7;
+  color: #16A34A;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+}
+
+.vet-ana-kpi-note {
+  font-size: 0.78rem;
+  color: #6B7280;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vet-ana-dot-green {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  display: inline-block;
+}
+
+/* Bottom 2 Columns Grid */
+.vet-ana-bottom-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 960px) {
+  .vet-ana-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left Card: Primary Clinic Diagnoses */
+.vet-ana-card {
+  background: #FFFFFF;
+  border: 1.5px solid #EDE6DD;
+  border-radius: 24px;
+  padding: 26px 28px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.vet-ana-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.vet-ana-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vet-ana-icon-badge-orange {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #FFF7ED;
+  color: #EA580C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.vet-ana-icon-badge-mint {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #ECFDF5;
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.vet-ana-card-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.vet-ana-badge-active-cases {
+  background: #FFF7ED;
+  border: 1px solid #FED7AA;
+  color: #EA580C;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 9999px;
+  padding: 4px 12px;
+}
+
+.vet-ana-badge-monthly-total {
+  background: #DCFCE7;
+  border: 1px solid #BBF7D0;
+  color: #16A34A;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 9999px;
+  padding: 4px 12px;
+}
+
+.vet-ana-diagnoses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.vet-ana-diag-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vet-ana-diag-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vet-ana-diag-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vet-ana-diag-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.vet-ana-diag-name {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.vet-ana-diag-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+.vet-ana-progress-track {
+  width: 100%;
+  height: 8px;
+  background-color: #F3F4F6;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.vet-ana-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.5s ease;
+}
+
+/* Right Card: Clinical Case Outcomes */
+.vet-ana-outcomes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  flex: 1;
+}
+
+.vet-ana-outcome-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vet-ana-outcome-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vet-ana-outcome-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.vet-ana-outcome-pct {
+  font-size: 1.18rem;
+  font-weight: 900;
+}
+
+.vet-ana-outcome-desc {
+  font-size: 0.78rem;
+  color: #6B7280;
+  margin: 0;
+  padding-left: 16px;
+  line-height: 1.45;
+}
+
+.vet-ana-sync-note {
+  background: #FFFDF9;
+  border: 1px solid #F5EBE1;
+  border-radius: 16px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.vet-ana-sync-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid #EDE6DD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.vet-ana-sync-text {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #9A3412;
+  margin: 0;
+  line-height: 1.35;
+}
+
+
