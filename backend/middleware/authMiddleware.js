@@ -13,6 +13,7 @@ const authMiddleware = (req, res, next) => {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = {
       id: decoded.id,
+      _id: decoded.id,
       role: decoded.role,
       name: decoded.name,
       email: decoded.email
@@ -36,6 +37,7 @@ const optionalAuthMiddleware = (req, res, next) => {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = {
       id: decoded.id,
+      _id: decoded.id,
       role: decoded.role,
       name: decoded.name,
       email: decoded.email

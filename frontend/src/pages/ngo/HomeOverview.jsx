@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
 import PetQRCode from "../../components/PetQRCode";
+import client from "../../api/client";
 import {
   Navigation, Dog, ShieldAlert, Syringe, Scissors, Heart,
   PlusCircle, UserPlus, ClipboardList, AlertTriangle,
-  MapPin, Image, Upload, Check, Search, Calendar, ChevronRight, X
+  MapPin, Image, Upload, Check, Search, Calendar, ChevronRight, X, QrCode
 } from "lucide-react";
 
 // CountUp Component for Metric Animation
@@ -35,14 +37,14 @@ const CountUp = ({ target }) => {
   return <span>{count}</span>;
 };
 
-
-
 const HomeOverview = () => {
   const {
     animals, rescues, volunteers, inventory,
-    addRescue, addAnimal, addRescuePersisted, assignVolunteerToRescueCase, addAnimalPersisted
+    addRescue, addAnimal, addRescuePersisted, assignVolunteerToRescueCase, addAnimalPersisted, addToast
   } = useApp();
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const [activeTokenId, setActiveTokenId] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
   const [showRescueModal, setShowRescueModal] = useState(false);
@@ -82,6 +84,16 @@ const HomeOverview = () => {
     }, 600);
     return () => clearTimeout(timer);
   }, []);
+
+  // Auto-open modal when navigated with intake=true or tokenId
+  useEffect(() => {
+    const intakeParam = searchParams.get("intake");
+    const tokenParam = searchParams.get("tokenId");
+    if (intakeParam === "true" || tokenParam) {
+      setShowAnimalModal(true);
+      if (tokenParam) setActiveTokenId(tokenParam);
+    }
+  }, [searchParams]);
 
   // Pre-generate Animal ID when modal changes visibility
   useEffect(() => {
@@ -217,6 +229,22 @@ const HomeOverview = () => {
         id: generatedId,
         photo: animalPhotoPreview
       });
+
+      if (activeTokenId) {
+        try {
+          await client.post('/tokens/claim', {
+            tokenId: activeTokenId,
+            animalId: generatedId,
+            petName: animalForm.name || "Shelter Intake"
+          });
+          if (addToast) {
+            addToast(`🎉 Collar tag ${activeTokenId} claimed and linked to intake profile!`, "success");
+          }
+        } catch (claimErr) {
+          console.error("Token claim error for intake:", claimErr);
+        }
+        setActiveTokenId("");
+      }
     } catch (err) {
       setIsSubmittingAnimal(false);
       return; // error toast already shown, keep modal open so they can retry
@@ -1100,6 +1128,22 @@ const HomeOverview = () => {
 
               <form id="animal-form" onSubmit={handleAnimalSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 {/* Pre-generated details display */}
+                {activeTokenId && (
+                  <div style={{ backgroundColor: "#EEF2FF", border: "1.5px solid #C7D2FE", borderRadius: "14px", padding: "14px 18px", display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div style={{ width: "38px", height: "38px", borderRadius: "10px", backgroundColor: "#E0E7FF", color: "#4338CA", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <QrCode size={20} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "#4338CA", textTransform: "uppercase", display: "block" }}>
+                        LINKING PRE-ASSIGNED COLLAR TAG
+                      </span>
+                      <span style={{ fontSize: "0.92rem", fontWeight: 800, color: "#1E1B4B" }}>
+                        Token ID: <code style={{ fontFamily: "monospace", color: "#4F46E5", background: "#FFFFFF", padding: "2px 8px", borderRadius: "6px", border: "1px solid #C7D2FE" }}>{activeTokenId}</code>
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 <div className="ngo-modal-tag-card">
                   <div style={{ background: "#FFFFFF", padding: "8px", borderRadius: "14px", border: "1.5px solid #FED7AA", boxShadow: "0 2px 6px rgba(0,0,0,0.04)" }}>
                     <PetQRCode animalId={generatedId} size={64} />

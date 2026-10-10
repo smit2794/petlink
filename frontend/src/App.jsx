@@ -60,6 +60,13 @@ import SuccessStories from "./pages/parent/SuccessStories";
 import GrantTracker from "./pages/gov/GrantTracker";
 import ComplianceAlerts from "./pages/gov/ComplianceAlerts";
 
+// Admin Portal
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import GenerateTokens from "./pages/admin/GenerateTokens";
+import TokenRegistry from "./pages/admin/TokenRegistry";
+import MyTokens from "./pages/shared/MyTokens";
+
 // Public Pages
 import PublicStats from "./pages/PublicStats";
 import PublicScanPage from "./pages/PublicScanPage";
@@ -122,6 +129,7 @@ function App() {
               <Route path="found-reports" element={<ParentFoundReports />} />
               <Route path="vets" element={<VetDirectory />} />
               <Route path="find-vet" element={<VetDirectory />} />
+              <Route path="tokens" element={<MyTokens />} />
             </Route>
 
             {/* Government Portal (Open/Unauthenticated per phase 1 scope) */}
@@ -158,6 +166,15 @@ function App() {
               <Route path="drives" element={<DrivePlanner />} />
               <Route path="found-reports" element={<NGOFoundReports />} />
               <Route path="settings" element={<SettingsMgmt />} />
+              <Route path="tokens" element={<MyTokens />} />
+            </Route>
+
+            {/* Admin Portal (unauthenticated per phase 1 scope) */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="generate" element={<GenerateTokens />} />
+              <Route path="registry" element={<TokenRegistry />} />
             </Route>
 
             {/* Public Pages outside normal portal shells */}

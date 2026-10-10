@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
+import client from "../../api/client";
 import {
   ArrowLeft,
   ShieldCheck,
@@ -12,13 +13,16 @@ import {
   Lightbulb,
   PawPrint,
   Check,
-  CreditCard
+  CreditCard,
+  QrCode
 } from "lucide-react";
 
 const RegisterNewPet = () => {
   const { registerPetPersisted, addToast } = useApp();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const tokenId = searchParams.get("tokenId") || "";
   const fileInputRef = useRef(null);
 
   // Form states
@@ -115,7 +119,21 @@ const RegisterNewPet = () => {
 
     try {
       await registerPetPersisted(newPet);
-      addToast(`🎉 ${newPet.name} successfully registered with digital tag ${mockId}!`, "success");
+      if (tokenId) {
+        try {
+          await client.post('/tokens/claim', {
+            tokenId,
+            animalId: mockId,
+            petName: newPet.name
+          });
+          addToast(`🎉 Collar tag ${tokenId} claimed and linked to ${newPet.name}!`, "success");
+        } catch (claimErr) {
+          console.error("Token claim failed:", claimErr);
+          addToast(`Registered pet, but token claim had an issue: ${claimErr.response?.data?.error || claimErr.message}`, "warning");
+        }
+      } else {
+        addToast(`🎉 ${newPet.name} successfully registered with digital tag ${mockId}!`, "success");
+      }
       navigate("/parent/pets");
     } catch (err) {
       setIsSubmitting(false);
@@ -158,6 +176,26 @@ const RegisterNewPet = () => {
           <div className="parent-register-hero-plus-badge">+</div>
         </div>
       </div>
+
+      {/* Pre-Assigned Collar Token Linked Banner */}
+      {tokenId && (
+        <div style={{ backgroundColor: "#EEF2FF", border: "1.5px solid #C7D2FE", borderRadius: "14px", padding: "16px 20px", display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
+          <div style={{ width: "42px", height: "42px", borderRadius: "12px", backgroundColor: "#E0E7FF", color: "#4338CA", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <QrCode size={22} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: "0.75rem", fontWeight: 800, color: "#4338CA", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              Pre-Assigned Collar Token Linking
+            </div>
+            <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#1E1B4B", marginTop: "2px" }}>
+              Registering this pet directly to Token ID: <code style={{ fontFamily: "monospace", color: "#4F46E5", background: "#FFFFFF", padding: "2px 8px", borderRadius: "6px", border: "1px solid #C7D2FE" }}>{tokenId}</code>
+            </div>
+            <p style={{ margin: "3px 0 0", fontSize: "0.8rem", color: "#6B7280" }}>
+              Upon registration, this token will be automatically claimed and linked to your pet. Scanning the physical tag will direct straight to this profile.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* 3. IMPORTANT VERIFICATION NOTICE BANNER */}
       <div className="parent-register-notice-box">

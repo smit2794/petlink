@@ -6,7 +6,7 @@ import {
   Menu, X, Home, Search, ArrowLeft, CheckCircle, Info, 
   AlertTriangle, AlertCircle, Bell, Heart, Calendar, 
   MapPin, PlusCircle, Dog, LogOut, Stethoscope, PawPrint,
-  Flag, Sparkles, Radio, ClipboardList, Building2, User
+  Flag, Sparkles, Radio, ClipboardList, Building2, User, QrCode
 } from "lucide-react";
 import "../../styles/parent.css";
 
@@ -63,7 +63,8 @@ const ParentLayout = () => {
     {
       category: "Registries",
       links: [
-        { path: "/parent/register", label: "Register Family Pet", icon: ClipboardList }
+        { path: "/parent/register", label: "Register Family Pet", icon: ClipboardList },
+        { path: "/parent/tokens", label: "My Collar Tokens", icon: QrCode }
       ]
     }
   ];

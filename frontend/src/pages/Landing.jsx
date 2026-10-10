@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { useAuth } from "../context/AuthContext";
-import { Heart, Shield, Stethoscope, ShieldAlert, Users, Award, Play, Globe, LogIn, UserPlus, LogOut, LayoutDashboard } from "lucide-react";
+import { Heart, Shield, Stethoscope, ShieldAlert, Users, Award, Play, Globe, LogIn, UserPlus, LogOut, LayoutDashboard, QrCode } from "lucide-react";
 
 const Landing = () => {
   const [animate, setAnimate] = useState(false);
@@ -65,6 +65,16 @@ const Landing = () => {
       path: "/government/analytics",
       tagline: "Monitoring, census & analytics",
       features: "Active Demo • Zoonotics • Grant Manager"
+    },
+    {
+      id: "admin",
+      name: "Admin Portal",
+      description: "Generate and allocate bulk QR collar token batches, track lifecycle from minting to claims, and monitor platform health.",
+      accent: "#7C3AED", // Royal Violet
+      icon: (color) => <QrCode size={32} color={color} />,
+      path: "/admin/dashboard",
+      tagline: "QR Token Mint & Platform Operations",
+      features: "Active Demo • Bulk Mint • Batches"
     },
     {
       id: "public",
@@ -138,6 +148,7 @@ const Landing = () => {
                 onClick={() => {
                   if (user.role === "ngo") navigate("/ngo/overview");
                   else if (user.role === "vet") navigate("/vet/queue");
+                  else if (user.role === "admin") navigate("/admin/dashboard");
                   else navigate("/parent/pets");
                 }}
                 style={{
@@ -333,10 +344,10 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* Grid of 4 Portal Cards */}
+      {/* Grid of Portal Cards */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
         gap: "28px",
         width: "100%",
         maxWidth: "1200px"

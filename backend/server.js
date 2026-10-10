@@ -13,6 +13,7 @@ const authRoutes = require('./routes/authRoutes');
 const vetInventoryRoutes = require('./routes/vetInventoryRoutes');
 const vetAppointmentRoutes = require('./routes/vetAppointmentRoutes');
 const vetDirectoryRoutes = require('./routes/vetDirectoryRoutes');
+const qrTokenRoutes = require('./routes/qrTokenRoutes');
 
 const app = express();
 connectDB();
@@ -30,6 +31,7 @@ app.use('/api', scanRoutes);
 app.use('/api/vetinventory', vetInventoryRoutes);
 app.use('/api/vetappointments', vetAppointmentRoutes);
 app.use('/api/vets', vetDirectoryRoutes);
+app.use('/api', qrTokenRoutes);
 
 app.get('/', (req, res) => res.send('PetLink API running'));
 

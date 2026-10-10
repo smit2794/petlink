@@ -6,7 +6,7 @@ import {
   Menu, X, Home, Navigation, Dog,
   Users, CheckSquare, HeartHandshake, FileBarChart, Bell,
   Search, ArrowLeft, CheckCircle, Info, AlertTriangle, AlertCircle, Calendar,
-  PawPrint, LogOut, Settings
+  PawPrint, LogOut, Settings, QrCode
 } from "lucide-react";
 
 const ShelterIcon = Home;
@@ -41,7 +41,8 @@ const DashboardLayout = () => {
         { path: "/ngo/animals", label: "Animal Profiles", icon: Dog },
         { path: "/ngo/volunteers", label: "Volunteer Staff", icon: Users },
         { path: "/ngo/adoptions", label: "Adoption Pipeline", icon: CheckSquare },
-        { path: "/ngo/found-reports", label: "Found Pet Reports", icon: AlertTriangle }
+        { path: "/ngo/found-reports", label: "Found Pet Reports", icon: AlertTriangle },
+        { path: "/ngo/tokens", label: "My Collar Tokens", icon: QrCode }
       ]
     },
     {
