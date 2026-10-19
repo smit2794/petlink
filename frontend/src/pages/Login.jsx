@@ -89,10 +89,16 @@ const Login = () => {
     try {
       // Authenticate without strict role constraint so valid accounts always succeed
       const user = await login(cleanEmail, cleanPass);
-      // Determine destination portal based on user's actual role
-      if (user.role === "ngo") navigate("/ngo/animals");
-      else if (user.role === "vet") navigate("/vet/queue");
-      else navigate("/parent/pets");
+      const redirect = new URLSearchParams(location.search).get("redirect");
+      if (redirect) {
+        navigate(redirect);
+      } else if (user.role === "ngo") {
+        navigate("/ngo/animals");
+      } else if (user.role === "vet") {
+        navigate("/vet/queue");
+      } else {
+        navigate("/parent/pets");
+      }
     } catch (err) {
       const msg = err.response?.data?.error || "Login failed. Please check your credentials.";
       setError(msg);

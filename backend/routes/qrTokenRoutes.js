@@ -317,14 +317,75 @@ router.put('/tokens/mine/batches/:batchId/mark-received', authMiddleware, requir
  * GET /api/tokens/lookup/:tokenId
  * Public: resolve a scanned tokenId.
  * Returns:
- *   - { type: 'token', token } if it's a known QR token (claimed or unclaimed)
+ *   - { type: 'token', token, animal } if it's a claimed QR token with linked animal
+ *   - { type: 'token', token } if it's an unclaimed QR token
  *   - 404 if not found (caller should fall back to legacy animal-ID lookup)
  */
 router.get('/tokens/lookup/:tokenId', async (req, res) => {
   try {
     const token = await QRToken.findOne({ tokenId: req.params.tokenId });
     if (!token) return res.status(404).json({ error: 'Token not found.' });
+
+    if (token.status === 'claimed' && token.linkedAnimalId) {
+      const animal = await Animal.findOne({ id: token.linkedAnimalId });
+      return res.json({ type: 'token', token, animal: animal || null });
+    }
+
     res.json({ type: 'token', token });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * PUT /api/tokens/:tokenId/edit
+ * Ownership-verified edit of the linked Animal record for a claimed token.
+ * Requires auth (parent).
+ * Body: { name, species, breed, gender, age, weight, photo, healthSummary }
+ */
+router.put('/tokens/:tokenId/edit', authMiddleware, requireRole('parent'), async (req, res) => {
+  try {
+    const token = await QRToken.findOne({ tokenId: req.params.tokenId });
+    if (!token) return res.status(404).json({ error: 'Token not found.' });
+
+    if (token.status !== 'claimed' || !token.linkedAnimalId) {
+      return res.status(400).json({ error: 'This token is not yet claimed or linked to an animal.' });
+    }
+
+    // Ensure the editing user is the assigned owner
+    if (!token.assignedUserId || token.assignedUserId.toString() !== req.user.id) {
+      return res.status(403).json({ error: 'You are not authorized to edit this pet.' });
+    }
+
+    const animal = await Animal.findOne({ id: token.linkedAnimalId });
+    if (!animal) {
+      return res.status(404).json({ error: 'Linked animal not found.' });
+    }
+
+    // Prevent id and immutable system fields from changing
+    const { id, _id, createdBy, ownerId, ...updates } = req.body;
+
+    // Merge nested healthSummary if provided
+    if (updates.healthSummary) {
+      updates.healthSummary = {
+        ...animal.healthSummary?.toObject?.() ?? animal.healthSummary,
+        ...updates.healthSummary
+      };
+    }
+
+    // Keep token linkedPetName in sync if name changed
+    if (updates.name && updates.name !== token.linkedPetName) {
+      token.linkedPetName = updates.name;
+      await token.save();
+    }
+
+    const updatedAnimal = await Animal.findOneAndUpdate(
+      { id: token.linkedAnimalId },
+      { $set: updates },
+      { new: true, runValidators: true }
+    );
+
+    res.json(updatedAnimal);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
