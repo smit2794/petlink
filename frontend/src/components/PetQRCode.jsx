@@ -1,12 +1,37 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Download } from "lucide-react";
+import client from "../api/client";
 
 const PUBLIC_BASE_URL = import.meta.env.VITE_PUBLIC_URL || "http://localhost:5173";
 
-const PetQRCode = ({ animalId, size = 70, showDownload = false }) => {
-    const scanUrl = `${PUBLIC_BASE_URL}/scan/${animalId}`;
+const PetQRCode = ({ animalId, tokenId: tokenIdProp, size = 70, showDownload = false }) => {
+    // If a tokenId is explicitly passed, use it; otherwise try to look up the linked token
+    const [resolvedTokenId, setResolvedTokenId] = useState(tokenIdProp || null);
     const wrapperRef = useRef(null);
+
+    // Auto-resolve token from animalId if no tokenId prop was provided
+    useEffect(() => {
+        if (tokenIdProp) {
+            setResolvedTokenId(tokenIdProp);
+            return;
+        }
+        // Try to fetch the linked token for this animal
+        let cancelled = false;
+        client.get(`/tokens/by-animal/${animalId}`)
+            .then((res) => {
+                if (!cancelled) setResolvedTokenId(res.data.tokenId);
+            })
+            .catch(() => {
+                // No token linked — use legacy animal ID (fine)
+                if (!cancelled) setResolvedTokenId(null);
+            });
+        return () => { cancelled = true; };
+    }, [animalId, tokenIdProp]);
+
+    // Prefer token-based URL when available, fall back to animal ID
+    const scanId = resolvedTokenId || animalId;
+    const scanUrl = `${PUBLIC_BASE_URL}/scan/${scanId}`;
 
     const handleDownload = () => {
         const svgElement = wrapperRef.current.querySelector("svg");
@@ -28,13 +53,13 @@ const PetQRCode = ({ animalId, size = 70, showDownload = false }) => {
             ctx.fillStyle = "#1a1a1a";
             ctx.font = "bold 12px sans-serif";
             ctx.textAlign = "center";
-            ctx.fillText(animalId, canvas.width / 2, size + padding + 20);
+            ctx.fillText(scanId, canvas.width / 2, size + padding + 20);
             URL.revokeObjectURL(url);
 
             const pngUrl = canvas.toDataURL("image/png");
             const link = document.createElement("a");
             link.href = pngUrl;
-            link.download = `petlink-qr-${animalId}.png`;
+            link.download = `petlink-qr-${scanId}.png`;
             link.click();
         };
         img.src = url;
@@ -46,7 +71,7 @@ const PetQRCode = ({ animalId, size = 70, showDownload = false }) => {
                 <QRCodeSVG value={scanUrl} size={size} bgColor="#F7F5F0" fgColor="var(--primary-color)" level="M" />
             </div>
             <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-muted)", fontFamily: "monospace" }}>
-                {animalId}
+                {scanId}
             </span>
             {showDownload && (
                 <button

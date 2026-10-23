@@ -338,6 +338,25 @@ router.get('/tokens/lookup/:tokenId', async (req, res) => {
 });
 
 /**
+ * GET /api/tokens/by-animal/:animalId
+ * Public: find the claimed token linked to a given animal ID.
+ * Returns: { tokenId } or 404 if no token is linked.
+ * Used by PetQRCode to show the correct token-based QR on the Pet Profile page.
+ */
+router.get('/tokens/by-animal/:animalId', async (req, res) => {
+  try {
+    const token = await QRToken.findOne({
+      linkedAnimalId: req.params.animalId,
+      status: 'claimed'
+    }).select('tokenId');
+    if (!token) return res.status(404).json({ error: 'No token linked to this animal.' });
+    res.json({ tokenId: token.tokenId });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
  * PUT /api/tokens/:tokenId/edit
  * Ownership-verified edit of the linked Animal record for a claimed token.
  * Requires auth (parent).
