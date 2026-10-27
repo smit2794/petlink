@@ -49,7 +49,7 @@ router.post('/tokens/generate', async (req, res) => {
       return res.status(400).json({ error: `User role (${user.role}) does not match assignedTo (${assignedTo}).` });
     }
 
-    const publicBaseUrl = process.env.PUBLIC_URL || 'http://10.181.190.221:5173';
+    const publicBaseUrl = process.env.PUBLIC_URL || 'https://petlink-pddx.onrender.com';
     const batchId = generateBatchId();
     const tokens = [];
 

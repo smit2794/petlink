@@ -14,13 +14,8 @@ export const getPublicBaseUrl = () => {
     return import.meta.env.VITE_PUBLIC_URL.replace(/\/+$/, ""); // strip trailing slash
   }
 
-  // 2. Fallback: use the browser's current origin
-  if (typeof window !== "undefined") {
-    return window.location.origin;
-  }
-
-  // 3. SSR safety net (should never reach here in a Vite SPA)
-  return "http://localhost:5173";
+  // 2. Fallback to production public domain
+  return "https://petlink-pddx.onrender.com";
 };
 
 /**

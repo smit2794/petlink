@@ -9,7 +9,7 @@ require('dotenv').config();
 const QRCode = require('qrcode');
 const QRToken = require('../models/QRToken');
 
-const PUBLIC_URL = process.env.PUBLIC_URL || 'http://10.181.190.221:5173';
+const PUBLIC_URL = process.env.PUBLIC_URL || 'https://petlink-pddx.onrender.com';
 
 async function migrate() {
   await mongoose.connect(process.env.MONGODB_URI);
