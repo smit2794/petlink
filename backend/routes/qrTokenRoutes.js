@@ -49,7 +49,7 @@ router.post('/tokens/generate', async (req, res) => {
       return res.status(400).json({ error: `User role (${user.role}) does not match assignedTo (${assignedTo}).` });
     }
 
-    const publicBaseUrl = process.env.PUBLIC_URL || 'http://localhost:5173';
+    const publicBaseUrl = process.env.PUBLIC_URL || 'http://10.181.190.221:5173';
     const batchId = generateBatchId();
     const tokens = [];
 
@@ -345,12 +345,20 @@ router.get('/tokens/lookup/:tokenId', async (req, res) => {
  */
 router.get('/tokens/by-animal/:animalId', async (req, res) => {
   try {
-    const token = await QRToken.findOne({
+    let token = await QRToken.findOne({
       linkedAnimalId: req.params.animalId,
       status: 'claimed'
-    }).select('tokenId');
+    }).select('tokenId qrCodeDataUrl');
+
+    if (!token) {
+      const animal = await Animal.findOne({ id: req.params.animalId }).select('tokenId');
+      if (animal && animal.tokenId) {
+        token = await QRToken.findOne({ tokenId: animal.tokenId }).select('tokenId qrCodeDataUrl');
+      }
+    }
+
     if (!token) return res.status(404).json({ error: 'No token linked to this animal.' });
-    res.json({ tokenId: token.tokenId });
+    res.json({ tokenId: token.tokenId, qrCodeDataUrl: token.qrCodeDataUrl || null });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -445,6 +453,12 @@ router.post('/tokens/claim', authMiddleware, async (req, res) => {
         }
       },
       { new: true }
+    );
+
+    // Also persist tokenId on the Animal record
+    await Animal.findOneAndUpdate(
+      { id: animalId },
+      { $set: { tokenId: token.tokenId, qrCode: token.tokenId } }
     );
 
     res.json(updated);

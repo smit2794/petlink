@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
@@ -22,8 +22,34 @@ const RegisterNewPet = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const tokenId = searchParams.get("tokenId") || "";
+  const tokenIdParam = searchParams.get("tokenId") || "";
+  const [activeTokenId, setActiveTokenId] = useState(tokenIdParam);
   const fileInputRef = useRef(null);
+
+  // Auto-fetch unclaimed token assigned to this parent if not specified in URL
+  useEffect(() => {
+    if (tokenIdParam) {
+      setActiveTokenId(tokenIdParam);
+      return;
+    }
+    client.get("/tokens/mine")
+      .then(async (res) => {
+        const batches = res.data || [];
+        for (const b of batches) {
+          if (b.unclaimedCount > 0) {
+            try {
+              const detail = await client.get(`/tokens/mine/batches/${b.batchId}`);
+              const freeTokens = (detail.data || []).filter(t => t.status !== "claimed");
+              if (freeTokens.length > 0) {
+                setActiveTokenId(freeTokens[0].tokenId);
+                break;
+              }
+            } catch {}
+          }
+        }
+      })
+      .catch(() => {});
+  }, [tokenIdParam]);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -101,12 +127,13 @@ const RegisterNewPet = () => {
       ownerId: user?.id,
       createdBy: user?.id,
       lastUpdated: "Just now",
-      qrCode: `MOCK-QR-${mockId}`,
+      tokenId: activeTokenId || null,
+      qrCode: activeTokenId || `MOCK-QR-${mockId}`,
       timeline: [
         {
           date: new Date().toISOString().split("T")[0],
           title: "Registry Created",
-          description: `Direct domestic registration by Parent ${user?.name || "Guardian"}. Collar tag issued under ID ${mockId}.`
+          description: `Direct domestic registration by Parent ${user?.name || "Guardian"}. Collar tag ${activeTokenId || mockId} issued.`
         }
       ],
       healthSummary: {
@@ -119,14 +146,14 @@ const RegisterNewPet = () => {
 
     try {
       await registerPetPersisted(newPet);
-      if (tokenId) {
+      if (activeTokenId) {
         try {
           await client.post('/tokens/claim', {
-            tokenId,
+            tokenId: activeTokenId,
             animalId: mockId,
             petName: newPet.name
           });
-          addToast(`🎉 Collar tag ${tokenId} claimed and linked to ${newPet.name}!`, "success");
+          addToast(`🎉 Collar tag ${activeTokenId} claimed and linked to ${newPet.name}!`, "success");
         } catch (claimErr) {
           console.error("Token claim failed:", claimErr);
           addToast(`Registered pet, but token claim had an issue: ${claimErr.response?.data?.error || claimErr.message}`, "warning");
@@ -178,20 +205,20 @@ const RegisterNewPet = () => {
       </div>
 
       {/* Pre-Assigned Collar Token Linked Banner */}
-      {tokenId && (
+      {activeTokenId && (
         <div style={{ backgroundColor: "#EEF2FF", border: "1.5px solid #C7D2FE", borderRadius: "14px", padding: "16px 20px", display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
           <div style={{ width: "42px", height: "42px", borderRadius: "12px", backgroundColor: "#E0E7FF", color: "#4338CA", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
             <QrCode size={22} />
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: "0.75rem", fontWeight: 800, color: "#4338CA", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-              Pre-Assigned Collar Token Linking
+              Assigned Collar Tag Linked
             </div>
             <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#1E1B4B", marginTop: "2px" }}>
-              Registering this pet directly to Token ID: <code style={{ fontFamily: "monospace", color: "#4F46E5", background: "#FFFFFF", padding: "2px 8px", borderRadius: "6px", border: "1px solid #C7D2FE" }}>{tokenId}</code>
+              Linking this pet directly to Collar Tag: <code style={{ fontFamily: "monospace", color: "#4F46E5", background: "#FFFFFF", padding: "2px 8px", borderRadius: "6px", border: "1px solid #C7D2FE" }}>{activeTokenId}</code>
             </div>
             <p style={{ margin: "3px 0 0", fontSize: "0.8rem", color: "#6B7280" }}>
-              Upon registration, this token will be automatically claimed and linked to your pet. Scanning the physical tag will direct straight to this profile.
+              Upon registration, this token will be automatically claimed and linked to your pet. Scanning the physical tag or QR code will display this pet's profile.
             </p>
           </div>
         </div>

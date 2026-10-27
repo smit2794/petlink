@@ -19,6 +19,7 @@ const animalSchema = new mongoose.Schema({
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   assignedVetId: String,
   lastUpdated: String,
+  tokenId: { type: String, default: null },
   qrCode: String,
   timeline: [{ date: String, title: String, description: String }],
   healthSummary: {

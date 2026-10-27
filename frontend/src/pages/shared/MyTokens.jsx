@@ -23,8 +23,7 @@ import {
 import { QRCodeSVG } from "qrcode.react";
 import client from "../../api/client";
 import { useAuth } from "../../context/AuthContext";
-
-const PUBLIC_BASE_URL = import.meta.env.VITE_PUBLIC_URL || "http://localhost:5173";
+import { getPublicBaseUrl, getScanUrl } from "../../utils/publicUrl";
 
 // ─── small shared helpers ────────────────────────────────────────────────────
 
@@ -216,7 +215,7 @@ const TokenDetail = ({ batchId, authToken, user, onBack }) => {
       link.download = `petlink-qr-${t.tokenId}.png`;
       link.click();
     } else {
-      window.open(`${PUBLIC_BASE_URL}/scan/${t.tokenId}`, "_blank");
+      window.open(getScanUrl(t.tokenId), "_blank");
     }
   };
 
@@ -272,11 +271,7 @@ const TokenDetail = ({ batchId, authToken, user, onBack }) => {
               >
                 {/* QR Code */}
                 <div style={{ background: "#fff", padding: 8, borderRadius: 12, border: "1.5px solid #E5E7EB", boxShadow: "0 2px 6px rgba(0,0,0,0.04)", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, flexShrink: 0 }}>
-                  {t.qrCodeDataUrl ? (
-                    <img src={t.qrCodeDataUrl} alt={t.tokenId} style={{ width: 80, height: 80, objectFit: "contain", borderRadius: 6 }} />
-                  ) : (
-                    <QRCodeSVG value={`${PUBLIC_BASE_URL}/scan/${t.tokenId}`} size={80} level="M" />
-                  )}
+                  <QRCodeSVG value={getScanUrl(t.tokenId)} size={80} level="M" />
                   <button
                     onClick={() => handleDownloadQR(t)}
                     style={{ background: "none", border: "none", color: "#4F46E5", cursor: "pointer", fontSize: "0.7rem", fontWeight: 700, display: "flex", alignItems: "center", gap: 3, padding: 0 }}

@@ -22,8 +22,7 @@ import {
   PackageCheck
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-
-const PUBLIC_BASE_URL = import.meta.env.VITE_PUBLIC_URL || "http://localhost:5173";
+import { getPublicBaseUrl, getScanUrl } from "../../utils/publicUrl";
 
 const TokenRegistry = () => {
   // Tabs: 'ngo' vs 'parent'
@@ -124,7 +123,7 @@ const TokenRegistry = () => {
       link.click();
     } else {
       // SVG download fallback
-      const scanUrl = `${PUBLIC_BASE_URL}/scan/${token.tokenId}`;
+      const scanUrl = getScanUrl(token.tokenId);
       window.open(scanUrl, "_blank");
     }
   };
@@ -496,7 +495,7 @@ const TokenRegistry = () => {
                               />
                             ) : (
                               <QRCodeSVG
-                                value={`${PUBLIC_BASE_URL}/scan/${t.tokenId}`}
+                                value={getScanUrl(t.tokenId)}
                                 size={40}
                                 level="M"
                               />
@@ -695,7 +694,7 @@ const TokenRegistry = () => {
                     />
                   ) : (
                     <QRCodeSVG
-                      value={`${PUBLIC_BASE_URL}/scan/${selectedToken.tokenId}`}
+                      value={getScanUrl(selectedToken.tokenId)}
                       size={160}
                       level="M"
                     />
@@ -726,7 +725,7 @@ const TokenRegistry = () => {
                     <Download size={14} /> Download QR Tag
                   </button>
                   <a
-                    href={`${PUBLIC_BASE_URL}/scan/${selectedToken.tokenId}`}
+                    href={getScanUrl(selectedToken.tokenId)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="admin-btn admin-btn-sm admin-btn-ghost"

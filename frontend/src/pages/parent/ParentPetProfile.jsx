@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PetQRCode from "../../components/PetQRCode";
+import client from "../../api/client";
 import { useApp } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -16,10 +17,25 @@ const ParentPetProfile = () => {
   const { user } = useAuth();
 
   const pet = animals.find((p) => p.id === petId);
+  const [linkedTokenId, setLinkedTokenId] = useState(pet?.tokenId || null);
   const [activeTab, setActiveTab] = useState("timeline");
   const [showExternalVisitModal, setShowExternalVisitModal] = useState(false);
   const [externalVisitForm, setExternalVisitForm] = useState({ clinicName: "", visitDate: "", notes: "" });
   const [isSavingExternalVisit, setIsSavingExternalVisit] = useState(false);
+
+  useEffect(() => {
+    if (pet?.tokenId) {
+      setLinkedTokenId(pet.tokenId);
+      return;
+    }
+    if (pet?.id) {
+      client.get(`/tokens/by-animal/${pet.id}`)
+        .then((res) => {
+          if (res.data.tokenId) setLinkedTokenId(res.data.tokenId);
+        })
+        .catch(() => {});
+    }
+  }, [pet?.id, pet?.tokenId]);
 
   const handleLogExternalVisit = async (e) => {
     e.preventDefault();
@@ -129,7 +145,9 @@ const ParentPetProfile = () => {
           />
           <div style={{ textAlign: "center" }}>
             <h2 style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--primary-color)" }}>{pet.name}</h2>
-            <span style={{ color: "var(--text-muted)", fontSize: "0.82rem", fontWeight: 700 }}>ID: {pet.id}</span>
+            <span style={{ color: "var(--text-muted)", fontSize: "0.82rem", fontWeight: 700 }}>
+              Tag ID: <code style={{ fontFamily: "monospace", color: "#4F46E5", fontWeight: 800 }}>{linkedTokenId || pet.tokenId || pet.id}</code>
+            </span>
           </div>
         </div>
 
@@ -177,7 +195,7 @@ const ParentPetProfile = () => {
           {/* QR Collar stamp & Lost mode triggers */}
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "16px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <PetQRCode animalId={pet.id} size={60} />
+              <PetQRCode animalId={pet.id} tokenId={linkedTokenId} size={64} />
               <div>
                 <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted)" }}>Collar QR Chip</span>
                 <span style={{ display: "block", fontSize: "0.72rem", color: "var(--text-muted)", maxWidth: "160px" }}>Scan collar tag to view digital immunization proofs.</span>
@@ -222,7 +240,7 @@ const ParentPetProfile = () => {
 
           {/* Collar QR Code — permanent scan link + downloadable tag image */}
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 0 16px", borderBottom: "1px solid var(--border-color)", marginBottom: "8px" }}>
-            <PetQRCode animalId={pet.id} size={100} showDownload={true} />
+            <PetQRCode animalId={pet.id} tokenId={linkedTokenId} size={100} showDownload={true} />
           </div>
 
           {[

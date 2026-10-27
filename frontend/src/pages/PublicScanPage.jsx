@@ -232,7 +232,8 @@ const PublicScanPage = () => {
       ownerId: user?.id || user?._id,
       createdBy: user?.id || user?._id,
       lastUpdated: "Just now",
-      qrCode: `MOCK-QR-${mockId}`,
+      tokenId: tagId,
+      qrCode: tagId,
       timeline: [
         {
           date: new Date().toISOString().split("T")[0],
@@ -490,17 +491,17 @@ const PublicScanPage = () => {
 
               <div>
                 <h2 style={{ fontSize: "1.4rem", fontWeight: 800, color: "#1E1E2E", margin: "0 0 8px" }}>
-                  Tag Not Yet Activated
+                  There is no information yet
                 </h2>
                 <p style={{ fontSize: "0.875rem", color: "#6B7280", margin: 0, lineHeight: 1.6 }}>
-                  This collar tag exists in the PetLink system but has not been linked to a pet profile yet.
+                  This collar tag has been issued but has not been linked to any pet details yet.
                 </p>
               </div>
 
               <div style={{ backgroundColor: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "14px", padding: "16px 18px", width: "100%", textAlign: "left" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
                   <Clock size={16} color="#D97706" />
-                  <span style={{ fontWeight: 700, fontSize: "0.85rem", color: "#92400E" }}>Assigned Tag — Activation Required</span>
+                  <span style={{ fontWeight: 700, fontSize: "0.85rem", color: "#92400E" }}>Collar Tag Not Activated</span>
                 </div>
                 <p style={{ fontSize: "0.82rem", color: "#78350F", margin: 0, lineHeight: 1.5 }}>
                   Are you the pet parent who received this collar tag? Log in to your PetLink account to fill in your pet's details and activate this tag immediately.
@@ -516,7 +517,7 @@ const PublicScanPage = () => {
                 onClick={() => navigate(`/login?redirect=/scan/${tagId}&role=parent`)}
                 style={{ width: "100%", padding: "12px", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
               >
-                <LogIn size={16} /> Log In as Pet Parent to Activate
+                <LogIn size={16} /> Log In as Pet Parent to Add Pet Details
               </button>
 
               <button className="btn btn-outline" onClick={() => navigate("/")} style={{ width: "100%", fontSize: "0.82rem" }}>
@@ -532,7 +533,7 @@ const PublicScanPage = () => {
                 </div>
                 <div>
                   <h2 style={{ fontSize: "1.25rem", fontWeight: 800, margin: 0, color: "#1E1E2E" }}>
-                    Activate Collar Tag
+                    Add Pet Details & Activate Tag
                   </h2>
                   <span style={{ fontSize: "0.75rem", color: "#6B7280" }}>
                     Linking Tag <code style={{ color: "#4F46E5", fontWeight: 700 }}>{tagId}</code> to your pet

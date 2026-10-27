@@ -424,7 +424,7 @@ const MyPets = () => {
                       </div>
                       <div className="parent-pet-tag-group">
                         <span className="parent-pet-tag-label">TAG ID</span>
-                        <span className="parent-pet-tag-id">{pet.id}</span>
+                        <span className="parent-pet-tag-id">{pet.tokenId || pet.id}</span>
                       </div>
                     </div>
 

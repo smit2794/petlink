@@ -2,39 +2,50 @@ import React, { useRef, useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Download } from "lucide-react";
 import client from "../api/client";
+import { getScanUrl } from "../utils/publicUrl";
 
-const PUBLIC_BASE_URL = import.meta.env.VITE_PUBLIC_URL || "http://localhost:5173";
-
-const PetQRCode = ({ animalId, tokenId: tokenIdProp, size = 70, showDownload = false }) => {
-    // If a tokenId is explicitly passed, use it; otherwise try to look up the linked token
+const PetQRCode = ({ animalId, tokenId: tokenIdProp, size = 80, showDownload = false }) => {
     const [resolvedTokenId, setResolvedTokenId] = useState(tokenIdProp || null);
+    const [qrCodeDataUrl, setQrCodeDataUrl] = useState(null);
     const wrapperRef = useRef(null);
 
-    // Auto-resolve token from animalId if no tokenId prop was provided
+    // Auto-resolve token from animalId if no tokenId was explicitly passed
     useEffect(() => {
         if (tokenIdProp) {
             setResolvedTokenId(tokenIdProp);
-            return;
         }
-        // Try to fetch the linked token for this animal
         let cancelled = false;
-        client.get(`/tokens/by-animal/${animalId}`)
+        const lookupId = tokenIdProp || animalId;
+        if (!lookupId) return;
+
+        client.get(`/tokens/by-animal/${animalId || tokenIdProp}`)
             .then((res) => {
-                if (!cancelled) setResolvedTokenId(res.data.tokenId);
+                if (!cancelled) {
+                    if (res.data.tokenId) setResolvedTokenId(res.data.tokenId);
+                    if (res.data.qrCodeDataUrl) setQrCodeDataUrl(res.data.qrCodeDataUrl);
+                }
             })
             .catch(() => {
-                // No token linked — use legacy animal ID (fine)
-                if (!cancelled) setResolvedTokenId(null);
+                if (!cancelled && !tokenIdProp) setResolvedTokenId(null);
             });
         return () => { cancelled = true; };
     }, [animalId, tokenIdProp]);
 
     // Prefer token-based URL when available, fall back to animal ID
     const scanId = resolvedTokenId || animalId;
-    const scanUrl = `${PUBLIC_BASE_URL}/scan/${scanId}`;
+    const scanUrl = getScanUrl(scanId);
 
     const handleDownload = () => {
+        if (qrCodeDataUrl) {
+            const link = document.createElement("a");
+            link.href = qrCodeDataUrl;
+            link.download = `petlink-qr-${scanId}.png`;
+            link.click();
+            return;
+        }
+
         const svgElement = wrapperRef.current.querySelector("svg");
+        if (!svgElement) return;
         const svgData = new XMLSerializer().serializeToString(svgElement);
         const canvas = document.createElement("canvas");
         const padding = 20;
@@ -50,8 +61,8 @@ const PetQRCode = ({ animalId, tokenId: tokenIdProp, size = 70, showDownload = f
             ctx.fillStyle = "#FFFFFF";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(img, padding, padding, size, size);
-            ctx.fillStyle = "#1a1a1a";
-            ctx.font = "bold 12px sans-serif";
+            ctx.fillStyle = "#1D1311";
+            ctx.font = "bold 12px monospace";
             ctx.textAlign = "center";
             ctx.fillText(scanId, canvas.width / 2, size + padding + 20);
             URL.revokeObjectURL(url);
@@ -66,21 +77,49 @@ const PetQRCode = ({ animalId, tokenId: tokenIdProp, size = 70, showDownload = f
     };
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
-            <div ref={wrapperRef} style={{ backgroundColor: "#F7F5F0", padding: "6px", borderRadius: "6px", border: "1px solid var(--border-color)", display: "inline-flex" }}>
-                <QRCodeSVG value={scanUrl} size={size} bgColor="#F7F5F0" fgColor="var(--primary-color)" level="M" />
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+            <div
+                ref={wrapperRef}
+                style={{
+                    backgroundColor: "#FFFFFF",
+                    padding: "8px",
+                    borderRadius: "12px",
+                    border: "1.5px solid #E5E7EB",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.04)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}
+            >
+                <QRCodeSVG
+                    value={scanUrl}
+                    size={size}
+                    bgColor="#FFFFFF"
+                    fgColor="#1D1311"
+                    level="M"
+                />
             </div>
-            <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-muted)", fontFamily: "monospace" }}>
+            <code style={{ fontSize: "0.8rem", fontWeight: 800, color: "#3730A3", fontFamily: "monospace" }}>
                 {scanId}
-            </span>
+            </code>
             {showDownload && (
                 <button
                     type="button"
                     onClick={handleDownload}
                     className="btn btn-outline btn-sm"
-                    style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", padding: "6px 12px" }}
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        fontSize: "0.75rem",
+                        padding: "5px 12px",
+                        borderRadius: "8px",
+                        color: "#4F46E5",
+                        borderColor: "#C7D2FE",
+                        backgroundColor: "#EEF2FF"
+                    }}
                 >
-                    <Download size={14} /> Download QR
+                    <Download size={13} /> Save QR Tag
                 </button>
             )}
         </div>
