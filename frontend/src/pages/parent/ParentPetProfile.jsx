@@ -46,7 +46,7 @@ const ParentPetProfile = () => {
     const newEntry = {
       date: externalVisitForm.visitDate,
       title: "External Vet Visit (Unverified)",
-      description: `Reported by parent: visited ${externalVisitForm.clinicName}. Notes: ${externalVisitForm.notes || "None provided"}. This entry is self-reported and has not been verified through PetLink's Vet Portal.`
+      description: `Reported by parent: visited ${externalVisitForm.clinicName}. Notes: ${externalVisitForm.notes || "None provided"}. This entry is self-reported and has not been verified through PawSetu's Vet Portal.`
     };
 
     try {
@@ -658,7 +658,7 @@ const ParentPetProfile = () => {
               <button className="modal-close" onClick={() => setShowExternalVisitModal(false)}>✕</button>
             </div>
             <p style={{ fontSize: "0.82rem", color: "var(--text-muted)", margin: "0 0 16px" }}>
-              This logs a note about a visit to a vet outside PetLink OS. It will be clearly marked as <strong>unverified</strong> and will not change {pet.name}'s official vaccination/sterilization status — only a PetLink-registered vet can update that.
+              This logs a note about a visit to a vet outside PawSetu OS. It will be clearly marked as <strong>unverified</strong> and will not change {pet.name}'s official vaccination/sterilization status — only a PawSetu-registered vet can update that.
             </p>
             <form onSubmit={handleLogExternalVisit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div className="form-group">

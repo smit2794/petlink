@@ -416,7 +416,7 @@ const VetAppointments = () => {
       <div className="vet-apt-footer">
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <span>🐾</span>
-          <span>PetLink Vet Care System • Loving care for every furry friend</span>
+          <span>PawSetu Vet Care System • Loving care for every furry friend</span>
         </div>
         <div>
           <span>Quick Medical Guidelines</span>

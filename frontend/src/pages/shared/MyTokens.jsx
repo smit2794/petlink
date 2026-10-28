@@ -212,7 +212,7 @@ const TokenDetail = ({ batchId, authToken, user, onBack }) => {
     if (t.qrCodeDataUrl) {
       const link = document.createElement("a");
       link.href = t.qrCodeDataUrl;
-      link.download = `petlink-qr-${t.tokenId}.png`;
+      link.download = `pawsetu-qr-${t.tokenId}.png`;
       link.click();
     } else {
       window.open(getScanUrl(t.tokenId), "_blank");

@@ -109,7 +109,7 @@ const VetDirectory = () => {
           </div>
           <h1 className="parent-findvet-hero-title">Find a Veterinarian</h1>
           <p className="parent-findvet-hero-sub">
-            Browse registered vets on PetLink and send a booking request directly — no phone tag needed.
+            Browse registered vets on PawSetu and send a booking request directly — no phone tag needed.
           </p>
         </div>
 

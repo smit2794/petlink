@@ -188,7 +188,7 @@ const Login = () => {
             letterSpacing: "-0.02em",
             marginBottom: "6px"
           }}>
-            Welcome to PetLink OS
+            Welcome to PawSetu OS
           </h1>
           <p style={{ color: "var(--text-muted)", fontSize: "0.92rem" }}>
             Sign in to access your portal and records

@@ -299,7 +299,7 @@ const VolunteerMgmt = () => {
                     Need more handlers?
                   </div>
                   <div style={{ fontSize: "0.8rem", color: "#B45309", lineHeight: 1.45 }}>
-                    Volunteers automatically sync their status once they log in through the PetLink Mobile Paws companion app.
+                    Volunteers automatically sync their status once they log in through the PawSetu Mobile Paws companion app.
                   </div>
                 </div>
               </div>
@@ -690,7 +690,7 @@ const VolunteerMgmt = () => {
             {/* Table Footer with Live Telemetry Info */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "14px", borderTop: "1px solid #F3F4F6", fontSize: "0.78rem", color: "#9CA3AF" }}>
               <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                🐾 Audited automatically by PetLink Field Telemetry and GPS Logs
+                🐾 Audited automatically by PawSetu Field Telemetry and GPS Logs
               </span>
               <span>Updated live</span>
             </div>
@@ -812,7 +812,7 @@ const VolunteerMgmt = () => {
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. +91 98765 43210 or rohan@petlink.org"
+                    placeholder="e.g. +91 98765 43210 or rohan@pawsetu.org"
                     className="ngo-modal-input"
                     style={{ borderColor: volFormErrors.contact ? "var(--accent-coral)" : "" }}
                     value={volFormData.contact}

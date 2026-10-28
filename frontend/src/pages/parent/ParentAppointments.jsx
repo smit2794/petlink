@@ -69,7 +69,7 @@ const ParentAppointments = () => {
           <div>
             <h1 className="parent-vetvisits-title">Scheduled Vet Visits</h1>
             <p className="parent-vetvisits-subtitle">
-              Track all booking requests and confirmed visits with your PetLink veterinarians.
+              Track all booking requests and confirmed visits with your PawSetu veterinarians.
             </p>
           </div>
         </div>
@@ -404,7 +404,7 @@ const ParentAppointments = () => {
             <button
               type="button"
               className="parent-emergency-desk-btn-call"
-              onClick={() => alert("Connecting to PetLink 24/7 Emergency Line: +1 (800) PET-CARE")}
+              onClick={() => alert("Connecting to PawSetu 24/7 Emergency Line: +1 (800) PET-CARE")}
               title="Call Helpline"
             >
               <Phone size={16} />

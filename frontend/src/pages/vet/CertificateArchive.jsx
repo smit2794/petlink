@@ -82,7 +82,7 @@ const CertificateArchive = () => {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `PetLink_Certificate_Archive_${new Date().toISOString().split("T")[0]}.csv`);
+    link.setAttribute("download", `PawSetu_Certificate_Archive_${new Date().toISOString().split("T")[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -348,7 +348,7 @@ const CertificateArchive = () => {
                     • <strong>Biological Type:</strong> {activePet.species || "Canine"} ({activePet.breed || "Indie"}) <br />
                     • <strong>Custodian Unit:</strong> {activePet.custodian || "Pune Central Animal Shelter"}
                   </div>
-                  was clinically audited on <strong>{selectedCert.date}</strong> at <strong>PetLink Animal Care Clinic</strong> by licensed practitioners and stands fully compliant with state immunization frameworks.
+                  was clinically audited on <strong>{selectedCert.date}</strong> at <strong>PawSetu Animal Care Clinic</strong> by licensed practitioners and stands fully compliant with state immunization frameworks.
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "28px" }}>

@@ -90,7 +90,7 @@ const ParentLayout = () => {
           </div>
           <div>
             <div className="parent-sidebar-brand-title">
-              PetLink <span className="parent-sidebar-brand-care">CARE</span>
+              PawSetu <span className="parent-sidebar-brand-care">CARE</span>
             </div>
             <span className="parent-sidebar-brand-sub">FAMILY COMPANION</span>
           </div>
@@ -154,7 +154,7 @@ const ParentLayout = () => {
             gap: "20px"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "white", fontSize: "1.3rem", fontWeight: 800 }}>PetLink Parent</span>
+              <span style={{ color: "white", fontSize: "1.3rem", fontWeight: 800 }}>PawSetu Parent</span>
               <button onClick={() => setMobileMenuOpen(false)} style={{ background: "none", border: 0, color: "white" }}>
                 <X size={24} />
               </button>

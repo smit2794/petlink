@@ -119,7 +119,7 @@ const TokenRegistry = () => {
     if (token.qrCodeDataUrl) {
       const link = document.createElement("a");
       link.href = token.qrCodeDataUrl;
-      link.download = `petlink-qr-${token.tokenId}.png`;
+      link.download = `pawsetu-qr-${token.tokenId}.png`;
       link.click();
     } else {
       // SVG download fallback

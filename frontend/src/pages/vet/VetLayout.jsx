@@ -90,7 +90,7 @@ const VetLayout = () => {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <span style={{ fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.03em", color: "#111827" }}>
-              PetLink
+              PawSetu
             </span>
             <span style={{
               fontSize: "0.68rem",
@@ -290,7 +290,7 @@ const VetLayout = () => {
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <span style={{ color: "#111827", fontSize: "1.3rem", fontWeight: 800 }}>PetLink</span>
+                <span style={{ color: "#111827", fontSize: "1.3rem", fontWeight: 800 }}>PawSetu</span>
                 <span style={{
                   fontSize: "0.68rem",
                   fontWeight: 800,

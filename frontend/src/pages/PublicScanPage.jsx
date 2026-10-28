@@ -504,7 +504,7 @@ const PublicScanPage = () => {
                   <span style={{ fontWeight: 700, fontSize: "0.85rem", color: "#92400E" }}>Collar Tag Not Activated</span>
                 </div>
                 <p style={{ fontSize: "0.82rem", color: "#78350F", margin: 0, lineHeight: 1.5 }}>
-                  Are you the pet parent who received this collar tag? Log in to your PetLink account to fill in your pet's details and activate this tag immediately.
+                  Are you the pet parent who received this collar tag? Log in to your PawSetu account to fill in your pet's details and activate this tag immediately.
                 </p>
               </div>
 

@@ -200,7 +200,7 @@ const Register = () => {
             letterSpacing: "-0.02em",
             marginBottom: "6px"
           }}>
-            Create PetLink Account
+            Create PawSetu Account
           </h1>
           <p style={{ color: "var(--text-muted)", fontSize: "0.92rem" }}>
             Register as a {currentRole.label} to connect with the municipal network

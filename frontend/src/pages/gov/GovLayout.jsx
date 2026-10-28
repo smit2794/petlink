@@ -86,7 +86,7 @@ const GovLayout = () => {
             <BarChart2 size={20} color="#5C6B73" />
           </div>
           <span style={{ fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.03em" }}>
-            PetLink <span style={{ fontWeight: 300, opacity: 0.8, color: "#95A3B3" }}>GOV</span>
+            PawSetu <span style={{ fontWeight: 300, opacity: 0.8, color: "#95A3B3" }}>GOV</span>
           </span>
         </div>
 
@@ -188,7 +188,7 @@ const GovLayout = () => {
             gap: "20px"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "white", fontSize: "1.3rem", fontWeight: 800 }}>PetLink Gov</span>
+              <span style={{ color: "white", fontSize: "1.3rem", fontWeight: 800 }}>PawSetu Gov</span>
               <button onClick={() => setMobileMenuOpen(false)} style={{ background: "none", border: 0, color: "white" }}>
                 <X size={24} />
               </button>

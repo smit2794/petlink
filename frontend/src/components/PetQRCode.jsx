@@ -39,7 +39,7 @@ const PetQRCode = ({ animalId, tokenId: tokenIdProp, size = 80, showDownload = f
         if (qrCodeDataUrl) {
             const link = document.createElement("a");
             link.href = qrCodeDataUrl;
-            link.download = `petlink-qr-${scanId}.png`;
+            link.download = `pawsetu-qr-${scanId}.png`;
             link.click();
             return;
         }
@@ -70,7 +70,7 @@ const PetQRCode = ({ animalId, tokenId: tokenIdProp, size = 80, showDownload = f
             const pngUrl = canvas.toDataURL("image/png");
             const link = document.createElement("a");
             link.href = pngUrl;
-            link.download = `petlink-qr-${scanId}.png`;
+            link.download = `pawsetu-qr-${scanId}.png`;
             link.click();
         };
         img.src = url;

@@ -19,7 +19,7 @@ const AdminLayout = () => {
       <aside className={`admin-sidebar ${sidebarOpen ? "open" : "collapsed"}`}>
         <div className="admin-logo">
           <Shield size={22} />
-          {sidebarOpen && <span>PetLink Admin</span>}
+          {sidebarOpen && <span>PawSetu Admin</span>}
         </div>
 
         <nav className="admin-nav">

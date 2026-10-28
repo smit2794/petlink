@@ -40,7 +40,7 @@ const LostPetMode = () => {
   // Form fields for lost report
   const [lostLocation, setLostLocation] = useState("Satellite, Ahmedabad");
   const [additionalNotes, setAdditionalNotes] = useState(
-    "Wearing a collar with PetLink digital QR ID tag. Friendly domestic pet."
+    "Wearing a collar with PawSetu digital QR ID tag. Friendly domestic pet."
   );
 
   // Pre-select pet from query param or default to first pet
@@ -328,7 +328,7 @@ const LostPetMode = () => {
               <div>
                 <h4 className="parent-lostalerts-protocol-title">24/7 Municipal Protocol</h4>
                 <p className="parent-lostalerts-protocol-sub">
-                  Shelters across Ahmedabad scan PetLink tags in real-time.
+                  Shelters across Ahmedabad scan PawSetu tags in real-time.
                 </p>
               </div>
             </div>

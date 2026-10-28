@@ -18,7 +18,7 @@ const SuccessStories = () => {
       tagId: "PET-101",
       parentName: "Mehul Kulkarni",
       photo: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=600",
-      quote: "Sheru was rescued with a severe leg fracture. Seeing him sprint across the park today, it feels like a miracle. PetLink made the adoption process so transparent and seamless!",
+      quote: "Sheru was rescued with a severe leg fracture. Seeing him sprint across the park today, it feels like a miracle. PawSetu made the adoption process so transparent and seamless!",
       daysSinceAdoption: 120
     },
     {

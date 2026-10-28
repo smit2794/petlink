@@ -630,7 +630,7 @@ const AnimalMedicalPanel = () => {
                     </button>
                     <div style={{ borderBottom: "1px solid #C7D2FE", paddingBottom: "10px", marginBottom: "12px" }}>
                       <span style={{ fontSize: "0.85rem", fontWeight: 800, color: "#5028FF" }}>💊 RX PRESCRIPTION SHEET</span>
-                      <h4 style={{ fontSize: "0.95rem", fontWeight: 700, marginTop: "4px" }}>PetLink Animal Care Clinic</h4>
+                      <h4 style={{ fontSize: "0.95rem", fontWeight: 700, marginTop: "4px" }}>PawSetu Animal Care Clinic</h4>
                     </div>
                     <div style={{ fontSize: "0.85rem", display: "flex", flexDirection: "column", gap: "6px" }}>
                       <span><strong>Patient:</strong> {pet.name} ({pet.id})</span>
@@ -1089,7 +1089,7 @@ const AnimalMedicalPanel = () => {
                     • <strong>Biological Type:</strong> {pet.species} ({pet.breed}) <br />
                     • <strong>Custodian Unit:</strong> {pet.custodian}
                   </div>
-                  was clinically audited on <strong>{new Date().toISOString().split("T")[0]}</strong> at <strong>PetLink Animal Care Clinic</strong> by licensed practitioners and stands fully compliant with immunization frameworks.
+                  was clinically audited on <strong>{new Date().toISOString().split("T")[0]}</strong> at <strong>PawSetu Animal Care Clinic</strong> by licensed practitioners and stands fully compliant with immunization frameworks.
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "32px" }}>

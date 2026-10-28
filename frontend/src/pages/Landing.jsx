@@ -125,7 +125,7 @@ const Landing = () => {
               <path d="M12 14c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-4.5-2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm9 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-4.5 7c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z" />
             </svg>
           </div>
-          <span style={{ fontWeight: 800, color: "var(--primary-color)", fontSize: "1.1rem" }}>PetLink</span>
+          <span style={{ fontWeight: 800, color: "var(--primary-color)", fontSize: "1.1rem" }}>PawSetu</span>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -261,7 +261,7 @@ const Landing = () => {
             color: "var(--primary-color)",
             letterSpacing: "-0.03em"
           }}>
-            PetLink <span style={{ fontWeight: 300, color: "var(--secondary-color)" }}>OS</span>
+            PawSetu <span style={{ fontWeight: 300, color: "var(--secondary-color)" }}>OS</span>
           </span>
         </div>
 
@@ -299,7 +299,7 @@ const Landing = () => {
           maxWidth: "680px",
           lineHeight: 1.6
         }}>
-          PetLink OS bridges the gap between field rescues, veterinary clinics, pet foster parents,
+          PawSetu OS bridges the gap between field rescues, veterinary clinics, pet foster parents,
           and municipal systems. Click a portal below to enter the live operating environment.
         </p>
       </div>
@@ -464,7 +464,7 @@ const Landing = () => {
           <span>🩺 <strong>1,820+</strong> Vet Clinics Verified</span>
           <span>🐾 <strong>45,000+</strong> Animals Registered</span>
         </div>
-        <p>© 2026 PetLink OS. Supporting Digital India Animal Welfare initiatives.</p>
+        <p>© 2026 PawSetu OS. Supporting Digital India Animal Welfare initiatives.</p>
         <Link to="/public-stats" style={{ color: "var(--primary-color)", fontWeight: 700, textDecoration: "underline", fontSize: "0.8rem", marginTop: "4px" }}>
           View Public Transparency Report
         </Link>

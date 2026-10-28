@@ -341,10 +341,10 @@ const DonationsMgmt = () => {
             <div className="ngo-donation-ledger-footer">
               <div className="ngo-donation-footer-left">
                 <span className="ngo-donation-live-dot" />
-                <span>All records encrypted & mirrored to PetLink NGO Fiscal Core</span>
+                <span>All records encrypted & mirrored to PawSetu NGO Fiscal Core</span>
               </div>
               <div>
-                <span>Powered by PetLink 80G Certified Automated Receipting</span>
+                <span>Powered by PawSetu 80G Certified Automated Receipting</span>
               </div>
             </div>
           </div>
@@ -467,7 +467,7 @@ const DonationsMgmt = () => {
                     <HeartHandshake size={15} />
                   </div>
                   <strong style={{ fontSize: "1.2rem", color: "#184639", letterSpacing: "-0.02em" }}>
-                    PetLink Foundation India
+                    PawSetu Foundation India
                   </strong>
                 </div>
                 <p style={{ fontSize: "0.75rem", color: "#6B7280", margin: 0, lineHeight: 1.4 }}>

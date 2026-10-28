@@ -183,7 +183,7 @@ const MyPets = () => {
             No registered pets in your family yet!
           </h2>
           <p style={{ color: "#6B7280", fontSize: "0.9rem", maxWidth: "440px", margin: "0 auto 20px auto", lineHeight: 1.5 }}>
-            Adopt an animal from our partner NGO shelters or register a domestic companion into the PetLink digital tag registry.
+            Adopt an animal from our partner NGO shelters or register a domestic companion into the PawSetu digital tag registry.
           </p>
           <div style={{ display: "flex", gap: "14px", flexWrap: "wrap", justifyContent: "center" }}>
             <button

@@ -240,7 +240,7 @@ const DashboardLayout = () => {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "16px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <PawPrint size={20} color="white" />
-                <span style={{ color: "white", fontSize: "1.1rem", fontWeight: 800 }}>PetLink</span>
+                <span style={{ color: "white", fontSize: "1.1rem", fontWeight: 800 }}>PawSetu</span>
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
