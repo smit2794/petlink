@@ -49,11 +49,11 @@ const VetLayout = () => {
 
   return (
     <div className="ngo-layout" style={{ display: "flex", minHeight: "100vh" }}>
-      {/* 1. Left Sidebar - Desktop (Reference Warm Dark Slate/Brown) */}
+      {/* 1. Left Sidebar - Desktop (PawSetu Clean White & Purple #5028FF) */}
       <aside style={{
         width: "260px",
-        backgroundColor: "#18100A", // warm dark brown from reference
-        color: "var(--text-white)",
+        backgroundColor: "#FFFFFF",
+        color: "var(--text-main)",
         display: "flex",
         flexDirection: "column",
         flexShrink: 0,
@@ -61,42 +61,44 @@ const VetLayout = () => {
         top: 0,
         height: "100vh",
         zIndex: 100,
-        boxShadow: "4px 0 20px rgba(0,0,0,0.05)",
-        borderRight: "1px solid rgba(255,255,255,0.04)"
+        boxShadow: "4px 0 20px rgba(0,0,0,0.03)",
+        borderRight: "1px solid #F3F4F6"
       }} className="sidebar-desktop">
         {/* Sidebar Logo */}
         <div style={{
-          padding: "28px 24px",
+          padding: "24px 24px",
           display: "flex",
           alignItems: "center",
           gap: "12px",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.06)"
+          borderBottom: "1px solid #F3F4F6"
         }}>
           <div style={{
-            width: "36px",
-            height: "36px",
-            borderRadius: "50%",
-            backgroundColor: "#FF7000",
+            width: "38px",
+            height: "38px",
+            borderRadius: "12px",
+            backgroundColor: "#5028FF",
             color: "white",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontWeight: 900
+            fontWeight: 900,
+            boxShadow: "0 4px 12px rgba(80, 40, 255, 0.25)"
           }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 10.5h-5.5V5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v5.5H5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5h5.5V19c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-5.5H19c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z" />
             </svg>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.03em", color: "white" }}>
+            <span style={{ fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.03em", color: "#111827" }}>
               PetLink
             </span>
             <span style={{
               fontSize: "0.68rem",
               fontWeight: 800,
-              backgroundColor: "#FF7000",
-              color: "white",
-              padding: "2px 7px",
+              backgroundColor: "#EEF2FF",
+              color: "#5028FF",
+              border: "1px solid #C7D2FE",
+              padding: "2px 8px",
               borderRadius: "10px",
               letterSpacing: "0.04em"
             }}>
@@ -111,8 +113,8 @@ const VetLayout = () => {
             margin: "16px 16px 0 16px",
             padding: "10px 14px",
             borderRadius: "14px",
-            backgroundColor: "#22160E",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
+            backgroundColor: "#EEF2FF",
+            border: "1px solid #C7D2FE",
             display: "flex",
             alignItems: "center",
             gap: "12px"
@@ -121,21 +123,21 @@ const VetLayout = () => {
               width: "36px",
               height: "36px",
               borderRadius: "50%",
-              backgroundColor: "#FDE047",
+              backgroundColor: "#FFFFFF",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: "1.15rem",
               flexShrink: 0,
-              boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
+              boxShadow: "0 2px 6px rgba(80, 40, 255, 0.12)"
             }}>
               🐶
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: "0.85rem", fontWeight: 800, color: "white", lineHeight: 1.2 }}>
+              <span style={{ fontSize: "0.85rem", fontWeight: 800, color: "#111827", lineHeight: 1.2 }}>
                 Inspector Barnaby
               </span>
-              <span style={{ fontSize: "0.72rem", color: "#F59E0B", fontWeight: 600 }}>
+              <span style={{ fontSize: "0.72rem", color: "#5028FF", fontWeight: 700 }}>
                 Official Registry Dog
               </span>
             </div>
@@ -151,16 +153,14 @@ const VetLayout = () => {
                 fontWeight: 800,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "rgba(255, 255, 255, 0.4)",
+                color: "#9CA3AF",
                 paddingLeft: "16px",
                 marginBottom: "6px"
               }}>
                 {cat.category}
               </span>
-              
               {cat.links.map((link) => {
                 const LinkIcon = link.icon;
-                // Match prefix routes as active for nested views
                 const isActive = location.pathname.startsWith(link.path);
                 return (
                   <NavLink
@@ -175,18 +175,24 @@ const VetLayout = () => {
                       fontSize: "0.9rem",
                       fontWeight: isActive ? 700 : 500,
                       transition: "all var(--transition-fast)",
-                      backgroundColor: isActive ? "#FF7000" : "transparent",
-                      color: isActive ? "white" : "rgba(255, 255, 255, 0.7)",
-                      opacity: isActive ? 1 : 0.85
+                      backgroundColor: isActive ? "#5028FF" : "transparent",
+                      color: isActive ? "#FFFFFF" : "#4B5563",
+                      boxShadow: isActive ? "0 2px 8px rgba(80, 40, 255, 0.25)" : "none"
                     }}
                     onMouseEnter={(e) => {
-                      if (!isActive) e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = "#F9FAFB";
+                        e.currentTarget.style.color = "#111827";
+                      }
                     }}
                     onMouseLeave={(e) => {
-                      if (!isActive) e.currentTarget.style.backgroundColor = "transparent";
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.color = "#4B5563";
+                      }
                     }}
                   >
-                    <LinkIcon size={16} />
+                    <LinkIcon size={16} color={isActive ? "#FFFFFF" : "#6B7280"} />
                     {link.label}
                   </NavLink>
                 );
@@ -201,8 +207,8 @@ const VetLayout = () => {
             margin: "0 16px 16px 16px",
             padding: "12px 14px",
             borderRadius: "16px",
-            backgroundColor: "#281E19",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
+            backgroundColor: "#EEF2FF",
+            border: "1px solid #C7D2FE",
             display: "flex",
             alignItems: "center",
             gap: "12px"
@@ -211,20 +217,21 @@ const VetLayout = () => {
               width: "36px",
               height: "36px",
               borderRadius: "50%",
-              backgroundColor: "#FDE047",
+              backgroundColor: "#FFFFFF",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: "1.15rem",
-              flexShrink: 0
+              flexShrink: 0,
+              boxShadow: "0 2px 6px rgba(80, 40, 255, 0.12)"
             }}>
               🐶
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: "0.82rem", fontWeight: 800, color: "#F59E0B", lineHeight: 1.2 }}>
+              <span style={{ fontSize: "0.82rem", fontWeight: 800, color: "#5028FF", lineHeight: 1.2 }}>
                 Dr. Barkley Tips
               </span>
-              <span style={{ fontSize: "0.72rem", color: "#E5E7EB", marginTop: "2px", lineHeight: 1.3 }}>
+              <span style={{ fontSize: "0.72rem", color: "#4B5563", marginTop: "2px", lineHeight: 1.3 }}>
                 Check 2 vaccines near expiry date!
               </span>
             </div>
@@ -232,7 +239,7 @@ const VetLayout = () => {
         )}
 
         {/* Sidebar Footer Link */}
-        <div style={{ padding: "16px 16px", borderTop: "1px solid rgba(255, 255, 255, 0.06)" }}>
+        <div style={{ padding: "16px 16px", borderTop: "1px solid #F3F4F6" }}>
           <Link
             to="/"
             style={{
@@ -243,11 +250,17 @@ const VetLayout = () => {
               borderRadius: "30px",
               fontSize: "0.88rem",
               fontWeight: 600,
-              color: "#E5A96A",
+              color: "#6B7280",
               transition: "all var(--transition-fast)"
             }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.05)"}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#EEF2FF";
+              e.currentTarget.style.color = "#5028FF";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "#6B7280";
+            }}
           >
             <ArrowLeft size={16} /> Exit to Selector
           </Link>
@@ -268,7 +281,7 @@ const VetLayout = () => {
         }}>
           <div className="animate-slide-in-right" style={{
             width: "280px",
-            backgroundColor: "#18100A",
+            backgroundColor: "#FFFFFF",
             height: "100%",
             padding: "24px",
             display: "flex",
@@ -276,8 +289,19 @@ const VetLayout = () => {
             gap: "20px"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "white", fontSize: "1.3rem", fontWeight: 800 }}>PetLink VET</span>
-              <button onClick={() => setMobileMenuOpen(false)} style={{ background: "none", border: 0, color: "white" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <span style={{ color: "#111827", fontSize: "1.3rem", fontWeight: 800 }}>PetLink</span>
+                <span style={{
+                  fontSize: "0.68rem",
+                  fontWeight: 800,
+                  backgroundColor: "#EEF2FF",
+                  color: "#5028FF",
+                  border: "1px solid #C7D2FE",
+                  padding: "2px 8px",
+                  borderRadius: "10px"
+                }}>VET</span>
+              </div>
+              <button onClick={() => setMobileMenuOpen(false)} style={{ background: "none", border: 0, color: "#111827" }}>
                 <X size={24} />
               </button>
             </div>
@@ -285,7 +309,7 @@ const VetLayout = () => {
             <nav style={{ display: "flex", flexDirection: "column", gap: "16px", overflowY: "auto" }}>
               {groupedLinks.map((cat, catIdx) => (
                 <div key={catIdx} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                  <span style={{ fontSize: "0.68rem", fontWeight: 800, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", paddingLeft: "12px" }}>
+                  <span style={{ fontSize: "0.68rem", fontWeight: 800, color: "#9CA3AF", textTransform: "uppercase", paddingLeft: "12px" }}>
                     {cat.category}
                   </span>
                   {cat.links.map((link) => {
@@ -302,8 +326,9 @@ const VetLayout = () => {
                           gap: "12px",
                           padding: "10px 16px",
                           borderRadius: "30px",
-                          color: "white",
-                          backgroundColor: isActive ? "#FF7000" : "transparent"
+                          fontWeight: isActive ? 700 : 500,
+                          color: isActive ? "#FFFFFF" : "#4B5563",
+                          backgroundColor: isActive ? "#5028FF" : "transparent"
                         }}
                       >
                         <LinkIcon size={16} />
@@ -315,8 +340,8 @@ const VetLayout = () => {
               ))}
             </nav>
             
-            <div style={{ marginTop: "auto", borderTop: "1px solid rgba(255, 255, 255, 0.1)", paddingTop: "16px" }}>
-              <Link to="/" className="btn btn-outline" style={{ width: "100%", color: "white", borderColor: "white" }}>
+            <div style={{ marginTop: "auto", borderTop: "1px solid #F3F4F6", paddingTop: "16px" }}>
+              <Link to="/" className="btn btn-outline" style={{ width: "100%", color: "#5028FF", borderColor: "#C7D2FE" }}>
                 <ArrowLeft size={16} /> Exit to Selector
               </Link>
             </div>
@@ -330,8 +355,8 @@ const VetLayout = () => {
         {/* Vet Top Bar */}
         <header style={{
           height: "76px",
-          backgroundColor: "var(--card-bg)",
-          borderBottom: "1px solid var(--border-color)",
+          backgroundColor: "#FFFFFF",
+          borderBottom: "1px solid #F3F4F6",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -357,14 +382,14 @@ const VetLayout = () => {
 
           {/* Portal Indicators & Title */}
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <span style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "8px" }} className="profile-text">
+            <span style={{ fontSize: "1.2rem", fontWeight: 800, color: "#111827", display: "flex", alignItems: "center", gap: "8px" }} className="profile-text">
               🏥 Animal Care Clinic
             </span>
             <span style={{
-              backgroundColor: "#FFF3EB",
-              color: "#E6680A",
+              backgroundColor: "#EEF2FF",
+              color: "#5028FF",
               fontSize: "0.72rem",
-              border: "1px solid #FFD0B0",
+              border: "1px solid #C7D2FE",
               fontWeight: 700,
               borderRadius: "20px",
               padding: "4px 12px",
@@ -399,7 +424,7 @@ const VetLayout = () => {
                     width: "18px",
                     height: "18px",
                     borderRadius: "50%",
-                    backgroundColor: "#FF7000",
+                    backgroundColor: "#5028FF",
                     color: "white",
                     fontSize: "0.65rem",
                     fontWeight: 800,
@@ -424,12 +449,13 @@ const VetLayout = () => {
                   zIndex: 200,
                   maxHeight: "350px",
                   overflowY: "auto",
-                  border: "1px solid var(--border-color)"
+                  border: "1px solid var(--border-color)",
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.08)"
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px", alignItems: "center" }}>
                     <h4 style={{ fontWeight: 800, fontSize: "0.95rem" }}>System Activity Log</h4>
                     {toasts.length > 0 && (
-                      <span style={{ fontSize: "0.75rem", color: "#FF7000", cursor: "pointer", fontWeight: 700 }} onClick={() => toasts.forEach(t => removeToast(t.id))}>
+                      <span style={{ fontSize: "0.75rem", color: "#5028FF", cursor: "pointer", fontWeight: 700 }} onClick={() => toasts.forEach(t => removeToast(t.id))}>
                         Clear All
                       </span>
                     )}
@@ -446,7 +472,7 @@ const VetLayout = () => {
                           gap: "8px",
                           padding: "10px",
                           borderRadius: "var(--radius-sm)",
-                          backgroundColor: "#FAF9F5",
+                          backgroundColor: "#F9FAFB",
                           fontSize: "0.8rem",
                           border: "1px solid var(--border-color)"
                         }}>
@@ -466,13 +492,14 @@ const VetLayout = () => {
                 width: "40px",
                 height: "40px",
                 borderRadius: "50%",
-                backgroundColor: "#2E170E",
+                backgroundColor: "#5028FF",
                 color: "white",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontWeight: 700,
-                fontSize: "0.95rem"
+                fontSize: "0.95rem",
+                boxShadow: "0 2px 8px rgba(80, 40, 255, 0.25)"
               }}>
                 {user?.name ? user.name.replace(/^Dr\.\s*/i, "").split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase() : "DR"}
               </div>
@@ -508,8 +535,8 @@ const VetLayout = () => {
                 transition: "all var(--transition-fast)"
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#FF7000";
-                e.currentTarget.style.color = "#FF7000";
+                e.currentTarget.style.borderColor = "#5028FF";
+                e.currentTarget.style.color = "#5028FF";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = "var(--border-color)";
@@ -550,7 +577,7 @@ const VetLayout = () => {
               borderLeft: `5px solid ${
                 toast.type === "success" ? "#27AE60" :
                 toast.type === "warning" ? "var(--accent-amber)" :
-                toast.type === "error" ? "var(--accent-coral)" : "#2980B9"
+                toast.type === "error" ? "#EF4444" : "#2980B9"
               }`,
               borderRadius: "12px",
               padding: "16px 20px",

@@ -156,13 +156,13 @@ const VetAppointments = () => {
 
       {/* Pending Booking Requests Section (Parent-initiated) */}
       {pendingAppointments.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px", background: "#FFFDF9", border: "1.5px solid #FDE68A", borderRadius: "20px", padding: "16px 20px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", background: "#EEF2FF", border: "1.5px solid #C7D2FE", borderRadius: "20px", padding: "16px 20px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <div style={{
               width: "8px", height: "8px", borderRadius: "50%",
-              backgroundColor: "#D97706", animation: "pulse 1.5s infinite"
+              backgroundColor: "#5028FF", animation: "pulse 1.5s infinite"
             }} />
-            <h2 style={{ fontSize: "1rem", fontWeight: 800, color: "#92400E", margin: 0 }}>
+            <h2 style={{ fontSize: "1rem", fontWeight: 800, color: "#3730A3", margin: 0 }}>
               Pending Booking Requests ({pendingAppointments.length})
             </h2>
           </div>
@@ -309,8 +309,8 @@ const VetAppointments = () => {
               width: "48px",
               height: "48px",
               borderRadius: "50%",
-              backgroundColor: "#FFF7ED",
-              color: "#FF7A1A",
+              backgroundColor: "#EEF2FF",
+              color: "#5028FF",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -334,7 +334,7 @@ const VetAppointments = () => {
                 key={apt.id}
                 className="vet-apt-card"
                 style={{
-                  borderLeftColor: isCompleted ? "#10B981" : isDeclined ? "#D1D5DB" : "#FF7A1A",
+                  borderLeftColor: isCompleted ? "#10B981" : isDeclined ? "#D1D5DB" : "#5028FF",
                   opacity: isDeclined ? 0.7 : 1
                 }}
               >
@@ -482,8 +482,8 @@ const VetAppointments = () => {
                     padding: "8px 20px",
                     borderRadius: "10px",
                     fontWeight: 700,
-                    backgroundColor: "#FF7A1A",
-                    borderColor: "#FF7A1A",
+                    backgroundColor: "#5028FF",
+                    borderColor: "#5028FF",
                     opacity: rescheduling ? 0.7 : 1,
                     cursor: rescheduling ? "not-allowed" : "pointer"
                   }}

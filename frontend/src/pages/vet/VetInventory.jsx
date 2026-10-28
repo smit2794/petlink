@@ -165,8 +165,8 @@ const VetInventory = () => {
               width: "22px",
               height: "22px",
               borderRadius: "6px",
-              backgroundColor: "#FFF7ED",
-              color: "#EA580C",
+              backgroundColor: "#EEF2FF",
+              color: "#5028FF",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -326,8 +326,8 @@ const VetInventory = () => {
                   width: "36px",
                   height: "36px",
                   borderRadius: "10px",
-                  backgroundColor: "#FFF7ED",
-                  color: "#FF7000",
+                  backgroundColor: "#EEF2FF",
+                  color: "#5028FF",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -548,12 +548,12 @@ const VetInventory = () => {
                     padding: "10px 18px",
                     borderRadius: "30px",
                     border: "none",
-                    backgroundColor: "#FF7000",
+                    backgroundColor: "#5028FF",
                     color: "#FFFFFF",
                     fontWeight: 800,
                     fontSize: "0.88rem",
                     cursor: "pointer",
-                    boxShadow: "0 4px 12px rgba(255, 112, 0, 0.3)"
+                    boxShadow: "0 4px 12px rgba(80, 40, 255, 0.25)"
                   }}
                 >
                   Save Stock

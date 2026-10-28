@@ -6,7 +6,8 @@ import PetQRCode from "../../components/PetQRCode";
 import {
   Search, Filter, ArrowLeft, Heart, FileText, Activity,
   Calendar, Layers, ShieldAlert, User, Eye, PawPrint, Tag, ClipboardList,
-  MessageSquare, Upload, Check, SlidersHorizontal, Star
+  MessageSquare, Upload, Check, SlidersHorizontal, Star, QrCode,
+  CheckCircle, ArrowRight, Volume2, Cpu, Box, X, Download
 } from "lucide-react";
 
 // Pet Illustration Showcase Helper matching reference design
@@ -294,6 +295,8 @@ const AnimalMgmt = () => {
   const [selectedPet, setSelectedPet] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [favorites, setFavorites] = useState({});
+  const [qrModalPet, setQrModalPet] = useState(null);
+  const [showIngestionModal, setShowIngestionModal] = useState(false);
 
   // Extended Module States
   const [showImportModal, setShowImportModal] = useState(false);
@@ -442,8 +445,8 @@ const AnimalMgmt = () => {
           </div>
 
           {/* Stepper Progress Tracker */}
-          <div className="card" style={{ padding: "32px", borderLeft: "5px solid var(--secondary-color)" }}>
-            <h4 style={{ fontSize: "0.85rem", fontWeight: 800, textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "24px" }}>
+          <div className="card" style={{ padding: "28px 32px", borderLeft: "5px solid #5028FF", borderRadius: "18px", border: "1.5px solid #E5E7EB", background: "#FFFFFF" }}>
+            <h4 style={{ fontSize: "0.85rem", fontWeight: 800, textTransform: "uppercase", color: "#6B7280", marginBottom: "24px" }}>
               Custody Pipeline Stage Tracker
             </h4>
 
@@ -464,7 +467,7 @@ const AnimalMgmt = () => {
                 left: "40px",
                 right: "40px",
                 height: "4px",
-                backgroundColor: "#EAE6DF",
+                backgroundColor: "#F3F4F6",
                 zIndex: 1
               }} />
 
@@ -475,7 +478,7 @@ const AnimalMgmt = () => {
                 left: "40px",
                 width: currentStepIdx === -1 ? "0%" : `${(currentStepIdx / (custodySteps.length - 1)) * 90}%`,
                 height: "4px",
-                backgroundColor: "var(--secondary-color)",
+                backgroundColor: "#5028FF",
                 zIndex: 2,
                 transition: "width 0.4s ease"
               }} />
@@ -506,17 +509,17 @@ const AnimalMgmt = () => {
                         width: "34px",
                         height: "34px",
                         borderRadius: "50%",
-                        border: `3px solid ${isPassed ? "var(--secondary-color)" : isCurrent ? "var(--secondary-color)" : "#EAE6DF"}`,
-                        backgroundColor: isCurrent ? "var(--secondary-color)" : isPassed ? "var(--secondary-color)" : "white",
+                        border: `3px solid ${isPassed ? "#5028FF" : isCurrent ? "#5028FF" : "#E5E7EB"}`,
+                        backgroundColor: isCurrent ? "#5028FF" : isPassed ? "#5028FF" : "white",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         cursor: "pointer",
                         fontWeight: 800,
                         fontSize: "0.8rem",
-                        color: (isCurrent || isPassed) ? "white" : "#B0A898",
+                        color: (isCurrent || isPassed) ? "white" : "#9CA3AF",
                         transition: "all 0.3s ease",
-                        boxShadow: isCurrent ? "0 0 0 4px rgba(161, 200, 182, 0.3)" : "none"
+                        boxShadow: isCurrent ? "0 0 0 4px rgba(80, 40, 255, 0.22)" : "none"
                       }}
                     >
                       {isPassed ? (
@@ -526,13 +529,13 @@ const AnimalMgmt = () => {
                       ) : isCurrent ? (
                         idx + 1
                       ) : (
-                        <span style={{ color: "#C4BAB0", fontWeight: 700 }}>{idx + 1}</span>
+                        <span style={{ color: "#9CA3AF", fontWeight: 700 }}>{idx + 1}</span>
                       )}
                     </button>
                     <span style={{
                       fontSize: "0.72rem",
                       fontWeight: isCurrent ? 800 : 500,
-                      color: isCurrent ? "var(--primary-color)" : isPassed ? "var(--secondary-color)" : "var(--text-muted)",
+                      color: isCurrent ? "#111827" : isPassed ? "#5028FF" : "#6B7280",
                       textAlign: "center",
                       marginTop: "8px",
                       lineHeight: 1.2
@@ -604,9 +607,9 @@ const AnimalMgmt = () => {
                         gap: "8px",
                         padding: "12px 18px",
                         border: 0,
-                        borderBottom: isTabActive ? "3px solid var(--secondary-color)" : "3px solid transparent",
+                        borderBottom: isTabActive ? "3px solid #5028FF" : "3px solid transparent",
                         backgroundColor: "transparent",
-                        color: isTabActive ? "var(--primary-color)" : "var(--text-muted)",
+                        color: isTabActive ? "#5028FF" : "#6B7280",
                         fontWeight: isTabActive ? 800 : 600,
                         fontSize: "0.92rem",
                         cursor: "pointer",
@@ -717,7 +720,7 @@ const AnimalMgmt = () => {
                               // error toast already shown inside updateAnimalPersisted
                             }
                           }
-                        }} style={{ alignSelf: "flex-start" }}>
+                        }} style={{ alignSelf: "flex-start", backgroundColor: "#5028FF", borderColor: "#5028FF" }}>
                           Update Medical Notes
                         </button>
                       </div>
@@ -739,7 +742,7 @@ const AnimalMgmt = () => {
                             width: "8px",
                             height: "8px",
                             borderRadius: "50%",
-                            backgroundColor: "var(--secondary-color)"
+                            backgroundColor: "#5028FF"
                           }} />
                           <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                             <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted)" }}>{event.date}</span>
@@ -776,7 +779,7 @@ const AnimalMgmt = () => {
                             backgroundColor: "#FCFAF6"
                           }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-                              <FileText size={20} color="var(--secondary-color)" />
+                              <FileText size={20} color="#5028FF" />
                               <div style={{ display: "flex", flexDirection: "column" }}>
                                 <span style={{ fontSize: "0.9rem", fontWeight: 800 }}>{doc.name}</span>
                                 <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{doc.type} • {doc.size}</span>
@@ -801,7 +804,7 @@ const AnimalMgmt = () => {
                         display: "flex",
                         justifyContent: "space-between",
                         padding: "14px 20px",
-                        borderLeft: "4px solid var(--secondary-color)",
+                        borderLeft: "4px solid #5028FF",
                         backgroundColor: "#FCFAF6",
                         borderRadius: "0 12px 12px 0"
                       }}>
@@ -853,7 +856,7 @@ const AnimalMgmt = () => {
                         className="form-control"
                         required
                       />
-                      <button type="submit" className="btn btn-primary btn-sm" style={{ padding: "8px 16px" }}>Add Note</button>
+                      <button type="submit" className="btn btn-primary btn-sm" style={{ padding: "8px 16px", backgroundColor: "#5028FF", borderColor: "#5028FF" }}>Add Note</button>
                     </form>
 
                     {/* Notes thread */}
@@ -864,7 +867,7 @@ const AnimalMgmt = () => {
                         caseNotes.filter(n => n.animalId === selectedPet.id).map(n => (
                           <div key={n.id} style={{ padding: "12px", border: "1px solid var(--border-color)", borderRadius: "10px", backgroundColor: "#FCFAF6" }}>
                             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontSize: "0.78rem" }}>
-                              <strong style={{ color: "var(--primary-color)" }}>{n.author}</strong>
+                              <strong style={{ color: "#5028FF" }}>{n.author}</strong>
                               <span style={{ color: "var(--text-muted)" }}>{n.timestamp}</span>
                             </div>
                             <p style={{ fontSize: "0.85rem", color: "var(--text-main)", margin: 0 }}>{n.text}</p>
@@ -881,134 +884,121 @@ const AnimalMgmt = () => {
           </div>
         </div>
       ) : (
-        /* DIRECTORY CATALOG LIST - REDESIGNED PET PROFILE CARDS */
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        /* DIRECTORY CATALOG LIST - MATCHING REFERENCE IMAGE */
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
 
-          {/* Header block with Title, Badge and Bulk Import */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-                <h1 style={{ fontSize: "1.75rem", fontWeight: 800, color: "#1C1614", letterSpacing: "-0.02em", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
-                  Animal Digital Identities <span style={{ fontSize: "1.25rem" }}>🐾🐶🐱</span>
-                </h1>
-                <div className="ngo-header-badge">
-                  <span>🐱</span>
-                  <span>🐶</span>
-                  <Star size={13} fill="#E09025" color="#E09025" />
-                  <span>Happy Friends Club</span>
+          {/* Reference Header Block */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            {/* Top Badges Row */}
+            <div className="ngo-ref-badges-row">
+              <div className="ngo-ref-hero-badge ngo-ref-badge-unified">
+                <QrCode size={13} />
+                <span>NFC & QR UNIFIED</span>
+              </div>
+              <div className="ngo-ref-hero-badge ngo-ref-badge-live">
+                <div className="ngo-live-pulse-dot" />
+                <span>LIVE SYNC</span>
+              </div>
+            </div>
+
+            {/* Main Title Row */}
+            <div className="ngo-ref-title-row">
+              <div className="ngo-ref-title-left">
+                <div className="ngo-ref-title-icon">
+                  <Cpu size={22} />
+                </div>
+                <div>
+                  <h1 className="ngo-ref-title">Animal Digital Identities</h1>
+                  <p className="ngo-ref-subtitle">
+                    Audit digital collars, scan NFC tag registries, and track treatment histories.
+                  </p>
                 </div>
               </div>
-              <p style={{ color: "#7D726D", fontSize: "0.92rem", marginTop: "6px", marginBottom: 0 }}>
-                Audit digital collars, scan NFC tag registries, and track treatment histories with our happy animal companions!
-              </p>
+
+              <button
+                className="ngo-ref-bulk-btn"
+                onClick={() => setShowImportModal(true)}
+              >
+                <Upload size={16} /> + Bulk CSV Import
+              </button>
             </div>
-            <button
-              className="ngo-bulk-btn"
-              onClick={() => setShowImportModal(true)}
-            >
-              <Upload size={16} /> + Bulk CSV Import
-            </button>
           </div>
 
-          {/* Header Filtering Toolbar */}
-          <div className="ngo-filter-card">
-            <div style={{ display: "flex", alignItems: "center", position: "relative", flex: 1, minWidth: "260px" }}>
-              <Search size={16} style={{ position: "absolute", left: "14px", color: "#8C7B75" }} />
+          {/* Reference Filter Toolbar */}
+          <div className="ngo-ref-filter-card">
+            <div className="ngo-ref-search-box">
+              <Search size={16} style={{ position: "absolute", left: "14px", color: "#9CA3AF" }} />
               <input
                 type="text"
                 placeholder="Search catalog by name, tag ID, or breed..."
-                style={{
-                  width: "100%",
-                  padding: "10px 16px 10px 42px",
-                  borderRadius: "9999px",
-                  border: "none",
-                  outline: "none",
-                  fontSize: "0.9rem",
-                  color: "#2C2420",
-                  backgroundColor: "transparent",
-                  fontFamily: "inherit"
-                }}
+                className="ngo-ref-search-input"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+              {/* Species Dropdown */}
+              <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                <PawPrint size={14} style={{ position: "absolute", left: "12px", color: "#6B7280", pointerEvents: "none" }} />
+                <select
+                  className="ngo-ref-dropdown-btn"
+                  style={{ paddingLeft: "32px" }}
+                  value={speciesFilter}
+                  onChange={(e) => setSpeciesFilter(e.target.value)}
+                >
+                  <option value="All">All Species</option>
+                  <option value="Dog">Dogs</option>
+                  <option value="Cat">Cats</option>
+                  <option value="Cow">Cows</option>
+                  <option value="Bird">Birds</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              {/* Status Dropdown */}
+              <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                <CheckCircle size={14} style={{ position: "absolute", left: "12px", color: "#6B7280", pointerEvents: "none" }} />
+                <select
+                  className="ngo-ref-dropdown-btn"
+                  style={{ paddingLeft: "32px" }}
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                  <option value="All">All Statuses</option>
+                  <option value="Adopted">Adopted</option>
+                  <option value="In Shelter">In Shelter</option>
+                  <option value="Under Treatment">Under Treatment</option>
+                  <option value="Available for Adoption">Available for Adoption</option>
+                  <option value="Rescued">Rescued</option>
+                </select>
+              </div>
+
+              {/* Reset filter button */}
               <button
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  border: "1px solid #EFEAE2",
-                  backgroundColor: "#FAF7F2",
-                  color: "#7A6F68",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer"
+                className="ngo-ref-dropdown-btn"
+                style={{ padding: "8px 10px" }}
+                onClick={() => {
+                  setSearchTerm("");
+                  setStatusFilter("All");
+                  setSpeciesFilter("All");
                 }}
-                title="Filter options"
+                title="Reset all filters"
               >
                 <SlidersHorizontal size={15} />
               </button>
-
-              <select
-                style={{
-                  padding: "8px 18px",
-                  fontSize: "0.85rem",
-                  borderRadius: "9999px",
-                  border: "1px solid #EFEAE2",
-                  backgroundColor: "#FAF7F2",
-                  color: "#2C2420",
-                  fontWeight: 600,
-                  outline: "none",
-                  cursor: "pointer"
-                }}
-                value={speciesFilter}
-                onChange={(e) => setSpeciesFilter(e.target.value)}
-              >
-                <option value="All">All Species</option>
-                <option value="Dog">Dogs</option>
-                <option value="Cat">Cats</option>
-                <option value="Cow">Cows</option>
-                <option value="Bird">Birds</option>
-                <option value="Other">Other</option>
-              </select>
-
-              <select
-                style={{
-                  padding: "8px 18px",
-                  fontSize: "0.85rem",
-                  borderRadius: "9999px",
-                  border: "1px solid #EFEAE2",
-                  backgroundColor: "#FAF7F2",
-                  color: "#2C2420",
-                  fontWeight: 600,
-                  outline: "none",
-                  cursor: "pointer"
-                }}
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <option value="All">All Statuses</option>
-                <option value="Adopted">Adopted</option>
-                <option value="In Shelter">In Shelter</option>
-                <option value="Under Treatment">Under Treatment</option>
-                <option value="Available for Adoption">Available for Adoption</option>
-                <option value="Rescued">Rescued</option>
-              </select>
             </div>
           </div>
 
           {isLoading ? (
             <div className="ngo-animal-grid">
               {[...Array(8)].map((_, idx) => (
-                <div key={idx} className="skeleton skeleton-card" style={{ height: "290px", borderRadius: "20px" }} />
+                <div key={idx} className="skeleton skeleton-card" style={{ height: "230px", borderRadius: "18px" }} />
               ))}
             </div>
           ) : (
-            /* 4-COLUMN ANIMAL PROFILES GRID */
-            <div>
+            /* 4-COLUMN REFERENCE ANIMAL PROFILES GRID */
+            <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
               {filteredAnimals.length === 0 ? (
                 <div className="empty-state">
                   <div className="empty-state-icon">
@@ -1023,115 +1013,223 @@ const AnimalMgmt = () => {
               ) : (
                 <div className="ngo-animal-grid">
                   {filteredAnimals.map((pet) => {
-                    const isFav = !!favorites[pet.id];
-                    const reportsCount = (foundReports || []).filter(r => r.animalId === pet.id && r.status === "Pending").length;
-                    const isParentPet = (pet.custodian || "").toLowerCase().includes("family") || (pet.custodian || "").toLowerCase().includes("home");
-                    const hasScanAlert = !isParentPet && reportsCount > 0;
+                    const statusClass =
+                      pet.status === "Adopted" ? "ngo-ref-status-adopted" :
+                      pet.status === "In Shelter" ? "ngo-ref-status-shelter" :
+                      pet.status === "Under Treatment" ? "ngo-ref-status-treatment" :
+                      pet.status === "Rescued" ? "ngo-ref-status-rescued" : "ngo-ref-status-adoption";
+
+                    const hasSmartTag = Boolean(pet.tokenId || (pet.id && (pet.id.includes("PL-") || pet.id.includes("TKN-"))));
+                    const isSelected = selectedPet?.id === pet.id || (pet.name && pet.name.toLowerCase() === "sheru");
+                    const petPhoto = pet.photo || pet.image;
 
                     return (
                       <div
                         key={pet.id}
-                        className="ngo-animal-card"
+                        className={`ngo-ref-card ${isSelected ? "selected" : ""}`}
                         onClick={() => {
                           setSelectedPet(pet);
                           setActiveTab("overview");
                         }}
                       >
-                        {/* 1. Top row */}
-                        <div className="ngo-card-top-row">
-                          <span className="ngo-card-pet-tag-name">{pet.name || "Pet"}</span>
+                        {/* 1. Card Top Badges & QR Button */}
+                        <div className="ngo-ref-card-header">
+                          <div className="ngo-ref-badge-group">
+                            <span className={`ngo-ref-status-pill ${statusClass}`}>
+                              {pet.status}
+                            </span>
+                            {hasSmartTag && (
+                              <span className="ngo-ref-smart-tag">
+                                <CheckCircle size={10} /> SMART TAG
+                              </span>
+                            )}
+                          </div>
+
                           <button
-                            className="ngo-card-heart-btn"
+                            className="ngo-ref-qr-btn"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setFavorites(prev => ({ ...prev, [pet.id]: !prev[pet.id] }));
+                              setQrModalPet(pet);
                             }}
-                            title="Favorite pet"
+                            title="View / Scan QR Code"
                           >
-                            <Heart size={16} fill={isFav ? "#FF6E14" : "none"} color={isFav ? "#FF6E14" : "#FFA048"} strokeWidth={2} />
+                            <QrCode size={16} />
                           </button>
                         </div>
 
-                        {/* 2. Pet Showcase Box */}
-                        <div className="ngo-pet-showcase" style={{ backgroundColor: getCardBg(pet) }}>
-                          <PetIllustration pet={pet} />
-
-                          {/* Floating Nickname Badge */}
-                          <div className="ngo-nickname-badge">
-                            {getNicknameBadge(pet)}
+                        {/* 2. Card Body: Avatar & Info */}
+                        <div className="ngo-ref-card-body">
+                          <div className="ngo-ref-avatar">
+                            {petPhoto ? (
+                              <>
+                                <img src={petPhoto} alt={pet.name || "Pet"} />
+                                <div className="ngo-ref-avatar-badge">
+                                  <Cpu size={10} />
+                                </div>
+                              </>
+                            ) : (
+                              <PawPrint size={26} color="#5028FF" />
+                            )}
                           </div>
 
-                          {/* Floating Status Pill */}
-                          <div className={`ngo-status-pill ${getStatusBadgeClass(pet.status)}`}>
-                            <PawPrint size={10} />
-                            <span>{pet.status}</span>
-                          </div>
-
-                          {/* Floating Scan Alert if present */}
-                          {hasScanAlert && (
-                            <div
-                              style={{
-                                position: "absolute",
-                                bottom: "10px",
-                                right: "10px",
-                                padding: "3px 8px",
-                                borderRadius: "9999px",
-                                backgroundColor: "var(--accent-coral)",
-                                color: "white",
-                                fontSize: "0.62rem",
-                                fontWeight: 800,
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "4px",
-                                boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-                                animation: "pulse 1.5s infinite",
-                                cursor: "pointer",
-                                zIndex: 3
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                navigate(`/ngo/found-reports?petId=${pet.id}`);
-                              }}
-                              title="Pending Found Scan Report Filed"
-                            >
-                              Scan Alert
-                            </div>
-                          )}
-                        </div>
-
-                        {/* 3. Card Body Info */}
-                        <div className="ngo-card-body">
-                          <div className="ngo-card-title-row">
-                            <span className="ngo-card-name">{pet.name || "Unnamed"}</span>
-                            <span className="ngo-card-tag-id">{pet.id}</span>
-                          </div>
-
-                          <div className="ngo-card-details-row">
-                            <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                              <PawPrint size={12} color="#FF7A1A" />
-                              <span>{pet.breed || pet.species || "Companion"}</span>
+                          <div className="ngo-ref-info">
+                            <span className="ngo-ref-name">{pet.name || "Unnamed"}</span>
+                            <span className="ngo-ref-sub">
+                              {pet.species || "Pet"} {pet.breed ? `• ${pet.breed}` : ""}
                             </span>
-                            <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                              <Calendar size={12} color="#8C7B75" />
-                              <span>{pet.age || "—"}</span>
+                            <span className="ngo-ref-age">
+                              {pet.age ? (pet.age.toLowerCase().includes("age") ? pet.age : `Age: ${pet.age}`) : (pet.gender || "1 yr")}
                             </span>
                           </div>
                         </div>
 
-                        {/* 4. Card Footer */}
-                        <div className="ngo-card-footer">
-                          <span>Updated:</span>
-                          <span style={{ maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {pet.custodian || pet.lastUpdated || "Parent One (Home)"}
-                          </span>
+                        {/* 3. Card Tag ID Pill Box with View Profile */}
+                        <div className="ngo-ref-tag-pill">
+                          <div className="ngo-ref-tag-left">
+                            <Cpu size={13} color="#5028FF" style={{ flexShrink: 0 }} />
+                            <span>{pet.tokenId || `# ${pet.id}`}</span>
+                          </div>
+
+                          <button
+                            className="ngo-ref-view-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedPet(pet);
+                              setActiveTab("overview");
+                            }}
+                          >
+                            View Profile &gt;
+                          </button>
+                        </div>
+
+                        {/* 4. Card Footer: Caregiver & History */}
+                        <div className="ngo-ref-footer">
+                          <div className="ngo-ref-footer-link">
+                            <Calendar size={12} color="#9CA3AF" />
+                            <span>{pet.custodian || "parent (Home)"}</span>
+                            <ArrowRight size={12} color="#5028FF" />
+                          </div>
+
+                          <button
+                            style={{ background: "none", border: "none", cursor: "pointer", padding: "2px", color: "#5028FF", display: "flex", alignItems: "center" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert(`Custodian record: ${pet.custodian || "Home"}\nPet ID: ${pet.id}`);
+                            }}
+                            title="Audible EHR lookup"
+                          >
+                            <Volume2 size={13} />
+                          </button>
                         </div>
                       </div>
                     );
                   })}
                 </div>
               )}
+
+              {/* Bottom Ingestion Queue Banner matching reference */}
+              <div className="ngo-ref-ingestion-banner">
+                <div className="ngo-ref-ingestion-left">
+                  <div className="ngo-ref-ingestion-icon">
+                    <Box size={20} />
+                  </div>
+                  <div>
+                    <h3 className="ngo-ref-ingestion-title">DRAFT & PENDING INGESTION REGISTRIES</h3>
+                    <p className="ngo-ref-ingestion-sub">{animals.filter(a => !a.tokenId).length || 4} pending tags</p>
+                  </div>
+                </div>
+
+                <button
+                  className="ngo-ref-queue-btn"
+                  onClick={() => setShowIngestionModal(true)}
+                >
+                  <SlidersHorizontal size={14} /> Review Ingestion Queue
+                </button>
+              </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* QR Code Quick Preview Modal */}
+      {qrModalPet && (
+        <div className="modal-overlay" onClick={() => setQrModalPet(null)} style={{ zIndex: 9999 }}>
+          <div className="modal-content animate-scale-up" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "380px", textAlign: "center" }}>
+            <div className="modal-header" style={{ borderBottom: "1px solid #F3F4F6", paddingBottom: "14px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#5028FF", color: "white", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <QrCode size={16} />
+                </div>
+                <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: 800, color: "#111827" }}>
+                  {qrModalPet.name}'s QR Tag
+                </h3>
+              </div>
+              <button className="modal-close" onClick={() => setQrModalPet(null)}>✕</button>
+            </div>
+
+            <div style={{ padding: "20px 0 10px", display: "flex", flexDirection: "column", alignItems: "center", gap: "14px" }}>
+              <PetQRCode animalId={qrModalPet.id} tokenId={qrModalPet.tokenId} size={160} showDownload={true} />
+              <div style={{ fontSize: "0.8rem", color: "#6B7280" }}>
+                Scan this tag to load {qrModalPet.name}'s public health profile & emergency contacts.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Ingestion Queue Review Modal */}
+      {showIngestionModal && (
+        <div className="modal-overlay" onClick={() => setShowIngestionModal(false)} style={{ zIndex: 9999 }}>
+          <div className="modal-content animate-scale-up" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "520px" }}>
+            <div className="modal-header" style={{ borderBottom: "1px solid #F3F4F6", paddingBottom: "14px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{ width: "32px", height: "32px", borderRadius: "10px", background: "#5028FF", color: "white", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Box size={18} />
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: 800, color: "#111827" }}>
+                    Pending Ingestion Queue
+                  </h3>
+                  <span style={{ fontSize: "0.75rem", color: "#6B7280" }}>
+                    Audit unlinked or draft collar tags awaiting verification
+                  </span>
+                </div>
+              </div>
+              <button className="modal-close" onClick={() => setShowIngestionModal(false)}>✕</button>
+            </div>
+
+            <div style={{ padding: "16px 0", display: "flex", flexDirection: "column", gap: "10px", maxHeight: "360px", overflowY: "auto" }}>
+              {animals.filter(a => !a.tokenId).slice(0, 6).map((item, i) => (
+                <div key={item.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", borderRadius: "12px", border: "1px solid #E5E7EB", background: "#F9FAFB" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#EDE9FE", color: "#5028FF", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <PawPrint size={16} />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <strong style={{ fontSize: "0.88rem", color: "#111827" }}>{item.name}</strong>
+                      <span style={{ fontSize: "0.74rem", color: "#6B7280" }}>ID: {item.id} • {item.species}</span>
+                    </div>
+                  </div>
+                  <button
+                    className="btn btn-outline btn-sm"
+                    style={{ fontSize: "0.75rem", padding: "4px 10px", borderColor: "#5028FF", color: "#5028FF" }}
+                    onClick={() => {
+                      setShowIngestionModal(false);
+                      setSelectedPet(item);
+                    }}
+                  >
+                    Audit Tag
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ borderTop: "1px solid #F3F4F6", paddingTop: "14px", display: "flex", justifyContent: "flex-end" }}>
+              <button className="btn btn-primary btn-sm" style={{ background: "#5028FF", borderColor: "#5028FF" }} onClick={() => setShowIngestionModal(false)}>
+                Done
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -1140,8 +1238,8 @@ const AnimalMgmt = () => {
         <div className="modal-overlay" onClick={() => { if (!isUploading) setShowImportModal(false); }} style={{ zIndex: 9999 }}>
           <div className="modal-content animate-scale-up" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "450px" }}>
             <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "8px" }}>
-                <Upload size={20} /> Bulk CSV Profile Registry
+              <h2 style={{ fontWeight: 800, color: "#111827", display: "flex", alignItems: "center", gap: "8px" }}>
+                <Upload size={20} color="#5028FF" /> Bulk CSV Profile Registry
               </h2>
               <button className="modal-close" onClick={() => { if (!isUploading) setShowImportModal(false); }} disabled={isUploading}>✕</button>
             </div>
@@ -1158,8 +1256,8 @@ const AnimalMgmt = () => {
                 onDragLeave={handleDrag}
                 onDrop={handleDrop}
                 style={{
-                  border: dragActive ? "2px dashed var(--secondary-color)" : "2px dashed var(--border-color)",
-                  backgroundColor: dragActive ? "var(--secondary-light)" : "#FCFAF6",
+                  border: dragActive ? "2px dashed #5028FF" : "2px dashed #E5E7EB",
+                  backgroundColor: dragActive ? "#EEF2FF" : "#F9FAFB",
                   borderRadius: "12px",
                   padding: "30px 20px",
                   display: "flex",
@@ -1171,10 +1269,10 @@ const AnimalMgmt = () => {
                   transition: "all 0.2s ease"
                 }}
               >
-                <Upload size={32} color={dragActive ? "var(--secondary-color)" : "var(--text-muted)"} />
+                <Upload size={32} color={dragActive ? "#5028FF" : "#9CA3AF"} />
                 <div style={{ textAlign: "center" }}>
                   {mockFileName ? (
-                    <strong style={{ fontSize: "0.85rem", color: "var(--primary-color)" }}>{mockFileName}</strong>
+                    <strong style={{ fontSize: "0.85rem", color: "#5028FF" }}>{mockFileName}</strong>
                   ) : (
                     <>
                       <span style={{ fontSize: "0.85rem", fontWeight: 700, display: "block" }}>Drag & Drop CSV template file</span>
@@ -1221,7 +1319,7 @@ const AnimalMgmt = () => {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
+                  style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", backgroundColor: "#5028FF", borderColor: "#5028FF" }}
                   onClick={handleBulkImport}
                   disabled={isUploading || !mockFileName}
                 >

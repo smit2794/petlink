@@ -79,11 +79,10 @@ const VetQueue = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-      
-      {/* Header */}
+           {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--primary-color)", letterSpacing: "-0.02em" }}>
+          <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#111827", letterSpacing: "-0.02em" }}>
             Incoming Clinical Queue
           </h1>
           <p style={{ color: "var(--text-muted)", fontSize: "0.95rem" }}>
@@ -105,7 +104,7 @@ const VetQueue = () => {
         </>
       ) : (
         <>
-          {/* VET PORTAL CORAL METRIC TILES (4 metric cards) */}
+          {/* PAWSETU METRIC TILES (4 metric cards) */}
           <div style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
@@ -113,8 +112,8 @@ const VetQueue = () => {
           }}>
             {/* Card 1: Cases Today */}
             <div className="card animate-slide-up" style={{
-              backgroundColor: "var(--accent-coral-light)",
-              borderLeft: "5px solid var(--accent-coral)",
+              backgroundColor: "#EEF2FF",
+              borderLeft: "5px solid #5028FF",
               animationDelay: "50ms"
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
@@ -122,29 +121,29 @@ const VetQueue = () => {
                   width: "36px",
                   height: "36px",
                   borderRadius: "50%",
-                  backgroundColor: "rgba(217, 83, 79, 0.12)",
-                  color: "var(--accent-coral)",
+                  backgroundColor: "rgba(80, 40, 255, 0.12)",
+                  color: "#5028FF",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center"
                 }}>
                   <ShieldAlert size={18} />
                 </div>
-                <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "var(--accent-coral)", letterSpacing: "0.05em" }}>HOSPITALIZED</span>
+                <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "#5028FF", letterSpacing: "0.05em" }}>HOSPITALIZED</span>
               </div>
               <h2 style={{ fontSize: "2.2rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1.1 }}>
                 <CountUp target={casesTodayCount} />
               </h2>
               <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "4px" }}>Cases In Care</p>
-              <span style={{ fontSize: "0.72rem", color: "var(--accent-coral)", fontWeight: 700, display: "block", marginTop: "8px" }}>
+              <span style={{ fontSize: "0.72rem", color: "#5028FF", fontWeight: 700, display: "block", marginTop: "8px" }}>
                 ➔ Active clinical observation
               </span>
             </div>
 
             {/* Card 2: Pending Follow-ups */}
             <div className="card animate-slide-up" style={{
-              backgroundColor: "#FFF8EE",
-              borderLeft: "5px solid var(--accent-amber)",
+              backgroundColor: "#F5F3FF",
+              borderLeft: "5px solid #6366F1",
               animationDelay: "100ms"
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
@@ -152,29 +151,29 @@ const VetQueue = () => {
                   width: "36px",
                   height: "36px",
                   borderRadius: "50%",
-                  backgroundColor: "rgba(224, 144, 37, 0.12)",
-                  color: "var(--accent-amber)",
+                  backgroundColor: "rgba(99, 102, 241, 0.12)",
+                  color: "#6366F1",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center"
                 }}>
                   <Calendar size={18} />
                 </div>
-                <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "var(--accent-amber)", letterSpacing: "0.05em" }}>AUDITS</span>
+                <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "#6366F1", letterSpacing: "0.05em" }}>AUDITS</span>
               </div>
               <h2 style={{ fontSize: "2.2rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1.1 }}>
                 <CountUp target={pendingFollowupsCount} />
               </h2>
               <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "4px" }}>Pending Follow-ups</p>
-              <span style={{ fontSize: "0.72rem", color: "var(--accent-amber)", fontWeight: 700, display: "block", marginTop: "8px" }}>
+              <span style={{ fontSize: "0.72rem", color: "#6366F1", fontWeight: 700, display: "block", marginTop: "8px" }}>
                 ➔ Post-op assessments
               </span>
             </div>
 
             {/* Card 3: Pending Lab Uploads */}
             <div className="card animate-slide-up" style={{
-              backgroundColor: "#F4F8FA",
-              borderLeft: "5px solid #2980B9",
+              backgroundColor: "#F0F9FF",
+              borderLeft: "5px solid #0284C7",
               animationDelay: "150ms"
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
@@ -182,29 +181,29 @@ const VetQueue = () => {
                   width: "36px",
                   height: "36px",
                   borderRadius: "50%",
-                  backgroundColor: "rgba(41, 128, 185, 0.12)",
-                  color: "#2980B9",
+                  backgroundColor: "rgba(2, 132, 199, 0.12)",
+                  color: "#0284C7",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center"
                 }}>
                   <ClipboardList size={18} />
                 </div>
-                <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "#2980B9", letterSpacing: "0.05em" }}>LAB TESTS</span>
+                <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "#0284C7", letterSpacing: "0.05em" }}>LAB TESTS</span>
               </div>
               <h2 style={{ fontSize: "2.2rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1.1 }}>
                 <CountUp target={pendingLabsCount} />
               </h2>
               <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "4px" }}>Pending Lab Uploads</p>
-              <span style={{ fontSize: "0.72rem", color: "#2980B9", fontWeight: 700, display: "block", marginTop: "8px" }}>
+              <span style={{ fontSize: "0.72rem", color: "#0284C7", fontWeight: 700, display: "block", marginTop: "8px" }}>
                 ➔ Awaiting blood counts
               </span>
             </div>
 
             {/* Card 4: Awaiting Discharge */}
             <div className="card animate-slide-up" style={{
-              backgroundColor: "var(--secondary-light)",
-              borderLeft: "5px solid var(--secondary-color)",
+              backgroundColor: "#ECFDF5",
+              borderLeft: "5px solid #10B981",
               animationDelay: "200ms"
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
@@ -212,21 +211,21 @@ const VetQueue = () => {
                   width: "36px",
                   height: "36px",
                   borderRadius: "50%",
-                  backgroundColor: "rgba(38, 96, 72, 0.12)",
-                  color: "var(--secondary-color)",
+                  backgroundColor: "rgba(16, 185, 129, 0.12)",
+                  color: "#10B981",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center"
                 }}>
                   <Heart size={18} />
                 </div>
-                <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "var(--secondary-color)", letterSpacing: "0.05em" }}>DISCHARGE</span>
+                <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "#10B981", letterSpacing: "0.05em" }}>DISCHARGE</span>
               </div>
               <h2 style={{ fontSize: "2.2rem", fontWeight: 800, color: "var(--text-main)", lineHeight: 1.1 }}>
                 <CountUp target={awaitingDischargeCount} />
               </h2>
               <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, marginTop: "4px" }}>Awaiting Discharge</p>
-              <span style={{ fontSize: "0.72rem", color: "var(--secondary-color)", fontWeight: 700, display: "block", marginTop: "8px" }}>
+              <span style={{ fontSize: "0.72rem", color: "#10B981", fontWeight: 700, display: "block", marginTop: "8px" }}>
                 ➔ Return to NGO Shelter
               </span>
             </div>
@@ -238,24 +237,26 @@ const VetQueue = () => {
             {/* View Scope Toggle */}
             <div style={{ display: "flex", gap: "6px" }}>
               <button
-                className={`btn btn-sm ${viewScope === "my" ? "btn-primary" : "btn-outline"}`}
+                className="btn btn-sm"
                 style={{
-                  backgroundColor: viewScope === "my" ? "var(--accent-coral)" : "transparent",
-                  borderColor: "var(--accent-coral)",
-                  color: viewScope === "my" ? "white" : "var(--accent-coral)",
-                  borderRadius: "20px"
+                  backgroundColor: viewScope === "my" ? "#5028FF" : "transparent",
+                  borderColor: viewScope === "my" ? "#5028FF" : "#E5E7EB",
+                  color: viewScope === "my" ? "white" : "#4B5563",
+                  borderRadius: "20px",
+                  fontWeight: 700
                 }}
                 onClick={() => setViewScope("my")}
               >
                 My Cases
               </button>
               <button
-                className={`btn btn-sm ${viewScope === "all" ? "btn-primary" : "btn-outline"}`}
+                className="btn btn-sm"
                 style={{
-                  backgroundColor: viewScope === "all" ? "var(--accent-coral)" : "transparent",
-                  borderColor: "var(--accent-coral)",
-                  color: viewScope === "all" ? "white" : "var(--accent-coral)",
-                  borderRadius: "20px"
+                  backgroundColor: viewScope === "all" ? "#5028FF" : "transparent",
+                  borderColor: viewScope === "all" ? "#5028FF" : "#E5E7EB",
+                  color: viewScope === "all" ? "white" : "#4B5563",
+                  borderRadius: "20px",
+                  fontWeight: 700
                 }}
                 onClick={() => setViewScope("all")}
               >
@@ -295,7 +296,7 @@ const VetQueue = () => {
           <div className="table-container">
             {filteredQueue.length === 0 ? (
               <div className="empty-state" style={{ padding: "60px 24px" }}>
-                <div className="empty-state-icon" style={{ backgroundColor: "var(--accent-coral-light)", color: "var(--accent-coral)" }}>
+                <div className="empty-state-icon" style={{ backgroundColor: "#EEF2FF", color: "#5028FF" }}>
                   <ClipboardList size={32} />
                 </div>
                 <h3 className="empty-state-title">No Active Patient files</h3>
@@ -331,7 +332,7 @@ const VetQueue = () => {
                       : pet.assignedVetId 
                       ? "Assigned Clinician"
                       : "Unassigned";
- 
+
                     return (
                       <tr 
                         key={pet.id} 
@@ -385,14 +386,14 @@ const VetQueue = () => {
                           <div style={{ display: "inline-flex", gap: "8px" }} onClick={(e) => e.stopPropagation()}>
                             <button 
                               className="btn btn-outline btn-sm" 
-                              style={{ borderColor: "var(--accent-coral)", color: "var(--accent-coral)" }}
+                              style={{ borderColor: "#C7D2FE", color: "#5028FF", fontWeight: 700 }}
                               onClick={() => setSelectedPetForReassign(pet)}
                             >
                               Reassign
                             </button>
                             <button 
                               className="btn btn-primary btn-sm" 
-                              style={{ backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)" }}
+                              style={{ backgroundColor: "#5028FF", borderColor: "#5028FF", color: "#FFFFFF", fontWeight: 700 }}
                               onClick={() => navigate(`/vet/medical/${pet.id}`)}
                             >
                               Open EHR
@@ -414,7 +415,7 @@ const VetQueue = () => {
         <div className="modal-overlay" onClick={() => setSelectedPetForReassign(null)} style={{ zIndex: 9999 }}>
           <div className="modal-content animate-scale-up" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "400px" }}>
             <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)" }}>Reassign Veterinarian Case</h2>
+              <h2 style={{ fontWeight: 800, color: "#111827" }}>Reassign Veterinarian Case</h2>
               <button className="modal-close" onClick={() => setSelectedPetForReassign(null)}>✕</button>
             </div>
 

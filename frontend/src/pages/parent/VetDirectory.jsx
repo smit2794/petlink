@@ -252,13 +252,13 @@ const VetDirectory = () => {
               </div>
 
               <div className="parent-findvet-meta-box">
-                <MapPin size={15} color="#FF6A00" style={{ flexShrink: 0 }} />
+                <MapPin size={15} color="#5028FF" style={{ flexShrink: 0 }} />
                 <span>{vet.address ? `${vet.address}, ${vet.city}` : vet.city}</span>
               </div>
 
               {vet.phone && (
                 <div className="parent-findvet-meta-box">
-                  <Phone size={15} color="#FF6A00" style={{ flexShrink: 0 }} />
+                  <Phone size={15} color="#5028FF" style={{ flexShrink: 0 }} />
                   <span>{vet.phone}</span>
                 </div>
               )}
@@ -317,7 +317,7 @@ const VetDirectory = () => {
                   fontSize: "1.2rem"
                 }}
               >
-                <Calendar size={20} color="#FF6A00" /> Request Appointment
+                <Calendar size={20} color="#5028FF" /> Request Appointment
               </h2>
               <button type="button" className="modal-close" onClick={handleCloseModal}>
                 <X size={20} />
@@ -327,8 +327,8 @@ const VetDirectory = () => {
             {/* Selected Vet Summary */}
             <div
               style={{
-                backgroundColor: "#FFF6EE",
-                border: "1px solid #FEE2CD",
+                backgroundColor: "#EEF2FF",
+                border: "1.5px solid #C7D2FE",
                 borderRadius: "14px",
                 padding: "14px 16px",
                 marginBottom: "20px",
@@ -342,7 +342,7 @@ const VetDirectory = () => {
                   width: "44px",
                   height: "44px",
                   borderRadius: "12px",
-                  backgroundColor: "#FF6A00",
+                  backgroundColor: "#5028FF",
                   color: "#FFFFFF",
                   display: "flex",
                   alignItems: "center",

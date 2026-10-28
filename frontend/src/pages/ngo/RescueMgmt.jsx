@@ -216,12 +216,12 @@ const RescueMgmt = () => {
               width: "52px",
               height: "52px",
               borderRadius: "50%",
-              background: "linear-gradient(135deg, #FF8C38, #FF5500)",
+              background: "linear-gradient(135deg, #6B46FF, #5028FF)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: "1.75rem",
-              boxShadow: "0 4px 14px rgba(255, 110, 20, 0.3)"
+              boxShadow: "0 4px 14px rgba(80, 40, 255, 0.25)"
             }}>
               🐶
             </div>
@@ -245,27 +245,27 @@ const RescueMgmt = () => {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-              <h1 style={{ fontSize: "1.85rem", fontWeight: 900, color: "#1D1311", lineHeight: 1.15, margin: 0 }}>
+              <h1 style={{ fontSize: "1.85rem", fontWeight: 900, color: "#111827", lineHeight: 1.15, margin: 0 }}>
                 Rescue Dispatch Management
               </h1>
               <div style={{
-                background: "#FFF9EB",
-                border: "1.5px solid #FDE68A",
+                background: "#EEF2FF",
+                border: "1.5px solid #C7D2FE",
                 borderRadius: "9999px",
                 padding: "4px 14px",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "6px",
-                color: "#B45309",
+                color: "#4338CA",
                 fontSize: "0.74rem",
                 fontWeight: 800,
                 letterSpacing: "0.04em",
-                boxShadow: "0 2px 6px rgba(180, 83, 9, 0.05)"
+                boxShadow: "0 2px 6px rgba(67, 56, 202, 0.08)"
               }}>
                 🐾 HERO SQUAD
               </div>
             </div>
-            <p style={{ color: "#8C7B75", fontSize: "0.92rem", fontWeight: 500, margin: 0 }}>
+            <p style={{ color: "#6B7280", fontSize: "0.92rem", fontWeight: 500, margin: 0 }}>
               Monitor reported street cases, dispatch ambulance units, and track rescue pipelines.
             </p>
           </div>
@@ -279,13 +279,13 @@ const RescueMgmt = () => {
               onClick={() => setViewMode("table")}
               className={`ngo-rescue-view-btn ${viewMode === "table" ? "is-active" : ""}`}
             >
-              <Table size={15} color={viewMode === "table" ? "#FF6E14" : "#8C7B75"} /> Table View
+              <Table size={15} color={viewMode === "table" ? "#5028FF" : "#6B7280"} /> Table View
             </button>
             <button
               onClick={() => setViewMode("map")}
               className={`ngo-rescue-view-btn ${viewMode === "map" ? "is-active" : ""}`}
             >
-              <Map size={15} color={viewMode === "map" ? "#FF6E14" : "#8C7B75"} /> Map View
+              <Map size={15} color={viewMode === "map" ? "#5028FF" : "#6B7280"} /> Map View
             </button>
           </div>
 
@@ -299,7 +299,7 @@ const RescueMgmt = () => {
       {/* 2. Floating Filter & Search Bar */}
       <div className="ngo-rescue-search-toolbar">
         <div className="ngo-rescue-search-box">
-          <Search size={16} color="#8C7B75" />
+          <Search size={16} color="#6B7280" />
           <input
             type="text"
             placeholder="Search by ID, reporter, location, or injury..."
@@ -352,11 +352,11 @@ const RescueMgmt = () => {
                     <tr>
                       <td colSpan="6">
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", padding: "50px 20px" }}>
-                          <div style={{ width: "56px", height: "56px", borderRadius: "50%", backgroundColor: "#FFF3E6", display: "flex", alignItems: "center", justifyContent: "center", color: "#FF6E14" }}>
+                          <div style={{ width: "56px", height: "56px", borderRadius: "50%", backgroundColor: "#EEF2FF", display: "flex", alignItems: "center", justifyContent: "center", color: "#5028FF" }}>
                             <PawPrint size={24} />
                           </div>
-                          <p style={{ fontSize: "1rem", fontWeight: 800, color: "#1D1311", margin: 0 }}>No rescue cases found</p>
-                          <p style={{ fontSize: "0.85rem", color: "#8C7B75", margin: 0 }}>Try adjusting your filters or search terms.</p>
+                          <p style={{ fontSize: "1rem", fontWeight: 800, color: "#111827", margin: 0 }}>No rescue cases found</p>
+                          <p style={{ fontSize: "0.85rem", color: "#6B7280", margin: 0 }}>Try adjusting your filters or search terms.</p>
                         </div>
                       </td>
                     </tr>
@@ -370,7 +370,7 @@ const RescueMgmt = () => {
                           className={`ngo-rescue-table-row ${isSelected ? "is-selected" : ""}`}
                         >
                           {/* Column 1: ID */}
-                          <td style={{ fontWeight: 800, color: "#1D1311", paddingLeft: "24px", letterSpacing: "0.01em", whiteSpace: "nowrap" }}>
+                          <td style={{ fontWeight: 800, color: "#111827", paddingLeft: "24px", letterSpacing: "0.01em", whiteSpace: "nowrap" }}>
                             {rescue.id}
                           </td>
 
@@ -378,7 +378,7 @@ const RescueMgmt = () => {
                           <td>
                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                               {getAnimalAvatar(rescue.animalType)}
-                              <span style={{ fontWeight: 700, color: "#1D1311" }}>{rescue.animalType}</span>
+                              <span style={{ fontWeight: 700, color: "#111827" }}>{rescue.animalType}</span>
                             </div>
                           </td>
 
@@ -388,12 +388,12 @@ const RescueMgmt = () => {
                           </td>
 
                           {/* Column 4: Location */}
-                          <td style={{ color: "#4A3E39", fontWeight: 600 }}>
+                          <td style={{ color: "#4B5563", fontWeight: 600 }}>
                             {rescue.location}
                           </td>
 
                           {/* Column 5: Reported By */}
-                          <td style={{ color: "#1D1311", fontWeight: 700 }}>
+                          <td style={{ color: "#111827", fontWeight: 700 }}>
                             {rescue.reportedBy}
                           </td>
 
@@ -434,7 +434,7 @@ const RescueMgmt = () => {
                   const isSelected = selectedRescue && selectedRescue.id === rescue.id;
                   const markerColor = 
                     rescue.status === "Rescued" ? "#2E7D32" :
-                    rescue.status === "In Progress" ? "#FF6E14" :
+                    rescue.status === "In Progress" ? "#5028FF" :
                     rescue.status === "Assigned" ? "#E28704" : "#DC2626";
 
                   return (
@@ -511,7 +511,7 @@ const RescueMgmt = () => {
               {/* Hero Banner Box */}
               <div className="ngo-inspection-hero">
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.72rem", fontWeight: 900, color: "#A8652A", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.72rem", fontWeight: 900, color: "#4338CA", letterSpacing: "0.06em", textTransform: "uppercase" }}>
                     <span>🩺</span> ACTIVE INSPECTION
                   </div>
                   <div style={{
@@ -538,7 +538,7 @@ const RescueMgmt = () => {
                       borderRadius: "50%",
                       background: "#FFFFFF",
                       boxShadow: "0 3px 10px rgba(0,0,0,0.06)",
-                      border: "1.5px solid #FED7AA",
+                      border: "1.5px solid #C7D2FE",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -561,7 +561,7 @@ const RescueMgmt = () => {
                     <h3 style={{
                       fontSize: "1.08rem",
                       fontWeight: 900,
-                      color: "#1D1311",
+                      color: "#111827",
                       margin: 0,
                       whiteSpace: "nowrap",
                       overflow: "hidden",
@@ -570,17 +570,17 @@ const RescueMgmt = () => {
                       Case {selectedRescue.id}
                     </h3>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                      <span style={{ fontSize: "0.82rem", fontWeight: 600, color: "#8C7B75", display: "flex", alignItems: "center", gap: "4px" }}>
+                      <span style={{ fontSize: "0.82rem", fontWeight: 600, color: "#6B7280", display: "flex", alignItems: "center", gap: "4px" }}>
                         <MapPin size={13} color="#E05D5D" /> {selectedRescue.location}
                       </span>
                       <span style={{
-                        background: "#FFFFFF",
-                        border: "1px solid #FED7AA",
+                        background: "#EEF2FF",
+                        border: "1px solid #C7D2FE",
                         borderRadius: "9999px",
                         padding: "2px 8px",
                         fontSize: "0.7rem",
                         fontWeight: 800,
-                        color: "#C2410C"
+                        color: "#4338CA"
                       }}>
                         Zone A
                       </span>
@@ -592,15 +592,15 @@ const RescueMgmt = () => {
               {/* Case Stats Rows */}
               <div style={{ display: "flex", flexDirection: "column", gap: "14px", fontSize: "0.88rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "#8C7B75", fontWeight: 600 }}>Reported Species:</span>
+                  <span style={{ color: "#6B7280", fontWeight: 600 }}>Reported Species:</span>
                   <span style={{
-                    background: "#FAF7F2",
-                    border: "1px solid #EFEAE2",
+                    background: "#F9FAFB",
+                    border: "1px solid #E5E7EB",
                     borderRadius: "9999px",
                     padding: "3px 12px",
                     fontSize: "0.82rem",
                     fontWeight: 700,
-                    color: "#1D1311",
+                    color: "#111827",
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "6px"
@@ -611,7 +611,7 @@ const RescueMgmt = () => {
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "#8C7B75", fontWeight: 600 }}>Condition / Note:</span>
+                  <span style={{ color: "#6B7280", fontWeight: 600 }}>Condition / Note:</span>
                   <span style={{
                     background: "#FEE2E2",
                     color: "#DC2626",
@@ -630,14 +630,14 @@ const RescueMgmt = () => {
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "#8C7B75", fontWeight: 600 }}>Reported By:</span>
-                  <span style={{ fontWeight: 800, color: "#1D1311", fontSize: "0.86rem" }}>
+                  <span style={{ color: "#6B7280", fontWeight: 600 }}>Reported By:</span>
+                  <span style={{ fontWeight: 800, color: "#111827", fontSize: "0.86rem" }}>
                     {selectedRescue.reportedBy} {selectedRescue.phone ? `(${selectedRescue.phone})` : ""}
                   </span>
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "#8C7B75", fontWeight: 600 }}>Assigned Unit:</span>
+                  <span style={{ color: "#6B7280", fontWeight: 600 }}>Assigned Unit:</span>
                   <span style={{
                     background: "#E6F9F0",
                     color: "#059669",
@@ -653,23 +653,23 @@ const RescueMgmt = () => {
 
               {/* Quick Actions Container */}
               <div style={{
-                border: "1.5px dashed #FDBA74",
+                border: "1.5px dashed #C7D2FE",
                 borderRadius: "20px",
-                background: "#FFFDFB",
+                background: "#FAFAFE",
                 padding: "16px"
               }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.74rem", fontWeight: 900, letterSpacing: "0.06em", color: "#4A3E39" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.74rem", fontWeight: 900, letterSpacing: "0.06em", color: "#111827" }}>
                     <span>🐾</span> QUICK ACTIONS
                   </div>
                   <div style={{
-                    background: "#FFFFFF",
-                    border: "1px solid #FED7AA",
+                    background: "#EEF2FF",
+                    border: "1px solid #C7D2FE",
                     borderRadius: "9999px",
                     padding: "2px 10px",
                     fontSize: "0.72rem",
                     fontWeight: 800,
-                    color: "#B45309",
+                    color: "#4338CA",
                     display: "flex",
                     alignItems: "center",
                     gap: "4px"
@@ -734,8 +734,8 @@ const RescueMgmt = () => {
 
               {/* Operation Activity Log */}
               <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "4px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.76rem", fontWeight: 900, letterSpacing: "0.06em", color: "#4A3E39" }}>
-                  <div style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#FF6E14" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.76rem", fontWeight: 900, letterSpacing: "0.06em", color: "#111827" }}>
+                  <div style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#5028FF" }} />
                   <span>OPERATION ACTIVITY LOG</span>
                   <span>📋</span>
                 </div>
@@ -767,7 +767,7 @@ const RescueMgmt = () => {
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "3px", flex: 1, paddingBottom: idx < selectedRescue.timeline.length - 1 ? "8px" : "0" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                            <span style={{ fontSize: "0.86rem", fontWeight: 800, color: "#1D1311" }}>
+                            <span style={{ fontSize: "0.86rem", fontWeight: 800, color: "#111827" }}>
                               {item.title.toLowerCase().includes("status") || item.title.toLowerCase().includes("assign")
                                 ? `Unit ${selectedRescue.assignedVolunteer === "None" ? "Rahul Mehta" : selectedRescue.assignedVolunteer} Assigned`
                                 : item.title}
@@ -785,7 +785,7 @@ const RescueMgmt = () => {
                               </span>
                             )}
                           </div>
-                          <span style={{ fontSize: "0.76rem", color: "#8C7B75", fontWeight: 600 }}>
+                          <span style={{ fontSize: "0.76rem", color: "#6B7280", fontWeight: 600 }}>
                             {item.time || "12:35 PM"} • {item.desc && !item.desc.toLowerCase().includes("coordinator") ? item.desc : "Direct Dispatcher Assignment"}
                           </span>
                         </div>
@@ -812,7 +812,7 @@ const RescueMgmt = () => {
                       </div>
                       <div style={{ display: "flex", flexDirection: "column", gap: "3px", flex: 1 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                          <span style={{ fontSize: "0.86rem", fontWeight: 800, color: "#1D1311" }}>
+                          <span style={{ fontSize: "0.86rem", fontWeight: 800, color: "#111827" }}>
                             Unit {selectedRescue.assignedVolunteer === "None" ? "Rahul Mehta" : selectedRescue.assignedVolunteer} Assigned
                           </span>
                           <span style={{
@@ -826,7 +826,7 @@ const RescueMgmt = () => {
                             En Route
                           </span>
                         </div>
-                        <span style={{ fontSize: "0.76rem", color: "#8C7B75", fontWeight: 600 }}>
+                        <span style={{ fontSize: "0.76rem", color: "#6B7280", fontWeight: 600 }}>
                           12:35 PM • Direct Dispatcher Assignment
                         </span>
                       </div>
@@ -838,11 +838,11 @@ const RescueMgmt = () => {
             </div>
           ) : (
             <div className="ngo-inspection-card" style={{ padding: "50px 30px", alignItems: "center", textAlign: "center", gap: "12px" }}>
-              <div style={{ width: "56px", height: "56px", borderRadius: "50%", backgroundColor: "#FFF3E6", display: "flex", alignItems: "center", justifyContent: "center", color: "#FF6E14" }}>
+              <div style={{ width: "56px", height: "56px", borderRadius: "50%", backgroundColor: "#EEF2FF", display: "flex", alignItems: "center", justifyContent: "center", color: "#5028FF" }}>
                 <PawPrint size={24} />
               </div>
-              <p style={{ fontSize: "1rem", fontWeight: 800, color: "#1D1311", margin: 0 }}>No case selected</p>
-              <p style={{ fontSize: "0.85rem", color: "#8C7B75", margin: 0 }}>Click a row or a map pin to view case details.</p>
+              <p style={{ fontSize: "1rem", fontWeight: 800, color: "#111827", margin: 0 }}>No case selected</p>
+              <p style={{ fontSize: "0.85rem", color: "#6B7280", margin: 0 }}>Click a row or a map pin to view case details.</p>
             </div>
           )}
         </div>

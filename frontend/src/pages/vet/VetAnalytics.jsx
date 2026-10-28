@@ -26,13 +26,13 @@ const VetAnalytics = () => {
       id: "diag-1",
       label: "Canine Mange",
       emoji: "🐕",
-      bgEmoji: "#FEF3C7",
+      bgEmoji: "#EDE9FE",
       count: 18,
       pct: 75,
-      pillBg: "#FFF7ED",
-      pillBorder: "#FED7AA",
-      pillColor: "#EA580C",
-      barColor: "#FF7000"
+      pillBg: "#EEF2FF",
+      pillBorder: "#C7D2FE",
+      pillColor: "#5028FF",
+      barColor: "#5028FF"
     },
     {
       id: "diag-2",

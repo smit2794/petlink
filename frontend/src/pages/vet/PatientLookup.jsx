@@ -65,7 +65,7 @@ const PatientLookup = () => {
       
       {/* Header Info */}
       <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "8px" }}>
-        <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--primary-color)", letterSpacing: "-0.02em" }}>
+        <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#111827", letterSpacing: "-0.02em" }}>
           Patient Record Lookup
         </h1>
         <p style={{ color: "var(--text-muted)", fontSize: "0.95rem" }}>
@@ -76,13 +76,13 @@ const PatientLookup = () => {
           display: "inline-flex",
           alignItems: "center",
           gap: "8px",
-          backgroundColor: "var(--accent-coral-light)",
-          color: "var(--accent-coral)",
+          backgroundColor: "#EEF2FF",
+          color: "#5028FF",
           padding: "6px 16px",
           borderRadius: "30px",
           fontSize: "0.82rem",
           fontWeight: 700,
-          border: "1px solid rgba(217, 83, 79, 0.2)",
+          border: "1px solid #C7D2FE",
           marginTop: "4px"
         }}>
           <AlertCircle size={14} /> Look up an existing animal record — new profiles are created by NGOs or Pet Parents only.
@@ -104,21 +104,31 @@ const PatientLookup = () => {
           alignItems: "center",
           gap: "20px",
           padding: "48px 32px",
-          border: "2px dashed var(--border-color)",
-          backgroundColor: "#FCFAF6",
+          border: "2px dashed #C7D2FE",
+          backgroundColor: "#F9FAFB",
           textAlign: "center",
-          cursor: "pointer"
-        }} onClick={handleStartScan}>
+          cursor: "pointer",
+          transition: "all 0.2s ease"
+        }} 
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = "#5028FF";
+          e.currentTarget.style.backgroundColor = "#EEF2FF";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = "#C7D2FE";
+          e.currentTarget.style.backgroundColor = "#F9FAFB";
+        }}
+        onClick={handleStartScan}>
           <div style={{
             width: "80px",
             height: "80px",
             borderRadius: "50%",
-            backgroundColor: "var(--accent-coral)",
+            backgroundColor: "#5028FF",
             color: "white",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 8px 16px rgba(217, 83, 79, 0.2)"
+            boxShadow: "0 8px 16px rgba(80, 40, 255, 0.25)"
           }}>
             <Scan size={36} />
           </div>
@@ -169,16 +179,16 @@ const PatientLookup = () => {
                       padding: "12px 18px",
                       border: "1px solid var(--border-color)",
                       borderRadius: "12px",
-                      backgroundColor: "#FCFAF6",
+                      backgroundColor: "#FFFFFF",
                       cursor: "pointer",
                       transition: "all var(--transition-fast)"
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "white";
-                      e.currentTarget.style.borderColor = "var(--accent-coral)";
+                      e.currentTarget.style.backgroundColor = "#EEF2FF";
+                      e.currentTarget.style.borderColor = "#5028FF";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "#FCFAF6";
+                      e.currentTarget.style.backgroundColor = "#FFFFFF";
                       e.currentTarget.style.borderColor = "var(--border-color)";
                     }}
                   >
@@ -193,7 +203,7 @@ const PatientLookup = () => {
                         <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontFamily: "monospace" }}>{pet.id} • {pet.breed}</span>
                       </div>
                     </div>
-                    <ArrowRight size={16} color="var(--accent-coral)" />
+                    <ArrowRight size={16} color="#5028FF" />
                   </div>
                 ))}
               </div>
@@ -247,8 +257,8 @@ const PatientLookup = () => {
                 left: 0,
                 right: 0,
                 height: "4px",
-                backgroundColor: "var(--accent-coral)",
-                boxShadow: "0 0 10px var(--accent-coral)",
+                backgroundColor: "#5028FF",
+                boxShadow: "0 0 10px #5028FF",
                 animation: "scanner-move 2.2s linear infinite"
               }} />
 
@@ -273,7 +283,7 @@ const PatientLookup = () => {
             </div>
 
             {/* Status indicators */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", color: "var(--accent-coral)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", color: "#A5B4FC" }}>
               <Loader size={16} className="animate-spin" />
               <span style={{ fontSize: "0.88rem", fontWeight: 600 }}>{scanStatus}</span>
             </div>

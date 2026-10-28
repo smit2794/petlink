@@ -5,8 +5,10 @@ import { useAuth } from "../../context/AuthContext";
 import {
   Search, Plus, Calendar, ShieldCheck, CheckCircle2,
   SlidersHorizontal, MoreHorizontal, Cake, ArrowUpRight,
-  ChevronRight, Heart, Dog, AlertTriangle
+  ChevronRight, Heart, Dog, AlertTriangle,
+  CheckCircle, QrCode, Cpu, PawPrint, ArrowRight, Volume2
 } from "lucide-react";
+import PetQRCode from "../../components/PetQRCode";
 import "../../styles/parent.css";
 
 const MyPets = () => {
@@ -14,6 +16,7 @@ const MyPets = () => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [qrModalPet, setQrModalPet] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -379,90 +382,101 @@ const MyPets = () => {
                 const formattedName = formatPetName(pet.name);
                 const isCat = pet.species?.toLowerCase() === "cat" || pet.breed?.toLowerCase().includes("cat");
                 const ageNumber = pet.age ? pet.age.replace(/[^0-9]/g, '') || "2" : "2";
+                const isLost = pet.status === "Lost";
+                const petPhoto = pet.photo || pet.image;
 
                 return (
                   <div
                     key={pet.id}
-                    className="parent-pet-card"
+                    className="ngo-ref-card"
                     onClick={() => navigate(`/parent/pet/${pet.id}`)}
                   >
-                    {/* Pet Image Box with Active Tag & Three Dots Menu */}
-                    <div className="parent-pet-img-box">
-                      <img
-                        src={pet.photo || pet.image || "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=600"}
-                        alt={pet.name}
-                        className="parent-pet-img"
-                      />
-                      
-                      {/* Floating Active Tag Pill */}
-                      <div className="parent-tag-active-pill">
-                        <span className="parent-tag-dot" />
-                        ACTIVE TAG
+                    {/* 1. Card Top Badges & QR Button */}
+                    <div className="ngo-ref-card-header">
+                      <div className="ngo-ref-badge-group">
+                        <span className={`ngo-ref-status-pill ${isLost ? "ngo-ref-status-rescued" : "ngo-ref-status-adopted"}`}>
+                          {isLost ? "Lost Alert" : "Safe at Home"}
+                        </span>
+                        <span className="ngo-ref-smart-tag">
+                          <CheckCircle size={10} /> SMART TAG
+                        </span>
                       </div>
 
-                      {/* Floating Three Dots Menu Button */}
                       <button
-                        type="button"
-                        className="parent-card-menu-btn"
+                        className="ngo-ref-qr-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setQrModalPet(pet);
+                        }}
+                        title="View / Download QR Tag"
+                      >
+                        <QrCode size={16} />
+                      </button>
+                    </div>
+
+                    {/* 2. Card Body: Avatar & Info */}
+                    <div className="ngo-ref-card-body">
+                      <div className="ngo-ref-avatar">
+                        {petPhoto ? (
+                          <>
+                            <img src={petPhoto} alt={pet.name || "Pet"} />
+                            <div className="ngo-ref-avatar-badge">
+                              <Cpu size={10} />
+                            </div>
+                          </>
+                        ) : (
+                          <PawPrint size={26} color="#5028FF" />
+                        )}
+                      </div>
+
+                      <div className="ngo-ref-info">
+                        <span className="ngo-ref-name">{formattedName}</span>
+                        <span className="ngo-ref-sub">
+                          {pet.species ? (pet.species.charAt(0).toUpperCase() + pet.species.slice(1)) : "Pet"} {pet.breed ? `• ${pet.breed}` : ""}
+                        </span>
+                        <span className="ngo-ref-age">
+                          Age: {ageNumber} yrs • {isCat ? "Microchipped" : "Safety Sync OK"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 3. Card Tag ID Pill Box with View Profile */}
+                    <div className="ngo-ref-tag-pill">
+                      <div className="ngo-ref-tag-left">
+                        <Cpu size={13} color="#5028FF" style={{ flexShrink: 0 }} />
+                        <span>{pet.tokenId || `# ${pet.id}`}</span>
+                      </div>
+
+                      <button
+                        className="ngo-ref-view-btn"
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(`/parent/pet/${pet.id}`);
                         }}
-                        title="Pet profile options"
                       >
-                        <MoreHorizontal size={18} />
+                        View Profile &gt;
                       </button>
                     </div>
 
-                    {/* Name & TAG ID */}
-                    <div className="parent-pet-info-row">
-                      <div>
-                        <h4 className="parent-pet-name">{formattedName}</h4>
-                        <p className="parent-pet-species-breed">
-                          {pet.species ? (pet.species.charAt(0).toUpperCase() + pet.species.slice(1)) : "Dog"} • {pet.breed || "local"}
-                        </p>
-                      </div>
-                      <div className="parent-pet-tag-group">
-                        <span className="parent-pet-tag-label">TAG ID</span>
-                        <span className="parent-pet-tag-id">{pet.tokenId || pet.id}</span>
-                      </div>
-                    </div>
-
-                    {/* Badges Row */}
-                    <div className="parent-pet-badges-row">
-                      <span className="parent-pill-age">
-                        <Cake size={12} /> Age: {ageNumber}
-                      </span>
-                      {isCat ? (
-                        <span className="parent-pill-feature">
-                          # Microchip Active
-                        </span>
-                      ) : (
-                        <span className="parent-pill-feature">
-                          <ShieldCheck size={12} /> Safety Sync OK
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Footer */}
-                    <div className="parent-pet-card-footer">
-                      <div className="parent-updated-text">
-                        <span className="parent-updated-dot" />
+                    {/* 4. Card Footer: Caregiver & History */}
+                    <div className="ngo-ref-footer">
+                      <div className="ngo-ref-footer-link">
+                        <Calendar size={12} color="#9CA3AF" />
                         <span>Updated: {pet.lastUpdated || "Just now"}</span>
+                        <ArrowRight size={12} color="#5028FF" />
                       </div>
+
                       <button
-                        type="button"
-                        className="parent-btn-view-profile"
+                        style={{ background: "none", border: "none", cursor: "pointer", padding: "2px", color: "#5028FF", display: "flex", alignItems: "center" }}
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(`/parent/pet/${pet.id}`);
                         }}
+                        title="View profile options"
                       >
-                        <span>View Profile</span>
-                        <ArrowUpRight size={13} />
+                        <MoreHorizontal size={15} />
                       </button>
                     </div>
-
                   </div>
                 );
               })}
@@ -470,9 +484,7 @@ const MyPets = () => {
 
           </div>
 
-          {/* ========================================================
-              6. RABIES SEASON REMINDER BANNER
-          ======================================================== */}
+          {/* Rabies Season Reminder Banner */}
           <div className="parent-reminder-card">
             <div className="parent-reminder-left">
               <div className="parent-reminder-squircle">
@@ -494,6 +506,32 @@ const MyPets = () => {
             </button>
           </div>
         </>
+      )}
+
+      {/* QR Code Quick Preview Modal */}
+      {qrModalPet && (
+        <div className="modal-overlay" onClick={() => setQrModalPet(null)} style={{ zIndex: 9999 }}>
+          <div className="modal-content animate-scale-up" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "380px", textAlign: "center" }}>
+            <div className="modal-header" style={{ borderBottom: "1px solid #F3F4F6", paddingBottom: "14px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "#5028FF", color: "white", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <QrCode size={16} />
+                </div>
+                <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: 800, color: "#111827" }}>
+                  {formatPetName(qrModalPet.name)}'s QR Tag
+                </h3>
+              </div>
+              <button className="modal-close" onClick={() => setQrModalPet(null)}>✕</button>
+            </div>
+
+            <div style={{ padding: "20px 0 10px", display: "flex", flexDirection: "column", alignItems: "center", gap: "14px" }}>
+              <PetQRCode animalId={qrModalPet.id} tokenId={qrModalPet.tokenId} size={160} showDownload={true} />
+              <div style={{ fontSize: "0.8rem", color: "#6B7280" }}>
+                Scan this tag to load {formatPetName(qrModalPet.name)}'s digital collar and emergency contact profile.
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
     </div>

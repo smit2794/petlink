@@ -199,7 +199,7 @@ const RegisterNewPet = () => {
         </div>
 
         <div className="parent-register-hero-icon-box">
-          <CreditCard size={36} color="#EA580C" strokeWidth={1.8} />
+          <CreditCard size={36} color="#5028FF" strokeWidth={1.8} />
           <div className="parent-register-hero-plus-badge">+</div>
         </div>
       </div>
@@ -267,7 +267,7 @@ const RegisterNewPet = () => {
                     />
                   ) : (
                     <>
-                      <Upload size={22} color="#EA580C" />
+                      <Upload size={22} color="#5028FF" />
                       <span className="parent-register-photo-upload-label">
                         Upload<br />Photo
                       </span>
@@ -436,7 +436,7 @@ const RegisterNewPet = () => {
                       style={{ width: "100%", height: "100%", objectFit: "cover" }}
                     />
                   ) : (
-                    <PawPrint size={24} color="#EA580C" />
+                    <PawPrint size={24} color="#5028FF" />
                   )}
                 </div>
                 <div>

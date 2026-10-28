@@ -41,33 +41,33 @@
 }
 
 .vet-apt-reminder-card {
-  background: #FFF9EE;
-  border: 1.5px solid #FDE68A;
+  background: #EEF2FF;
+  border: 1.5px solid #C7D2FE;
   border-radius: 20px;
   padding: 10px 22px;
   display: inline-flex;
   align-items: center;
   gap: 14px;
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.06);
+  box-shadow: 0 2px 8px rgba(80, 40, 255, 0.06);
 }
 
 .vet-apt-reminder-avatar {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #FEF3C7;
+  background: #EDE9FE;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.35rem;
   flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
+  box-shadow: 0 2px 6px rgba(80, 40, 255, 0.15);
 }
 
 .vet-apt-reminder-title {
   font-size: 0.88rem;
   font-weight: 800;
-  color: #92400E;
+  color: #5028FF;
   margin: 0;
   line-height: 1.2;
 }
@@ -75,7 +75,7 @@
 .vet-apt-reminder-text {
   font-size: 0.78rem;
   font-weight: 600;
-  color: #78350F;
+  color: #3730A3;
   margin: 2px 0 0;
   line-height: 1.2;
 }
@@ -105,10 +105,10 @@
 }
 
 .vet-apt-tab-btn.active {
-  background: #FF6E14;
-  border-color: #FF6E14;
+  background: #5028FF;
+  border-color: #5028FF;
   color: #FFFFFF;
-  box-shadow: 0 4px 12px rgba(255, 110, 20, 0.25);
+  box-shadow: 0 4px 12px rgba(80, 40, 255, 0.25);
 }
 
 /* Cards List */
@@ -120,8 +120,8 @@
 
 .vet-apt-card {
   background: #FFFFFF;
-  border: 1.5px solid #EDE6DD;
-  border-left: 6px solid #FF7A1A;
+  border: 1.5px solid #F3F4F6;
+  border-left: 6px solid #5028FF;
   border-radius: 22px;
   padding: 16px 24px;
   display: flex;
@@ -134,8 +134,8 @@
 }
 
 .vet-apt-card:hover {
-  border-color: #E2D7CB;
-  border-left-color: #FF6E14;
+  border-color: #E5E7EB;
+  border-left-color: #4320DF;
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
 }
@@ -211,8 +211,8 @@
 
 /* Date Pill */
 .vet-apt-date-pill {
-  background: #FFFDF9;
-  border: 1.5px solid #FDE68A;
+  background: #F9FAFB;
+  border: 1.5px solid #E5E7EB;
   border-radius: 9999px;
   padding: 8px 18px;
   display: inline-flex;
@@ -225,15 +225,15 @@
 
 /* Status Pill */
 .vet-apt-status-pill {
-  background: #FFF7ED;
-  border: 1.5px solid #FFEDD5;
+  background: #EEF2FF;
+  border: 1.5px solid #C7D2FE;
   border-radius: 9999px;
   padding: 6px 16px;
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #EA580C;
+  color: #5028FF;
 }
 
 .vet-apt-status-pill.completed {
@@ -277,23 +277,23 @@
 
 .vet-apt-btn-reschedule {
   background: #FFFFFF;
-  border: 1.5px solid #FED7AA;
+  border: 1.5px solid #C7D2FE;
   border-radius: 9999px;
   padding: 8px 18px;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #EA580C;
+  color: #5028FF;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .vet-apt-btn-reschedule:hover {
-  background: #FFF7ED;
-  border-color: #FDBA74;
+  background: #EEF2FF;
+  border-color: #5028FF;
 }
 
 .vet-apt-btn-complete {
-  background: #FF6E14;
+  background: #5028FF;
   border: none;
   border-radius: 9999px;
   padding: 8px 20px;
@@ -304,14 +304,14 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 3px 8px rgba(255, 110, 20, 0.25);
+  box-shadow: 0 3px 8px rgba(80, 40, 255, 0.25);
   transition: all 0.15s ease;
 }
 
 .vet-apt-btn-complete:hover {
-  background: #EA580C;
+  background: #4320DF;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 110, 20, 0.35);
+  box-shadow: 0 4px 12px rgba(80, 40, 255, 0.35);
 }
 
 /* Footer */
@@ -371,22 +371,22 @@
 
 /* CVO Verified Signatures Card */
 .vet-cert-cvo-card {
-  background: #FFFBEB;
-  border: 1.5px solid #FDE68A;
+  background: #EEF2FF;
+  border: 1.5px solid #C7D2FE;
   border-radius: 20px;
   padding: 12px 22px;
   display: inline-flex;
   align-items: center;
   gap: 14px;
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.06);
+  box-shadow: 0 2px 8px rgba(80, 40, 255, 0.06);
 }
 
 .vet-cert-cvo-icon {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: #FBBF24;
-  color: #111827;
+  background: #5028FF;
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -404,7 +404,8 @@
 
 .vet-cert-cvo-desc {
   font-size: 0.78rem;
-  color: #92400E;
+  color: #5028FF;
+  font-weight: 600;
   margin: 2px 0 0 0;
 }
 
@@ -414,7 +415,7 @@
   align-items: center;
   gap: 12px;
   background: #FFFFFF;
-  border: 1.5px solid #EDE6DD;
+  border: 1.5px solid #E5E7EB;
   border-radius: 9999px;
   padding: 10px 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
@@ -422,8 +423,8 @@
 }
 
 .vet-cert-search-bar:focus-within {
-  border-color: #FF7A1A;
-  box-shadow: 0 0 0 3px rgba(255, 122, 26, 0.1);
+  border-color: #5028FF;
+  box-shadow: 0 0 0 3px rgba(80, 40, 255, 0.15);
 }
 
 .vet-cert-search-input {
@@ -531,8 +532,8 @@
 /* Reprint / View Action Button */
 .vet-cert-btn-reprint {
   background: #FFFFFF;
-  border: 1.5px solid #F97316;
-  color: #EA580C;
+  border: 1.5px solid #C7D2FE;
+  color: #5028FF;
   border-radius: 9999px;
   padding: 6px 16px;
   font-size: 0.82rem;
@@ -545,8 +546,8 @@
 }
 
 .vet-cert-btn-reprint:hover {
-  background: #FFF7ED;
-  border-color: #EA580C;
+  background: #EEF2FF;
+  border-color: #5028FF;
   transform: translateY(-1px);
 }
 
@@ -574,7 +575,7 @@
 }
 
 .vet-cert-export-btn {
-  color: #EA580C;
+  color: #5028FF;
   font-weight: 700;
   background: none;
   border: none;
@@ -647,7 +648,7 @@
 }
 
 .vet-inv-btn-add {
-  background: #FF6E14;
+  background: #5028FF;
   color: #FFFFFF;
   border: none;
   border-radius: 9999px;
@@ -658,20 +659,20 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(255, 110, 20, 0.3);
+  box-shadow: 0 4px 14px rgba(80, 40, 255, 0.25);
   transition: all 0.15s ease;
 }
 
 .vet-inv-btn-add:hover {
-  background: #EA580C;
+  background: #4320DF;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(255, 110, 20, 0.4);
+  box-shadow: 0 6px 18px rgba(80, 40, 255, 0.35);
 }
 
 /* Notice Banner */
 .vet-inv-notice {
-  background: #FFF7F2;
-  border: 1.5px solid #FFEDD5;
+  background: #EEF2FF;
+  border: 1.5px solid #C7D2FE;
   border-radius: 16px;
   padding: 14px 20px;
   display: flex;
@@ -683,8 +684,8 @@
   width: 32px;
   height: 32px;
   border-radius: 10px;
-  background: #FFEDD5;
-  color: #EA580C;
+  background: #EDE9FE;
+  color: #5028FF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -693,7 +694,7 @@
 }
 
 .vet-inv-notice-text {
-  color: #C2410C;
+  color: #3730A3;
   font-size: 0.88rem;
   font-weight: 600;
   margin: 0;
@@ -805,9 +806,9 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #FFF7ED;
-  border: 1.5px solid #FED7AA;
-  color: #FF7A1A;
+  background: #EEF2FF;
+  border: 1.5px solid #C7D2FE;
+  color: #5028FF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -894,8 +895,8 @@
 
 .vet-inv-btn-restock {
   background: #FFFFFF;
-  border: 1.5px solid #FF7A1A;
-  color: #FF7A1A;
+  border: 1.5px solid #C7D2FE;
+  color: #5028FF;
   border-radius: 9999px;
   padding: 6px 18px;
   font-size: 0.82rem;
@@ -908,8 +909,8 @@
 }
 
 .vet-inv-btn-restock:hover {
-  background: #FFF7ED;
-  border-color: #EA580C;
+  background: #EEF2FF;
+  border-color: #5028FF;
   transform: translateY(-1px);
 }
 
@@ -974,9 +975,9 @@
 }
 
 .vet-ana-badge-hub {
-  background: #FFF7ED;
-  border: 1.5px solid #FED7AA;
-  color: #9A3412;
+  background: #EEF2FF;
+  border: 1.5px solid #C7D2FE;
+  color: #5028FF;
   font-size: 0.76rem;
   font-weight: 700;
   border-radius: 9999px;
@@ -988,7 +989,7 @@
 }
 
 .vet-ana-badge-hub-icon {
-  color: #EA580C;
+  color: #5028FF;
   font-size: 0.85rem;
 }
 
@@ -1041,13 +1042,13 @@
   width: 46px;
   height: 46px;
   border-radius: 12px;
-  background: #FF7000;
+  background: #5028FF;
   color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(255, 112, 0, 0.25);
+  box-shadow: 0 4px 12px rgba(80, 40, 255, 0.25);
 }
 
 .vet-ana-kpi-icon-purple {
@@ -1193,8 +1194,8 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: #FFF7ED;
-  color: #EA580C;
+  background: #EEF2FF;
+  color: #5028FF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1222,9 +1223,9 @@
 }
 
 .vet-ana-badge-active-cases {
-  background: #FFF7ED;
-  border: 1px solid #FED7AA;
-  color: #EA580C;
+  background: #EEF2FF;
+  border: 1px solid #C7D2FE;
+  color: #5028FF;
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.05em;

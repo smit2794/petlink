@@ -188,7 +188,7 @@ const CertificateArchive = () => {
                         className="vet-cert-btn-reprint"
                         onClick={() => setSelectedCert(cert)}
                       >
-                        <Eye size={14} color="#EA580C" />
+                        <Eye size={14} color="#5028FF" />
                         <span>Reprint / View</span>
                       </button>
                     </td>
@@ -304,7 +304,7 @@ const CertificateArchive = () => {
                   transform: "rotate(-12deg)",
                   pointerEvents: "none"
                 }}>
-                  <Award size={100} color="#FF7A1A" />
+                  <Award size={100} color="#5028FF" />
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
@@ -312,14 +312,14 @@ const CertificateArchive = () => {
                     width: "48px",
                     height: "48px",
                     borderRadius: "50%",
-                    backgroundColor: "#FFFBEB",
-                    border: "1.5px solid #FDE68A",
+                    backgroundColor: "#EEF2FF",
+                    border: "1.5px solid #C7D2FE",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     margin: "0 auto 6px"
                   }}>
-                    <Award size={26} color="#D97706" />
+                    <Award size={26} color="#5028FF" />
                   </div>
                   <span style={{ fontSize: "0.7rem", fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", color: "#6B7280" }}>
                     Government of Maharashtra Welfare Registry
@@ -327,7 +327,7 @@ const CertificateArchive = () => {
                   <h2 style={{ fontSize: "1.35rem", fontWeight: 800, color: "#111827", margin: "4px 0" }}>
                     {selectedCert.type === "vaccination" ? "CERTIFICATE OF VACCINATION" : "CERTIFICATE OF STERILIZATION"}
                   </h2>
-                  <span style={{ fontSize: "0.8rem", color: "#FF7A1A", fontWeight: 700 }}>
+                  <span style={{ fontSize: "0.8rem", color: "#5028FF", fontWeight: 700 }}>
                     Certificate ID: {selectedCert.id}
                   </span>
                 </div>
@@ -388,8 +388,8 @@ const CertificateArchive = () => {
                 type="button"
                 className="btn btn-primary btn-sm"
                 style={{
-                  backgroundColor: "#FF7A1A",
-                  borderColor: "#FF7A1A",
+                  backgroundColor: "#5028FF",
+                  borderColor: "#5028FF",
                   display: "flex",
                   alignItems: "center",
                   gap: "6px",

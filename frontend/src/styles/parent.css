@@ -15,9 +15,9 @@
 }
 
 .parent-sidebar {
-  width: 260px;
-  background-color: #170F0A;
-  color: #FFFFFF;
+  width: 250px;
+  background-color: #FFFFFF;
+  color: #111827;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -25,70 +25,72 @@
   top: 0;
   height: 100vh;
   z-index: 100;
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
-  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  border-right: 1px solid #F3F4F6;
 }
 
 .parent-sidebar-logo-area {
-  padding: 24px 22px;
+  padding: 20px 22px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 10px;
+  border-bottom: 1px solid #F3F4F6;
 }
 
 .parent-sidebar-logo-badge {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background-color: #FF6A00;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background-color: #5028FF;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #FFFFFF;
   font-size: 1.1rem;
-  box-shadow: 0 3px 10px rgba(255, 106, 0, 0.35);
+  box-shadow: 0 4px 10px rgba(80, 40, 255, 0.28);
   flex-shrink: 0;
 }
 
 .parent-sidebar-brand-title {
-  font-size: 1.22rem;
-  font-weight: 800;
+  font-size: 1.18rem;
+  font-weight: 900;
   letter-spacing: -0.02em;
-  color: #FFFFFF;
+  color: #111827;
   line-height: 1.1;
 }
 
 .parent-sidebar-brand-care {
-  color: #FF6A00;
-  font-weight: 800;
+  color: #5028FF;
+  font-weight: 900;
 }
 
 .parent-sidebar-brand-sub {
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background-color: #EDE9FE;
+  color: #5028FF;
+  padding: 2px 7px;
+  border-radius: 999px;
   text-transform: uppercase;
   margin-top: 3px;
-  display: block;
+  display: inline-block;
 }
 
 .parent-sidebar-nav {
   flex: 1;
-  padding: 22px 14px;
+  padding: 16px 12px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   overflow-y: auto;
 }
 
 .parent-sidebar-cat-label {
   font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.35);
+  color: #9CA3AF;
   padding-left: 14px;
   margin-bottom: 6px;
   display: block;
@@ -97,62 +99,62 @@
 .parent-nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 18px;
-  border-radius: 9999px;
+  gap: 10px;
+  padding: 9px 14px;
+  border-radius: 12px;
   font-size: 0.88rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.72);
+  font-weight: 500;
+  color: #4B5563;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.18s ease;
 }
 
 .parent-nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.06);
-  color: #FFFFFF;
+  background-color: #F9FAFB;
+  color: #111827;
 }
 
 .parent-nav-item.active {
-  background-color: #FF6A00;
+  background-color: #5028FF;
   color: #FFFFFF;
   font-weight: 700;
-  box-shadow: 0 4px 14px rgba(255, 106, 0, 0.35);
+  box-shadow: 0 4px 12px rgba(80, 40, 255, 0.24);
 }
 
 .parent-sidebar-footer {
-  padding: 18px 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 14px 12px 18px;
+  border-top: 1px solid #F3F4F6;
 }
 
 .parent-exit-link {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  border-radius: 9999px;
+  gap: 8px;
+  padding: 9px 14px;
+  border-radius: 10px;
   font-size: 0.85rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.75);
+  color: #4B5563;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.18s ease;
 }
 
 .parent-exit-link:hover {
-  background-color: rgba(255, 255, 255, 0.06);
-  color: #FFFFFF;
+  background-color: #F9FAFB;
+  color: #111827;
 }
 
 /* --------------------------------------------------------------------------
    2. TOP BAR
    -------------------------------------------------------------------------- */
 .parent-topbar {
-  height: 74px;
+  height: 72px;
   background-color: #FFFFFF;
-  border-bottom: 1px solid #EFEAE2;
+  border-bottom: 1px solid #F3F4F6;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 44px;
+  padding: 0 40px;
   position: sticky;
   top: 0;
   z-index: 90;
@@ -174,9 +176,9 @@
 }
 
 .parent-badge-app {
-  background-color: #FCE7E7;
-  color: #C2410C;
-  border: 1px solid #FECACA;
+  background-color: #EDE9FE;
+  color: #5028FF;
+  border: 1px solid #DDD6FE;
   border-radius: 9999px;
   padding: 3px 10px;
   font-size: 0.7rem;
@@ -216,7 +218,7 @@
   width: 17px;
   height: 17px;
   border-radius: 50%;
-  background-color: #FF6A00;
+  background-color: #5028FF;
   color: #FFFFFF;
   font-size: 0.65rem;
   font-weight: 800;
@@ -233,10 +235,10 @@
 }
 
 .parent-user-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background-color: #EA580C;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background-color: #5028FF;
   color: #FFFFFF;
   display: flex;
   align-items: center;
@@ -244,6 +246,7 @@
   font-weight: 800;
   font-size: 0.95rem;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(80, 40, 255, 0.25);
 }
 
 .parent-user-info {
@@ -333,9 +336,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background-color: #FFEDD5;
-  color: #C2410C;
-  border: 1px solid #FED7AA;
+  background-color: #EDE9FE;
+  color: #5028FF;
+  border: 1px solid #DDD6FE;
   border-radius: 9999px;
   padding: 4px 14px;
   font-size: 0.72rem;
@@ -349,7 +352,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: #EA580C;
+  background-color: #5028FF;
 }
 
 .parent-page-title {
@@ -368,7 +371,7 @@
 }
 
 .parent-btn-register {
-  background-color: #FF6A00;
+  background-color: #5028FF;
   border: none;
   color: #FFFFFF;
   border-radius: 9999px;
@@ -379,14 +382,14 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(255, 106, 0, 0.32);
+  box-shadow: 0 4px 14px rgba(80, 40, 255, 0.28);
   transition: all 0.2s ease;
 }
 
 .parent-btn-register:hover {
-  background-color: #E85D00;
+  background-color: #4320DF;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(255, 106, 0, 0.4);
+  box-shadow: 0 6px 18px rgba(80, 40, 255, 0.38);
 }
 
 /* --------------------------------------------------------------------------
@@ -725,8 +728,8 @@
 
 .parent-cards-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
 }
 
 .parent-pet-card {
@@ -1046,12 +1049,12 @@
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background-color: #FEF3C7;
-  color: #B45309;
+  background-color: #EDE9FE;
+  color: #5028FF;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.1);
+  box-shadow: 0 2px 8px rgba(80, 40, 255, 0.15);
   flex-shrink: 0;
 }
 
@@ -1071,7 +1074,7 @@
 }
 
 .parent-btn-book-visit {
-  background-color: #FF6A00;
+  background-color: #5028FF;
   color: #FFFFFF;
   font-size: 0.92rem;
   font-weight: 700;
@@ -1082,14 +1085,14 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 4px 14px rgba(255, 106, 0, 0.28);
+  box-shadow: 0 4px 14px rgba(80, 40, 255, 0.28);
   transition: all 0.2s ease;
 }
 
 .parent-btn-book-visit:hover {
-  background-color: #E55F00;
+  background-color: #4320DF;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(255, 106, 0, 0.38);
+  box-shadow: 0 6px 20px rgba(80, 40, 255, 0.38);
 }
 
 .parent-vetvisits-stats-grid {
@@ -1120,8 +1123,8 @@
 }
 
 .parent-vetstat-card.peach {
-  background-color: #FFEDD5;
-  border: 1px solid #FED7AA;
+  background-color: #EEF2FF;
+  border: 1px solid #C7D2FE;
 }
 
 .parent-vetstat-card.mint {
@@ -1159,7 +1162,7 @@
 }
 
 .parent-vetstat-card.peach .parent-vetstat-icon-circle {
-  color: #EA580C;
+  color: #5028FF;
 }
 
 .parent-vetstat-card.mint .parent-vetstat-icon-circle {
@@ -1188,7 +1191,7 @@
 }
 
 .parent-vetstat-card.peach .parent-vetstat-pill {
-  color: #C2410C;
+  color: #4338CA;
 }
 
 .parent-vetstat-card.mint .parent-vetstat-pill {
@@ -1269,7 +1272,7 @@
 
 .parent-vetvisits-tab-btn.active {
   background-color: #FFFFFF;
-  color: #C2410C;
+  color: #5028FF;
   font-weight: 800;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
@@ -1278,7 +1281,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: #EA580C;
+  background-color: #5028FF;
 }
 
 .parent-vetvisits-search-box {
@@ -1308,8 +1311,8 @@
 }
 
 .parent-vetvisits-search-input:focus {
-  border-color: #FF6A00;
-  box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.12);
+  border-color: #5028FF;
+  box-shadow: 0 0 0 3px rgba(80, 40, 255, 0.12);
 }
 
 .parent-vetvisits-subhead {
@@ -1373,7 +1376,7 @@
   top: 0;
   bottom: 0;
   width: 6px;
-  background-color: #EA580C;
+  background-color: #5028FF;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
 }
@@ -1408,7 +1411,7 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background-color: #FF6A00;
+  background-color: #5028FF;
   color: #FFFFFF;
   display: flex;
   align-items: center;
@@ -1474,8 +1477,8 @@
 }
 
 .parent-vetvisit-reason-badge.peach {
-  background-color: #FFEDD5;
-  color: #C2410C;
+  background-color: #EDE9FE;
+  color: #5028FF;
 }
 
 .parent-vetvisit-right {
@@ -1486,9 +1489,9 @@
 }
 
 .parent-vetvisit-date-pill {
-  background-color: #FFF7ED;
-  color: #9A3412;
-  border: 1px solid #FFEDD5;
+  background-color: #F8FAFC;
+  color: #475569;
+  border: 1px solid #E2E8F0;
   border-radius: 9999px;
   padding: 8px 16px;
   font-size: 0.84rem;
@@ -1524,9 +1527,9 @@
 }
 
 .parent-vetvisit-btn-file {
-  background-color: #F3F4F6;
-  color: #1F2937;
-  border: 1px solid #E5E7EB;
+  background-color: #FFFFFF;
+  color: #5028FF;
+  border: 1.5px solid #C7D2FE;
   border-radius: 9999px;
   padding: 8px 18px;
   font-size: 0.84rem;
@@ -1539,8 +1542,9 @@
 }
 
 .parent-vetvisit-btn-file:hover {
-  background-color: #E5E7EB;
-  color: #111827;
+  background-color: #EEF2FF;
+  border-color: #5028FF;
+  color: #5028FF;
 }
 
 /* Bottom Dual Cards */
@@ -1573,18 +1577,18 @@
   width: 58px;
   height: 58px;
   border-radius: 16px;
-  background-color: #FFFFFF;
-  border: 2px solid #FEE2CD;
-  color: #EA580C;
+  background-color: #EEF2FF;
+  border: 2px solid #C7D2FE;
+  color: #5028FF;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 3px 10px rgba(234, 88, 12, 0.08);
+  box-shadow: 0 3px 10px rgba(80, 40, 255, 0.1);
 }
 
 .parent-prep-guide-badge {
-  background-color: #FF6A00;
+  background-color: #5028FF;
   color: #FFFFFF;
   font-size: 0.68rem;
   font-weight: 800;
@@ -1721,8 +1725,8 @@
 }
 
 .parent-findvet-hero {
-  background-color: #FFF6EE;
-  border: 1px solid #FEE2CD;
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
   border-radius: 24px;
   padding: 30px 32px;
   display: flex;
@@ -1740,7 +1744,7 @@
 
 .parent-findvet-hero-badge {
   background-color: #FFFFFF;
-  border: 1px solid #FEE2CD;
+  border: 1px solid #E2E8F0;
   color: #1F2937;
   font-size: 0.78rem;
   font-weight: 700;
@@ -1772,13 +1776,13 @@
 
 .parent-findvet-hero-stat {
   background-color: #FFFFFF;
-  border: 1px solid #FEE2CD;
+  border: 1px solid #E2E8F0;
   border-radius: 18px;
   padding: 16px 22px;
   display: flex;
   align-items: center;
   gap: 14px;
-  box-shadow: 0 4px 14px rgba(255, 106, 0, 0.04);
+  box-shadow: 0 4px 14px rgba(80, 40, 255, 0.04);
   flex-shrink: 0;
 }
 
@@ -1786,8 +1790,8 @@
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background-color: #FFEDD5;
-  color: #EA580C;
+  background-color: #EDE9FE;
+  color: #5028FF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1851,8 +1855,8 @@
 }
 
 .parent-findvet-search-input:focus {
-  border-color: #FF6A00;
-  box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.12);
+  border-color: #5028FF;
+  box-shadow: 0 0 0 3px rgba(80, 40, 255, 0.12);
 }
 
 .parent-findvet-search-clear {
@@ -1897,10 +1901,10 @@
 }
 
 .parent-findvet-pill-btn.active {
-  background-color: #FF6A00;
-  border-color: #FF6A00;
+  background-color: #5028FF;
+  border-color: #5028FF;
   color: #FFFFFF;
-  box-shadow: 0 3px 12px rgba(255, 106, 0, 0.28);
+  box-shadow: 0 3px 12px rgba(80, 40, 255, 0.28);
 }
 
 /* Vet Cards Grid */
@@ -1935,7 +1939,7 @@
   left: 20px;
   right: 20px;
   height: 4px;
-  background-color: #FF6A00;
+  background-color: #5028FF;
   border-radius: 0 0 4px 4px;
 }
 
@@ -1956,8 +1960,8 @@
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background-color: #FFEDD5;
-  color: #1F2937;
+  background-color: #EEF2FF;
+  color: #5028FF;
   font-size: 1.15rem;
   font-weight: 800;
   display: flex;
@@ -1989,8 +1993,8 @@
 }
 
 .parent-findvet-status-pill {
-  background-color: #FFF7ED;
-  color: #9A3412;
+  background-color: #ECFDF5;
+  color: #047857;
   border-radius: 9999px;
   padding: 4px 10px;
   font-size: 0.74rem;
@@ -2005,7 +2009,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: #EA580C;
+  background-color: #10B981;
 }
 
 .parent-findvet-meta-box {
@@ -2022,7 +2026,7 @@
 }
 
 .parent-findvet-btn-request {
-  background-color: #FF6A00;
+  background-color: #5028FF;
   color: #FFFFFF;
   border: none;
   border-radius: 9999px;
@@ -2034,15 +2038,15 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 4px 14px rgba(255, 106, 0, 0.25);
+  box-shadow: 0 4px 14px rgba(80, 40, 255, 0.28);
   margin-top: auto;
   transition: all 0.2s ease;
 }
 
 .parent-findvet-btn-request:hover {
-  background-color: #E55F00;
+  background-color: #4320DF;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(255, 106, 0, 0.35);
+  box-shadow: 0 6px 18px rgba(80, 40, 255, 0.38);
 }
 
 /* Callout Card: Need urgent care? */
@@ -2886,8 +2890,8 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background-color: #FEE2CD;
-  color: #9A3412;
+  background-color: #EDE9FE;
+  color: #5028FF;
   font-size: 0.78rem;
   font-weight: 800;
   padding: 6px 16px;
@@ -2896,19 +2900,19 @@
 
 /* Hero Header Card */
 .parent-register-hero-card {
-  background: linear-gradient(135deg, #FFF6F0 0%, #FFEFE6 100%);
-  border: 1px solid #FED7AA;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
   border-radius: 24px;
   padding: 28px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  box-shadow: 0 4px 16px rgba(254, 215, 170, 0.12);
+  box-shadow: 0 4px 16px rgba(80, 40, 255, 0.04);
 }
 
 .parent-register-hero-badge {
-  background-color: #FF6A00;
+  background-color: #5028FF;
   color: #FFFFFF;
   font-size: 0.68rem;
   font-weight: 800;
@@ -2937,15 +2941,15 @@
 .parent-register-hero-icon-box {
   width: 76px;
   height: 76px;
-  background-color: #FFFFFF;
-  border: 1px solid #FED7AA;
+  background-color: #EEF2FF;
+  border: 1px solid #C7D2FE;
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.08);
+  box-shadow: 0 4px 12px rgba(80, 40, 255, 0.08);
 }
 
 .parent-register-hero-plus-badge {
@@ -2955,7 +2959,7 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background-color: #EA580C;
+  background-color: #5028FF;
   color: #FFFFFF;
   display: flex;
   align-items: center;
@@ -2967,8 +2971,8 @@
 
 /* Notice Banner */
 .parent-register-notice-box {
-  background-color: #FFFBEB;
-  border: 1px solid #FDE68A;
+  background-color: #EEF2FF;
+  border: 1px solid #C7D2FE;
   border-radius: 16px;
   padding: 16px 20px;
   display: flex;
@@ -2980,7 +2984,7 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background-color: #EA580C;
+  background-color: #5028FF;
   color: #FFFFFF;
   display: flex;
   align-items: center;
@@ -2993,12 +2997,12 @@
 
 .parent-register-notice-text {
   font-size: 0.84rem;
-  color: #78350F;
+  color: #374151;
   line-height: 1.55;
 }
 
 .parent-register-notice-text strong {
-  color: #78350F;
+  color: #111827;
   font-weight: 800;
 }
 
@@ -3059,8 +3063,8 @@
 }
 
 .parent-register-photo-uploader:hover {
-  border-color: #FF6A00;
-  background-color: #FFF9F5;
+  border-color: #5028FF;
+  background-color: #EEF2FF;
 }
 
 .parent-register-photo-preview {
@@ -3129,14 +3133,14 @@
 .parent-register-select:focus {
   outline: none;
   background-color: #FFFFFF;
-  border-color: #FF6A00;
-  box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.12);
+  border-color: #5028FF;
+  box-shadow: 0 0 0 3px rgba(80, 40, 255, 0.12);
 }
 
 .parent-register-submit-btn {
   margin-top: 28px;
   width: 100%;
-  background: linear-gradient(135deg, #FF6A00 0%, #EE5D00 100%);
+  background: #5028FF;
   color: #FFFFFF;
   border: none;
   border-radius: 9999px;
@@ -3148,13 +3152,14 @@
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(255, 106, 0, 0.28);
+  box-shadow: 0 6px 20px rgba(80, 40, 255, 0.28);
   transition: all 0.2s ease;
 }
 
 .parent-register-submit-btn:hover {
+  background: #4320DF;
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(255, 106, 0, 0.36);
+  box-shadow: 0 8px 24px rgba(80, 40, 255, 0.36);
 }
 
 .parent-register-submit-btn:active {
@@ -3192,8 +3197,8 @@
 }
 
 .parent-register-nfc-pill {
-  background-color: #FFF7ED;
-  color: #EA580C;
+  background-color: #EDE9FE;
+  color: #5028FF;
   font-size: 0.7rem;
   font-weight: 800;
   padding: 3px 10px;
@@ -3207,7 +3212,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background-color: #EA580C;
+  background-color: #5028FF;
 }
 
 .parent-register-inner-card {
@@ -3228,7 +3233,7 @@
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background-color: #FFEDD5;
+  background-color: #EEF2FF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3264,7 +3269,7 @@
 }
 
 .parent-register-stat-box.orange {
-  background-color: #FFF7ED;
+  background-color: #EEF2FF;
 }
 
 .parent-register-stat-box.slate {

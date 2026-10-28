@@ -10,21 +10,21 @@ import {
 // Mini QR Code SVG Component
 const MiniQR = ({ value }) => (
   <svg width="60" height="60" viewBox="0 0 100 100" style={{ backgroundColor: "#F7F5F0", padding: "4px", borderRadius: "6px", border: "1px solid var(--border-color)" }}>
-    <rect x="5" y="5" width="25" height="25" fill="var(--accent-coral)" stroke="white" strokeWidth="2" />
+    <rect x="5" y="5" width="25" height="25" fill="#5028FF" stroke="white" strokeWidth="2" />
     <rect x="10" y="10" width="15" height="15" fill="white" />
-    <rect x="13" y="13" width="9" height="9" fill="var(--accent-coral)" />
-    <rect x="70" y="5" width="25" height="25" fill="var(--accent-coral)" stroke="white" strokeWidth="2" />
+    <rect x="13" y="13" width="9" height="9" fill="#5028FF" />
+    <rect x="70" y="5" width="25" height="25" fill="#5028FF" stroke="white" strokeWidth="2" />
     <rect x="75" y="10" width="15" height="15" fill="white" />
-    <rect x="78" y="78" width="9" height="9" fill="var(--accent-coral)" />
-    <rect x="5" y="70" width="25" height="25" fill="var(--accent-coral)" stroke="white" strokeWidth="2" />
+    <rect x="78" y="78" width="9" height="9" fill="#5028FF" />
+    <rect x="5" y="70" width="25" height="25" fill="#5028FF" stroke="white" strokeWidth="2" />
     <rect x="10" y="75" width="15" height="15" fill="white" />
-    <rect x="13" y="78" width="9" height="9" fill="var(--accent-coral)" />
-    <rect x="40" y="10" width="10" height="15" fill="var(--accent-coral)" />
-    <rect x="40" y="30" width="15" height="5" fill="var(--accent-coral)" />
-    <rect x="15" y="40" width="20" height="10" fill="var(--accent-coral)" />
-    <rect x="45" y="45" width="15" height="15" fill="var(--accent-coral)" />
-    <rect x="70" y="40" width="20" height="10" fill="var(--accent-coral)" />
-    <rect x="40" y="70" width="15" height="20" fill="var(--accent-coral)" />
+    <rect x="13" y="78" width="9" height="9" fill="#5028FF" />
+    <rect x="40" y="10" width="10" height="15" fill="#5028FF" />
+    <rect x="40" y="30" width="15" height="5" fill="#5028FF" />
+    <rect x="15" y="40" width="20" height="10" fill="#5028FF" />
+    <rect x="45" y="45" width="15" height="15" fill="#5028FF" />
+    <rect x="70" y="40" width="20" height="10" fill="#5028FF" />
+    <rect x="40" y="70" width="15" height="20" fill="#5028FF" />
   </svg>
 );
 
@@ -80,7 +80,7 @@ const AnimalMedicalPanel = () => {
   if (!pet) {
     return (
       <div className="card" style={{ padding: "40px", textAlign: "center" }}>
-        <h2 style={{ color: "var(--accent-coral)" }}>Patient File Not Found</h2>
+        <h2 style={{ color: "#5028FF" }}>Patient File Not Found</h2>
         <p style={{ color: "var(--text-muted)", margin: "8px 0 20px" }}>The requested Animal ID does not exist in the shared database registry.</p>
         <button className="btn btn-primary" onClick={() => navigate("/vet/queue")}>Return to Queue</button>
       </div>
@@ -316,7 +316,7 @@ const AnimalMedicalPanel = () => {
         <button className="btn btn-outline btn-sm" onClick={() => navigate("/vet/queue")}>
           <ArrowLeft size={16} /> Back to Queue
         </button>
-        <span className="badge" style={{ backgroundColor: "var(--accent-coral-light)", color: "var(--accent-coral)", border: "1px solid var(--accent-coral)" }}>
+        <span className="badge" style={{ backgroundColor: "#EEF2FF", color: "#5028FF", border: "1px solid #C7D2FE", fontWeight: 700 }}>
           EHR Reference File
         </span>
       </div>
@@ -346,7 +346,7 @@ const AnimalMedicalPanel = () => {
             }}
           />
           <div style={{ textAlign: "center" }}>
-            <h2 style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--primary-color)" }}>{pet.name}</h2>
+            <h2 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#111827" }}>{pet.name}</h2>
             <span style={{ color: "var(--text-muted)", fontSize: "0.82rem", fontWeight: 700 }}>ID: {pet.id}</span>
           </div>
         </div>
@@ -407,7 +407,7 @@ const AnimalMedicalPanel = () => {
               <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted)" }}>Permitted State Transition</label>
               <select
                 className="form-control"
-                style={{ padding: "6px 12px", fontSize: "0.85rem", width: "220px", borderRadius: "30px", border: "1px solid var(--accent-coral)" }}
+                style={{ padding: "6px 12px", fontSize: "0.85rem", width: "220px", borderRadius: "30px", border: "1.5px solid #C7D2FE" }}
                 value={dropdownStatus}
                 onChange={(e) => {
                   const val = e.target.value;
@@ -462,9 +462,9 @@ const AnimalMedicalPanel = () => {
                     gap: "6px",
                     padding: "10px 14px",
                     border: 0,
-                    borderBottom: isTabActive ? "3px solid var(--accent-coral)" : "3px solid transparent",
+                    borderBottom: isTabActive ? "3px solid #5028FF" : "3px solid transparent",
                     backgroundColor: "transparent",
-                    color: isTabActive ? "var(--text-main)" : "var(--text-muted)",
+                    color: isTabActive ? "#111827" : "var(--text-muted)",
                     fontWeight: isTabActive ? 800 : 500,
                     fontSize: "0.85rem",
                     cursor: "pointer",
@@ -472,7 +472,7 @@ const AnimalMedicalPanel = () => {
                     transition: "all var(--transition-fast)"
                   }}
                 >
-                  <TabIcon size={14} color={isTabActive ? "var(--accent-coral)" : "var(--text-muted)"} />
+                  <TabIcon size={14} color={isTabActive ? "#5028FF" : "var(--text-muted)"} />
                   {tab.label}
                 </button>
               );
@@ -524,7 +524,7 @@ const AnimalMedicalPanel = () => {
                   />
                 </div>
 
-                <button type="submit" className="btn btn-primary" style={{ alignSelf: "flex-start", backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)" }}>
+                <button type="submit" className="btn btn-primary" style={{ alignSelf: "flex-start", backgroundColor: "#5028FF", borderColor: "#5028FF", fontWeight: 700 }}>
                   Submit Diagnosis
                 </button>
               </form>
@@ -601,12 +601,12 @@ const AnimalMedicalPanel = () => {
                         <div style={{ fontSize: "0.85rem" }}>
                           <strong>{item.medicineName}</strong> — {item.dosage} ({item.frequency})
                         </div>
-                        <button type="button" className="btn btn-outline" style={{ padding: "4px", color: "var(--accent-coral)" }} onClick={() => removePrescriptionLine(idx)}>
+                        <button type="button" className="btn btn-outline" style={{ padding: "4px", color: "#EF4444" }} onClick={() => removePrescriptionLine(idx)}>
                           <Trash2 size={14} />
                         </button>
                       </div>
                     ))}
-                    <button type="button" className="btn btn-primary" style={{ backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)", marginTop: "12px", alignSelf: "flex-start" }} onClick={savePrescription}>
+                    <button type="button" className="btn btn-primary" style={{ backgroundColor: "#5028FF", borderColor: "#5028FF", marginTop: "12px", alignSelf: "flex-start", fontWeight: 700 }} onClick={savePrescription}>
                       Save & Print Prescription Sheet
                     </button>
                   </div>
@@ -616,10 +616,10 @@ const AnimalMedicalPanel = () => {
                 {savedPrescription && showPrescriptionPreview && (
                   <div className="animate-scale-up" style={{
                     marginTop: "20px",
-                    border: "2px solid var(--accent-coral)",
+                    border: "2px solid #C7D2FE",
                     borderRadius: "14px",
                     padding: "20px",
-                    backgroundColor: "#FCFAF6",
+                    backgroundColor: "#EEF2FF",
                     position: "relative"
                   }}>
                     <button 
@@ -628,8 +628,8 @@ const AnimalMedicalPanel = () => {
                     >
                       <X size={16} />
                     </button>
-                    <div style={{ borderBottom: "1px solid var(--border-color)", paddingBottom: "10px", marginBottom: "12px" }}>
-                      <span style={{ fontSize: "0.85rem", fontWeight: 800, color: "var(--accent-coral)" }}>💊 RX PRESCRIPTION SHEET</span>
+                    <div style={{ borderBottom: "1px solid #C7D2FE", paddingBottom: "10px", marginBottom: "12px" }}>
+                      <span style={{ fontSize: "0.85rem", fontWeight: 800, color: "#5028FF" }}>💊 RX PRESCRIPTION SHEET</span>
                       <h4 style={{ fontSize: "0.95rem", fontWeight: 700, marginTop: "4px" }}>PetLink Animal Care Clinic</h4>
                     </div>
                     <div style={{ fontSize: "0.85rem", display: "flex", flexDirection: "column", gap: "6px" }}>
@@ -703,7 +703,7 @@ const AnimalMedicalPanel = () => {
                   ℹ️ Next due booster date will be automatically set to **1 Year from today** per municipal protocols.
                 </div>
 
-                <button type="submit" className="btn btn-primary" style={{ alignSelf: "flex-start", backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)" }}>
+                <button type="submit" className="btn btn-primary" style={{ alignSelf: "flex-start", backgroundColor: "#5028FF", borderColor: "#5028FF", fontWeight: 700 }}>
                   Administer & Notify Parent
                 </button>
               </form>
@@ -751,7 +751,7 @@ const AnimalMedicalPanel = () => {
                   />
                 </div>
 
-                <button type="submit" className="btn btn-primary" style={{ alignSelf: "flex-start", backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)", display: "flex", alignItems: "center", gap: "6px" }}>
+                <button type="submit" className="btn btn-primary" style={{ alignSelf: "flex-start", backgroundColor: "#5028FF", borderColor: "#5028FF", display: "flex", alignItems: "center", gap: "6px", fontWeight: 700 }}>
                   <CheckCircle size={14} /> Record & Generate Sterilization Cert
                 </button>
               </form>
@@ -799,7 +799,7 @@ const AnimalMedicalPanel = () => {
                   />
                 </div>
 
-                <button type="submit" className="btn btn-primary" style={{ alignSelf: "flex-start", backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)" }}>
+                <button type="submit" className="btn btn-primary" style={{ alignSelf: "flex-start", backgroundColor: "#5028FF", borderColor: "#5028FF", fontWeight: 700 }}>
                   Log Procedure
                 </button>
               </form>
@@ -812,13 +812,13 @@ const AnimalMedicalPanel = () => {
                 
                 {/* Mock File Uploader */}
                 <div style={{
-                  border: "2px dashed var(--border-color)",
+                  border: "2px dashed #C7D2FE",
                   padding: "20px",
                   borderRadius: "12px",
                   textAlign: "center",
-                  backgroundColor: "#FCFAF6"
+                  backgroundColor: "#F9FAFB"
                 }}>
-                  <Upload size={24} style={{ color: "var(--accent-coral)", marginBottom: "8px" }} />
+                  <Upload size={24} style={{ color: "#5028FF", marginBottom: "8px" }} />
                   <span style={{ fontSize: "0.8rem", display: "block", color: "var(--text-muted)", marginBottom: "8px" }}>
                     Select CBC blood counts, urine profile PDFs to upload
                   </span>
@@ -838,11 +838,11 @@ const AnimalMedicalPanel = () => {
                       padding: "12px 16px",
                       border: "1px solid var(--border-color)",
                       borderRadius: "12px",
-                      backgroundColor: report.flagged ? "var(--accent-coral-light)" : "white"
+                      backgroundColor: report.flagged ? "#FEF2F2" : "white"
                     }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                          <FileText size={16} color="var(--accent-coral)" />
+                          <FileText size={16} color={report.flagged ? "#DC2626" : "#5028FF"} />
                           <span style={{ fontSize: "0.88rem", fontWeight: 800 }}>{report.name}</span>
                         </div>
                         <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{report.date}</span>
@@ -850,7 +850,7 @@ const AnimalMedicalPanel = () => {
 
                       {/* Flag for follow-up controls */}
                       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #ECE8E0", paddingTop: "8px", marginTop: "4px" }}>
-                        <label style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.78rem", cursor: "pointer", fontWeight: 700, color: report.flagged ? "var(--accent-coral)" : "var(--text-muted)" }}>
+                        <label style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.78rem", cursor: "pointer", fontWeight: 700, color: report.flagged ? "#DC2626" : "var(--text-muted)" }}>
                           <input 
                             type="checkbox" 
                             checked={report.flagged} 
@@ -887,10 +887,10 @@ const AnimalMedicalPanel = () => {
                 </p>
 
                 <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", marginTop: "10px" }}>
-                  <button className="btn btn-outline" style={{ flex: 1, borderColor: "var(--accent-coral)", color: "var(--accent-coral)", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }} onClick={() => setShowCertificate("vaccination")}>
+                  <button className="btn btn-outline" style={{ flex: 1, borderColor: "#C7D2FE", color: "#5028FF", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }} onClick={() => setShowCertificate("vaccination")}>
                     <Award size={16} /> Vaccination Cert
                   </button>
-                  <button className="btn btn-outline" style={{ flex: 1, borderColor: "var(--accent-coral)", color: "var(--accent-coral)", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }} onClick={() => setShowCertificate("sterilization")}>
+                  <button className="btn btn-outline" style={{ flex: 1, borderColor: "#C7D2FE", color: "#5028FF", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }} onClick={() => setShowCertificate("sterilization")}>
                     <FileText size={16} /> Sterilization Cert
                   </button>
                 </div>
@@ -941,7 +941,7 @@ const AnimalMedicalPanel = () => {
                   type="submit" 
                   className="btn btn-primary" 
                   disabled={isSubmittingFollowup}
-                  style={{ alignSelf: "flex-start", backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)", opacity: isSubmittingFollowup ? 0.7 : 1 }}
+                  style={{ alignSelf: "flex-start", backgroundColor: "#5028FF", borderColor: "#5028FF", fontWeight: 700, opacity: isSubmittingFollowup ? 0.7 : 1 }}
                 >
                   {isSubmittingFollowup ? "Scheduling..." : "Schedule follow-up"}
                 </button>
@@ -954,7 +954,7 @@ const AnimalMedicalPanel = () => {
         {/* Right Side: Shared Activity Timeline View */}
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <h3 style={{ fontSize: "1.1rem", fontWeight: 800, display: "flex", alignItems: "center", gap: "8px" }}>
-            <Activity size={18} color="var(--accent-coral)" /> Patient Clinical History
+            <Activity size={18} color="#5028FF" /> Patient Clinical History
           </h3>
           
           <div className="card" style={{
@@ -984,7 +984,7 @@ const AnimalMedicalPanel = () => {
                     width: "8px",
                     height: "8px",
                     borderRadius: "50%",
-                    backgroundColor: "var(--accent-coral)"
+                    backgroundColor: "#5028FF"
                   }} />
                   
                   {/* Text */}
@@ -1060,15 +1060,15 @@ const AnimalMedicalPanel = () => {
                   opacity: 0.15,
                   transform: "rotate(-12deg)"
                 }}>
-                  <Award size={90} color="var(--accent-coral)" />
+                  <Award size={90} color="#5028FF" />
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                  <Award size={36} color="var(--accent-amber)" style={{ margin: "0 auto 8px" }} />
+                  <Award size={36} color="#5028FF" style={{ margin: "0 auto 8px" }} />
                   <span style={{ fontSize: "0.68rem", fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--text-muted)" }}>
                     Government of Maharashtra Welfare Registry
                   </span>
-                  <h2 style={{ fontSize: "1.45rem", fontWeight: 800, color: "var(--primary-color)", fontFamily: "serif" }}>
+                  <h2 style={{ fontSize: "1.45rem", fontWeight: 800, color: "#111827", fontFamily: "serif" }}>
                     {showCertificate === "vaccination" ? "CERTIFICATE OF VACCINATION" : "CERTIFICATE OF STERILIZATION"}
                   </h2>
                 </div>
@@ -1120,7 +1120,7 @@ const AnimalMedicalPanel = () => {
               <button className="btn btn-outline btn-sm" onClick={() => setShowCertificate(null)}>
                 Cancel
               </button>
-              <button className="btn btn-primary btn-sm" style={{ backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)", display: "flex", alignItems: "center", gap: "6px" }} onClick={() => alert("Simulated certificate download completed.")}>
+              <button className="btn btn-primary btn-sm" style={{ backgroundColor: "#5028FF", borderColor: "#5028FF", fontWeight: 700, display: "flex", alignItems: "center", gap: "6px" }} onClick={() => alert("Simulated certificate download completed.")}>
                 <Download size={14} /> Download PDF
               </button>
             </div>
@@ -1134,8 +1134,8 @@ const AnimalMedicalPanel = () => {
         <div className="modal-overlay" onClick={() => { setDropdownStatus(pet.status); setShowDischargeModal(false); }} style={{ zIndex: 9999 }}>
           <div className="modal-content animate-scale-up" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "450px" }}>
             <div className="modal-header">
-              <h2 style={{ fontWeight: 800, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "8px" }}>
-                <Activity size={20} /> Animal Discharge Summary
+              <h2 style={{ fontWeight: 800, color: "#111827", display: "flex", alignItems: "center", gap: "8px" }}>
+                <Activity size={20} color="#5028FF" /> Animal Discharge Summary
               </h2>
               <button className="modal-close" onClick={() => { setDropdownStatus(pet.status); setShowDischargeModal(false); }}>✕</button>
             </div>
@@ -1183,7 +1183,7 @@ const AnimalMedicalPanel = () => {
                 <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => { setDropdownStatus(pet.status); setShowDischargeModal(false); }}>
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1, backgroundColor: "var(--accent-coral)", borderColor: "var(--accent-coral)" }}>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1, backgroundColor: "#5028FF", borderColor: "#5028FF", fontWeight: 700 }}>
                   Confirm Release
                 </button>
               </div>

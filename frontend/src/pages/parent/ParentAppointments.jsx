@@ -130,7 +130,7 @@ const ParentAppointments = () => {
                 {String(pendingCount).padStart(2, "0")}
               </div>
               <div className="parent-vetstat-subtext">
-                <Check size={14} color="#EA580C" strokeWidth={3} /> All requests resolved
+                <Check size={14} color="#5028FF" strokeWidth={3} /> All requests resolved
               </div>
             </div>
             <div className="parent-vetstat-watermark">
@@ -139,7 +139,7 @@ const ParentAppointments = () => {
                   width: "52px",
                   height: "52px",
                   borderRadius: "50%",
-                  backgroundColor: "#FDBA74",
+                  backgroundColor: "#C7D2FE",
                   opacity: 0.8
                 }}
               />
@@ -243,7 +243,7 @@ const ParentAppointments = () => {
           style={{ justifyContent: "center", textAlign: "center", padding: "48px 24px" }}
         >
           <div>
-            <Calendar size={36} color="#EA580C" style={{ marginBottom: "12px" }} />
+            <Calendar size={36} color="#5028FF" style={{ marginBottom: "12px" }} />
             <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "#1F2937", margin: "0 0 6px 0" }}>
               No {filterStatus === "All" ? "" : filterStatus.toLowerCase()} appointments found
             </h3>
@@ -294,8 +294,8 @@ const ParentAppointments = () => {
                           alignItems: "center",
                           justifyContent: "center",
                           fontWeight: 800,
-                          color: "#EA580C",
-                          backgroundColor: "#FFEDD5"
+                          color: "#5028FF",
+                          backgroundColor: "#EEF2FF"
                         }}
                       >
                         {apt.petName?.[0] || "?"}
@@ -323,7 +323,7 @@ const ParentAppointments = () => {
                 {/* Right: Date, Status & View Action */}
                 <div className="parent-vetvisit-right">
                   <div className="parent-vetvisit-date-pill">
-                    <Clock size={14} color="#9A3412" />
+                    <Clock size={14} color="#5028FF" />
                     <span>{apt.date}</span>
                   </div>
 

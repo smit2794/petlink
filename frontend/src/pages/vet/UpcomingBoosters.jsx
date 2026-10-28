@@ -52,9 +52,9 @@ const UpcomingBoosters = () => {
     const diffTime = new Date(dueDate) - new Date();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays < 10) return "var(--accent-coral)"; // Red/coral for critical booster limits
-    if (diffDays < 20) return "var(--accent-amber)"; // Orange/amber for warning limits
-    return "var(--primary-color)"; // Green/teal for planned
+    if (diffDays < 10) return "#EF4444"; // Red for critical booster limits
+    if (diffDays < 20) return "#F59E0B"; // Amber for warning limits
+    return "#5028FF"; // PawSetu purple for planned
   };
 
   return (
@@ -62,7 +62,7 @@ const UpcomingBoosters = () => {
 
       {/* Header Info */}
       <div>
-        <h1 style={{ fontSize: "1.7rem", fontWeight: 800, color: "var(--primary-color)", letterSpacing: "-0.02em" }}>
+        <h1 style={{ fontSize: "1.7rem", fontWeight: 800, color: "#111827", letterSpacing: "-0.02em" }}>
           Upcoming Booster Records
         </h1>
         <p style={{ color: "var(--text-muted)", fontSize: "0.92rem" }}>
@@ -120,7 +120,7 @@ const UpcomingBoosters = () => {
                   <Link
                     to={`/vet/medical/${b.petId}`}
                     className="btn btn-outline btn-sm"
-                    style={{ display: "flex", alignItems: "center", gap: "4px" }}
+                    style={{ display: "flex", alignItems: "center", gap: "4px", borderColor: "#C7D2FE", color: "#5028FF", fontWeight: 700 }}
                   >
                     Treat <ArrowRight size={12} />
                   </Link>

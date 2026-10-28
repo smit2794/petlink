@@ -259,7 +259,7 @@ const ParentLayout = () => {
                     <h4 style={{ fontWeight: 800, fontSize: "0.95rem", margin: 0 }}>Updates Feed</h4>
                     {allNotifications.filter(n => n.unread).length > 0 && (
                       <span 
-                        style={{ fontSize: "0.75rem", color: "#FF6A00", cursor: "pointer", fontWeight: 700 }} 
+                        style={{ fontSize: "0.75rem", color: "#5028FF", cursor: "pointer", fontWeight: 700 }} 
                         onClick={() => setLocalNotifications(prev => prev.map(n => ({ ...n, unread: false })))}
                       >
                         Mark All Read
@@ -276,9 +276,9 @@ const ParentLayout = () => {
                           gap: "4px",
                           padding: "10px 12px",
                           borderRadius: "10px",
-                          backgroundColor: notif.unread ? "#FFF7ED" : "#FCFAF6",
+                          backgroundColor: notif.unread ? "#EEF2FF" : "#F9FAFB",
                           fontSize: "0.8rem",
-                          border: "1px solid #E5E7EB",
+                          border: notif.unread ? "1px solid #C7D2FE" : "1px solid #E5E7EB",
                           transition: "background-color 0.2s ease",
                           cursor: notif.path ? "pointer" : "default"
                         }}
