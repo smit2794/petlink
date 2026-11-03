@@ -60,7 +60,8 @@ const RegisterNewPet = () => {
     age: "",
     weight: "",
     photoFile: null,
-    photoPreview: ""
+    photoPreview: "",
+    publishWelfarePublicly: true
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -123,6 +124,8 @@ const RegisterNewPet = () => {
       weight: formData.weight.trim(),
       photo: formData.photoPreview,
       status: "Adopted",
+      ownershipType: "Parent-owned",
+      publishWelfarePublicly: formData.publishWelfarePublicly !== false,
       custodian: user ? `${user.name} (Home)` : "Home Guardian",
       ownerId: user?.id,
       createdBy: user?.id,
@@ -399,6 +402,32 @@ const RegisterNewPet = () => {
                   </span>
                 )}
               </div>
+            </div>
+
+            {/* Public Scan Welfare Visibility Checkbox */}
+            <div style={{
+              backgroundColor: "#F9FAFB",
+              border: "1px solid #E5E7EB",
+              borderRadius: "12px",
+              padding: "14px 16px",
+              display: "flex",
+              alignItems: "flex-start",
+              gap: "12px",
+              marginTop: "4px"
+            }}>
+              <input
+                type="checkbox"
+                id="publishWelfarePublicly"
+                checked={formData.publishWelfarePublicly !== false}
+                onChange={(e) => setFormData({ ...formData, publishWelfarePublicly: e.target.checked })}
+                style={{ marginTop: "3px", width: "16px", height: "16px", accentColor: "#5028FF" }}
+              />
+              <label htmlFor="publishWelfarePublicly" style={{ fontSize: "0.82rem", color: "#374151", cursor: "pointer", lineHeight: 1.45 }}>
+                <strong style={{ display: "block", color: "#111827", marginBottom: "2px" }}>
+                  Publish Welfare &amp; Medical Status on Public Collar Scan
+                </strong>
+                When enabled, anyone scanning your pet's collar tag will see verified vaccination and sterilization statuses. Uncheck to keep medical details confidential.
+              </label>
             </div>
 
             {/* Submit Button */}

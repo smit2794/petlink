@@ -6,7 +6,7 @@ import { useApp } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
 import {
   ArrowLeft, Heart, Calendar, ShieldCheck, FileText, Activity,
-  AlertTriangle, Download, Eye, Clock, ClipboardList, Info, Camera,
+  AlertTriangle, Download, Eye, EyeOff, Lock, Home, Clock, ClipboardList, Info, Camera,
   ShieldAlert
 } from "lucide-react";
 
@@ -22,6 +22,27 @@ const ParentPetProfile = () => {
   const [showExternalVisitModal, setShowExternalVisitModal] = useState(false);
   const [externalVisitForm, setExternalVisitForm] = useState({ clinicName: "", visitDate: "", notes: "" });
   const [isSavingExternalVisit, setIsSavingExternalVisit] = useState(false);
+  const [isUpdatingPrivacy, setIsUpdatingPrivacy] = useState(false);
+
+  const handleToggleWelfarePrivacy = async (newVal) => {
+    if (isUpdatingPrivacy || !pet?.id) return;
+    setIsUpdatingPrivacy(true);
+    try {
+      await updateAnimalPersisted(pet.id, {
+        publishWelfarePublicly: newVal
+      });
+      addToast(
+        newVal
+          ? "Medical records are now published publicly on collar scan."
+          : "Medical records are now confidential on collar scan.",
+        "success"
+      );
+    } catch (err) {
+      addToast("Failed to update public scan privacy.", "error");
+    } finally {
+      setIsUpdatingPrivacy(false);
+    }
+  };
 
   useEffect(() => {
     if (pet?.tokenId) {
@@ -114,9 +135,14 @@ const ParentPetProfile = () => {
         <button className="btn btn-outline btn-sm" onClick={() => navigate("/parent/pets")}>
           <ArrowLeft size={16} /> Back to Pets
         </button>
-        <span className="badge" style={{ backgroundColor: "var(--accent-amber-light)", color: "var(--accent-amber)", border: "1px solid var(--accent-amber)" }}>
-          Digital Animal ID Card
-        </span>
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <span className="badge" style={{ backgroundColor: "rgba(99, 102, 241, 0.12)", color: "#4F46E5", border: "1px solid rgba(99, 102, 241, 0.3)", display: "inline-flex", alignItems: "center", gap: "5px", fontWeight: 700 }}>
+            <Home size={13} /> Parent-owned
+          </span>
+          <span className="badge" style={{ backgroundColor: "var(--accent-amber-light)", color: "var(--accent-amber)", border: "1px solid var(--accent-amber)" }}>
+            Digital Animal ID Card
+          </span>
+        </div>
       </div>
 
       {/* READ-ONLY BIOLOGICAL HEADER */}
@@ -241,6 +267,62 @@ const ParentPetProfile = () => {
           {/* Collar QR Code — permanent scan link + downloadable tag image */}
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 0 16px", borderBottom: "1px solid var(--border-color)", marginBottom: "8px" }}>
             <PetQRCode animalId={pet.id} tokenId={linkedTokenId} size={100} showDownload={true} />
+          </div>
+
+          {/* Public Scan Privacy Setting */}
+          <div style={{
+            padding: "12px",
+            backgroundColor: "#F9FAFB",
+            borderRadius: "10px",
+            border: "1px solid var(--border-color)",
+            marginBottom: "8px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px"
+          }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ fontSize: "0.74rem", fontWeight: 700, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "5px" }}>
+                {pet.publishWelfarePublicly !== false ? <Eye size={13} color="var(--primary-color)" /> : <Lock size={13} color="#6B7280" />}
+                Scan Privacy
+              </span>
+              <span style={{
+                fontSize: "0.68rem",
+                fontWeight: 800,
+                padding: "2px 6px",
+                borderRadius: "4px",
+                backgroundColor: pet.publishWelfarePublicly !== false ? "rgba(16, 185, 129, 0.15)" : "rgba(107, 114, 128, 0.15)",
+                color: pet.publishWelfarePublicly !== false ? "#065F46" : "#374151"
+              }}>
+                {pet.publishWelfarePublicly !== false ? "Public" : "Confidential"}
+              </span>
+            </div>
+            <p style={{ fontSize: "0.7rem", color: "var(--text-muted)", margin: 0, lineHeight: 1.35 }}>
+              {pet.publishWelfarePublicly !== false
+                ? "Vaccination & sterilization details are visible when collar is scanned."
+                : "Medical records are kept private from collar scan visitors."}
+            </p>
+            <button
+              type="button"
+              disabled={isUpdatingPrivacy}
+              onClick={() => handleToggleWelfarePrivacy(pet.publishWelfarePublicly === false)}
+              className="btn btn-outline btn-sm"
+              style={{
+                width: "100%",
+                padding: "6px 8px",
+                fontSize: "0.72rem",
+                fontWeight: 700,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "5px"
+              }}
+            >
+              {pet.publishWelfarePublicly !== false ? (
+                <><EyeOff size={12} /> Make Records Private</>
+              ) : (
+                <><Eye size={12} /> Publish Records Publicly</>
+              )}
+            </button>
           </div>
 
           {[

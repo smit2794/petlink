@@ -11,6 +11,28 @@ const getReportStatusBadge = (status) => {
   return <span className="badge badge-shelter" style={{ fontSize: "0.68rem" }}><XCircle size={11} /> Dismissed</span>;
 };
 
+const getReportTypeBadge = (type) => {
+  if (type === "Found / In Custody") {
+    return (
+      <span style={{ fontSize: "0.68rem", fontWeight: 700, padding: "3px 8px", borderRadius: "12px", backgroundColor: "#ECFDF5", color: "#065F46", border: "1px solid #A7F3D0" }}>
+        🤝 In Custody
+      </span>
+    );
+  }
+  if (type === "Community Sighting") {
+    return (
+      <span style={{ fontSize: "0.68rem", fontWeight: 700, padding: "3px 8px", borderRadius: "12px", backgroundColor: "#EFF6FF", color: "#1E40AF", border: "1px solid #BFDBFE" }}>
+        👀 Sighting
+      </span>
+    );
+  }
+  return (
+    <span style={{ fontSize: "0.68rem", fontWeight: 700, padding: "3px 8px", borderRadius: "12px", backgroundColor: "#FEF2F2", color: "#991B1B", border: "1px solid #FECACA" }}>
+      🚨 Lost Recovery
+    </span>
+  );
+};
+
 const NGOFoundReports = () => {
   const { foundReports, animals, confirmFoundMatch, dismissFoundReport } = useApp();
   const { user } = useAuth();
@@ -204,9 +226,12 @@ const NGOFoundReports = () => {
                   {/* Header info */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
                     <div>
-                      <h3 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-main)" }}>
-                        {pet?.name || "Unnamed Stray"} <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 500 }}>({report.animalId})</span>
-                      </h3>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <h3 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-main)" }}>
+                          {pet?.name || "Unnamed Stray"} <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: 500 }}>({report.animalId})</span>
+                        </h3>
+                        {getReportTypeBadge(report.reportType)}
+                      </div>
                       <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px", marginTop: "2px" }}>
                         <Clock size={12} /> Reported check-in: {report.reportedAt}
                       </span>
@@ -232,6 +257,12 @@ const NGOFoundReports = () => {
                           <span style={{ fontSize: "0.82rem" }}>
                             <strong>Finder Phone:</strong> {report.finderContact}
                           </span>
+                        </div>
+                      )}
+
+                      {report.notes && (
+                        <div style={{ fontSize: "0.78rem", color: "#374151", backgroundColor: "#F3F4F6", padding: "6px 10px", borderRadius: "8px", marginTop: "2px" }}>
+                          <strong>Finder Note:</strong> {report.notes}
                         </div>
                       )}
                     </div>

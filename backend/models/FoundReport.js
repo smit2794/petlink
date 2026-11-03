@@ -7,6 +7,12 @@ const foundReportSchema = new mongoose.Schema({
   finderLocation: String,
   finderPhoto: String,
   finderContact: String,
+  reportType: {
+    type: String,
+    enum: ['Lost Recovery', 'Community Sighting', 'Found / In Custody'],
+    default: 'Community Sighting'
+  },
+  notes: { type: String, default: '' },
   status: {
     type: String,
     enum: ['Pending', 'Confirmed', 'Dismissed'],

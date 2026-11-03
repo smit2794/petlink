@@ -328,7 +328,30 @@ router.get('/tokens/lookup/:tokenId', async (req, res) => {
 
     if (token.status === 'claimed' && token.linkedAnimalId) {
       const animal = await Animal.findOne({ id: token.linkedAnimalId });
-      return res.json({ type: 'token', token, animal: animal || null });
+      if (animal) {
+        const animalObj = animal.toObject();
+        const isParent =
+          token.assignedTo === 'parent' ||
+          animalObj.ownershipType === 'Parent-owned' ||
+          (animalObj.custodian || '').toLowerCase().includes('(home)') ||
+          (animalObj.custodian || '').toLowerCase().includes('home') ||
+          (animalObj.custodian || '').toLowerCase().includes('guardian');
+
+        const ownershipType = animalObj.ownershipType || (isParent ? 'Parent-owned' : 'NGO-custodied');
+        const responsibleNgoName =
+          animalObj.responsibleNgoName ||
+          (!isParent ? (token.assignedUserName || animalObj.custodian || 'Registered Welfare NGO') : '');
+
+        const enrichedAnimal = {
+          ...animalObj,
+          ownershipType,
+          responsibleNgoName,
+          publishWelfarePublicly: animalObj.publishWelfarePublicly !== false
+        };
+
+        return res.json({ type: 'token', token, animal: enrichedAnimal });
+      }
+      return res.json({ type: 'token', token, animal: null });
     }
 
     res.json({ type: 'token', token });

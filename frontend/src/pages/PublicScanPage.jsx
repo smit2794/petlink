@@ -19,7 +19,14 @@ import {
   Check,
   AlertCircle,
   User,
-  X
+  X,
+  Building2,
+  Home,
+  Lock,
+  Eye,
+  EyeOff,
+  Send,
+  Info
 } from "lucide-react";
 
 const SAMPLE_PET_PHOTOS = [
@@ -39,17 +46,19 @@ const PublicScanPage = () => {
   const [tokenState, setTokenState] = useState(null); // null | { type: 'unclaimed', token } | { type: 'claimed', token, animal }
   const [step, setStep] = useState(1); // 1 = Detail/Form, 2 = Success screen (found report)
 
-  // Lost pet report form state (for Scenario 2/3 when status === 'Lost')
+  // Sighting / found report form state
   const [reportFormData, setReportFormData] = useState({
     location: "",
     photoPreview: "",
-    contact: ""
+    contact: "",
+    reportType: "Community Sighting",
+    notes: ""
   });
   const [reportError, setReportError] = useState("");
+  const [showSightingForm, setShowSightingForm] = useState(false);
   const scanLoggedRef = useRef(false);
 
   // Edit mode state (for Scenario 3)
-  const [isEditing, setIsEditing] = useState(false);
   const [editFormData, setEditFormData] = useState({
     name: "",
     species: "Dog",
@@ -59,7 +68,8 @@ const PublicScanPage = () => {
     weight: "",
     photo: "",
     vaccinationStatus: "Fully Vaccinated",
-    sterilizationStatus: "Sterilized"
+    sterilizationStatus: "Sterilized",
+    publishWelfarePublicly: true
   });
 
   // Fill-in registration state (for Scenario 1b)
@@ -72,7 +82,8 @@ const PublicScanPage = () => {
     weight: "",
     photo: SAMPLE_PET_PHOTOS[0].url,
     vaccinationStatus: "Fully Vaccinated",
-    sterilizationStatus: "Sterilized"
+    sterilizationStatus: "Sterilized",
+    publishWelfarePublicly: true
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -108,7 +119,8 @@ const PublicScanPage = () => {
                 weight: a.weight || "",
                 photo: a.photo || SAMPLE_PET_PHOTOS[0].url,
                 vaccinationStatus: a.healthSummary?.vaccinationStatus || "Fully Vaccinated",
-                sterilizationStatus: a.healthSummary?.sterilizationStatus || "Sterilized"
+                sterilizationStatus: a.healthSummary?.sterilizationStatus || "Sterilized",
+                publishWelfarePublicly: a.publishWelfarePublicly !== false
               });
             }
           } else {
@@ -146,6 +158,23 @@ const PublicScanPage = () => {
     tokenState?.token?.assignedUserId &&
     String(tokenState.token.assignedUserId._id || tokenState.token.assignedUserId) === String(user.id || user._id)
   );
+
+  // Custody & Ownership classification
+  const isParentOwned = Boolean(
+    tokenState?.token?.assignedTo === 'parent' ||
+    pet?.ownershipType === 'Parent-owned' ||
+    (pet?.custodian || '').toLowerCase().includes('(home)') ||
+    (pet?.custodian || '').toLowerCase().includes('home') ||
+    (pet?.custodian || '').toLowerCase().includes('guardian') ||
+    (pet?.ownerId && !pet?.ownershipType)
+  );
+
+  const custodyLabel = isParentOwned ? "Parent-owned" : "NGO-custodied";
+  const responsibleNgo =
+    pet?.responsibleNgoName ||
+    (!isParentOwned
+      ? tokenState?.token?.assignedUserName || pet?.custodian || "Registered Welfare NGO"
+      : "");
 
   // ── Scan Logging (once per session for loaded pets) ──
   useEffect(() => {
@@ -191,11 +220,43 @@ const PublicScanPage = () => {
       await submitFoundReport(pet.id, {
         finderLocation: reportFormData.location,
         finderPhoto: reportFormData.photoPreview,
-        finderContact: reportFormData.contact
+        finderContact: reportFormData.contact,
+        reportType: reportFormData.reportType || (pet.status === "Lost" ? "Lost Recovery" : "Community Sighting"),
+        notes: reportFormData.notes || "",
+        petName: pet.name
       });
       setStep(2);
     } catch (err) {
       // Handled in submitFoundReport
+    }
+  };
+
+  // ── Handler for Quick Owner Welfare Privacy Toggle ──
+  const handleToggleWelfarePrivacy = async (newVal) => {
+    try {
+      const res = await client.put(`/tokens/${tagId}/edit`, {
+        publishWelfarePublicly: newVal
+      });
+      const updatedAnimal = res.data;
+      setTokenState((prev) => ({
+        ...prev,
+        animal: { ...prev.animal, ...updatedAnimal, publishWelfarePublicly: newVal }
+      }));
+      setEditFormData((prev) => ({
+        ...prev,
+        publishWelfarePublicly: newVal
+      }));
+      if (updatedAnimal.id) {
+        updateAnimal(updatedAnimal.id, { ...updatedAnimal, publishWelfarePublicly: newVal }, true);
+      }
+      addToast(
+        newVal
+          ? "Welfare & medical records are now visible on public scan."
+          : "Welfare & medical records are now kept private on public scan.",
+        "info"
+      );
+    } catch (err) {
+      addToast("Failed to update privacy setting.", "error");
     }
   };
 
@@ -229,6 +290,9 @@ const PublicScanPage = () => {
       photo: fillFormData.photo,
       status: "Adopted",
       custodian: user ? `${user.name} (Home)` : "Home Guardian",
+      ownershipType: user?.role === "ngo" ? "NGO-custodied" : "Parent-owned",
+      responsibleNgoName: user?.role === "ngo" ? user.name : "",
+      publishWelfarePublicly: fillFormData.publishWelfarePublicly !== false,
       ownerId: user?.id || user?._id,
       createdBy: user?.id || user?._id,
       lastUpdated: "Just now",
@@ -277,7 +341,8 @@ const PublicScanPage = () => {
         weight: createdAnimal.weight,
         photo: createdAnimal.photo,
         vaccinationStatus: createdAnimal.healthSummary?.vaccinationStatus || "Fully Vaccinated",
-        sterilizationStatus: createdAnimal.healthSummary?.sterilizationStatus || "Sterilized"
+        sterilizationStatus: createdAnimal.healthSummary?.sterilizationStatus || "Sterilized",
+        publishWelfarePublicly: createdAnimal.publishWelfarePublicly !== false
       });
     } catch (err) {
       console.error("Claim or registration error:", err);
@@ -314,6 +379,7 @@ const PublicScanPage = () => {
       age: editFormData.age.trim(),
       weight: editFormData.weight.trim(),
       photo: editFormData.photo,
+      publishWelfarePublicly: editFormData.publishWelfarePublicly !== false,
       healthSummary: {
         vaccinationStatus: editFormData.vaccinationStatus,
         sterilizationStatus: editFormData.sterilizationStatus
@@ -327,7 +393,7 @@ const PublicScanPage = () => {
       // Update state locally and in AppContext
       setTokenState((prev) => ({
         ...prev,
-        animal: updatedAnimal,
+        animal: { ...prev.animal, ...updatedAnimal },
         token: {
           ...prev.token,
           linkedPetName: updatedAnimal.name
@@ -335,7 +401,7 @@ const PublicScanPage = () => {
       }));
 
       if (updatedAnimal.id) {
-        updateAnimal(updatedAnimal.id, updatedAnimal, true);
+        updateAnimal(updatedAnimal.id, { ...updatedAnimal }, true);
       }
 
       addToast("✅ Pet profile updated successfully!", "success");
@@ -704,6 +770,30 @@ const PublicScanPage = () => {
                   </div>
                 </div>
 
+                <div style={{
+                  backgroundColor: "#F9FAFB",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: "12px",
+                  padding: "12px 14px",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "10px"
+                }}>
+                  <input
+                    type="checkbox"
+                    id="fillPublishWelfare"
+                    checked={fillFormData.publishWelfarePublicly !== false}
+                    onChange={(e) => setFillFormData({ ...fillFormData, publishWelfarePublicly: e.target.checked })}
+                    style={{ marginTop: "3px", width: "16px", height: "16px", accentColor: "#5028FF" }}
+                  />
+                  <label htmlFor="fillPublishWelfare" style={{ fontSize: "0.78rem", color: "#374151", cursor: "pointer", lineHeight: 1.4 }}>
+                    <strong style={{ display: "block", color: "#111827", marginBottom: "2px" }}>
+                      Publish Welfare & Medical Status Publicly
+                    </strong>
+                    Allow anyone scanning this collar tag to see vaccination and sterilization records. Uncheck to keep medical info private.
+                  </label>
+                </div>
+
                 <button
                   type="submit"
                   disabled={isSubmitting}
@@ -954,6 +1044,30 @@ const PublicScanPage = () => {
                 </div>
               </div>
 
+              <div style={{
+                backgroundColor: "#FEF3C7",
+                border: "1px solid #FDE68A",
+                borderRadius: "12px",
+                padding: "12px 14px",
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "10px"
+              }}>
+                <input
+                  type="checkbox"
+                  id="editPublishWelfare"
+                  checked={editFormData.publishWelfarePublicly !== false}
+                  onChange={(e) => setEditFormData({ ...editFormData, publishWelfarePublicly: e.target.checked })}
+                  style={{ marginTop: "3px", width: "16px", height: "16px", accentColor: "#D97706" }}
+                />
+                <label htmlFor="editPublishWelfare" style={{ fontSize: "0.78rem", color: "#92400E", cursor: "pointer", lineHeight: 1.4 }}>
+                  <strong style={{ display: "block", color: "#78350F", marginBottom: "2px" }}>
+                    Publish Welfare & Medical Status Publicly
+                  </strong>
+                  When checked, anyone scanning your pet's collar can verify vaccination and sterilization status. Uncheck to keep medical records private.
+                </label>
+              </div>
+
               <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
                 <button
                   type="button"
@@ -997,7 +1111,8 @@ const PublicScanPage = () => {
                       weight: pet.weight || "",
                       photo: pet.photo || SAMPLE_PET_PHOTOS[0].url,
                       vaccinationStatus: pet.healthSummary?.vaccinationStatus || "Fully Vaccinated",
-                      sterilizationStatus: pet.healthSummary?.sterilizationStatus || "Sterilized"
+                      sterilizationStatus: pet.healthSummary?.sterilizationStatus || "Sterilized",
+                      publishWelfarePublicly: pet.publishWelfarePublicly !== false
                     });
                   }}
                   className="btn btn-outline"
@@ -1031,12 +1146,34 @@ const PublicScanPage = () => {
             <div className="card" style={{ padding: "0px", borderRadius: "24px", overflow: "hidden", border: "1px solid var(--border-color)", boxShadow: "0 10px 30px rgba(0,0,0,0.04)" }}>
               <div style={{ position: "relative", height: "280px" }}>
                 <img src={pet.photo} alt={pet.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                <div style={{ position: "absolute", bottom: "16px", left: "16px", zIndex: 10 }}>
+                
+                {/* Overlay Badges: Status + Custody Classification */}
+                <div style={{ position: "absolute", bottom: "16px", left: "16px", right: "16px", zIndex: 10, display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
                   <span
                     className={`badge badge-${pet.status === "Lost" ? "rescued" : "adopted"}`}
-                    style={{ fontSize: "0.75rem", padding: "6px 14px", border: "2px solid white", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}
+                    style={{ fontSize: "0.75rem", padding: "6px 12px", border: "2px solid white", boxShadow: "0 4px 12px rgba(0,0,0,0.15)", display: "inline-flex", alignItems: "center", gap: "5px" }}
                   >
                     {pet.status === "Lost" ? "⚠️ Reported Lost" : "🟢 Registered Safe"}
+                  </span>
+
+                  <span
+                    style={{
+                      fontSize: "0.75rem",
+                      fontWeight: 800,
+                      padding: "6px 12px",
+                      borderRadius: "20px",
+                      backgroundColor: isParentOwned ? "rgba(99, 102, 241, 0.95)" : "rgba(13, 148, 136, 0.95)",
+                      color: "#FFFFFF",
+                      border: "2px solid white",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "5px",
+                      backdropFilter: "blur(4px)"
+                    }}
+                  >
+                    {isParentOwned ? <Home size={13} /> : <Building2 size={13} />}
+                    {custodyLabel}
                   </span>
                 </div>
               </div>
@@ -1049,6 +1186,45 @@ const PublicScanPage = () => {
                   </p>
                 </div>
 
+                {/* Responsible NGO Custodian Display (Specifically for NGO-custodied pets) */}
+                {!isParentOwned && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "12px 16px",
+                      backgroundColor: "rgba(13, 148, 136, 0.08)",
+                      borderRadius: "14px",
+                      border: "1px solid rgba(13, 148, 136, 0.25)"
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "10px",
+                        backgroundColor: "rgba(13, 148, 136, 0.15)",
+                        color: "#0F766E",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0
+                      }}
+                    >
+                      <Building2 size={20} />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#0F766E" }}>
+                        Responsible NGO Custodian
+                      </div>
+                      <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#134E4A", wordBreak: "break-word" }}>
+                        {responsibleNgo}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "12px 16px", backgroundColor: "#FCFAF6", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
                   <ShieldCheck size={18} color="var(--primary-color)" />
                   <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--text-muted)" }}>
@@ -1057,6 +1233,7 @@ const PublicScanPage = () => {
                 </div>
 
                 {pet.status === "Lost" ? (
+                  /* ── Formally Marked Lost Recovery Form ── */
                   <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "8px" }}>
                     <div style={{ backgroundColor: "var(--accent-coral-light)", padding: "16px", borderRadius: "14px", border: "1px solid rgba(224, 93, 93, 0.15)" }}>
                       <h4 style={{ color: "var(--accent-coral)", fontWeight: 800, fontSize: "0.92rem", margin: "0 0 4px" }}>
@@ -1113,48 +1290,354 @@ const PublicScanPage = () => {
                     </form>
                   </div>
                 ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "8px", borderTop: "1px solid var(--border-color)", paddingTop: "20px" }}>
-                    <h3 style={{ fontSize: "1.05rem", fontWeight: 800, margin: 0, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "6px" }}>
-                      <CheckCircle size={16} /> Safe &amp; Cared For
-                    </h3>
+                  /* ── Pet Registered Safe & Cared For ── */
+                  <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginTop: "8px", borderTop: "1px solid var(--border-color)", paddingTop: "20px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <h3 style={{ fontSize: "1.05rem", fontWeight: 800, margin: 0, color: "var(--primary-color)", display: "flex", alignItems: "center", gap: "6px" }}>
+                        <CheckCircle size={16} /> Safe &amp; Cared For
+                      </h3>
+                      <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 600 }}>
+                        {isParentOwned ? "Home Protected" : "Shelter Monitored"}
+                      </span>
+                    </div>
+
                     <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", margin: 0, lineHeight: 1.5 }}>
                       This pet has a registered custodian and is not reported missing.
                     </p>
 
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginTop: "6px" }}>
-                      <div style={{ padding: "12px 14px", backgroundColor: "#FCFAF6", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
-                        <span style={{ fontSize: "0.68rem", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>Vaccination Status</span>
-                        <p style={{ fontSize: "0.88rem", fontWeight: 800, color: "var(--text-main)", margin: "4px 0 0" }}>{pet.healthSummary?.vaccinationStatus || "Not on file"}</p>
-                      </div>
-                      <div style={{ padding: "12px 14px", backgroundColor: "#FCFAF6", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
-                        <span style={{ fontSize: "0.68rem", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>Sterilization Status</span>
-                        <p style={{ fontSize: "0.88rem", fontWeight: 800, color: "var(--text-main)", margin: "4px 0 0" }}>{pet.healthSummary?.sterilizationStatus || "Not on file"}</p>
-                      </div>
-                    </div>
+                    {/* Welfare & Medical Status: Controlled by publishWelfarePublicly */}
+                    {pet.publishWelfarePublicly !== false ? (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
+                            <Eye size={12} color="var(--primary-color)" /> Welfare &amp; Medical Records (Publicly Shared)
+                          </span>
+                          {isOwner && (
+                            <button
+                              type="button"
+                              onClick={() => handleToggleWelfarePrivacy(false)}
+                              title="Click to hide vaccination & sterilization details from public scan"
+                              style={{
+                                background: "none",
+                                border: 0,
+                                color: "#B45309",
+                                cursor: "pointer",
+                                fontSize: "0.72rem",
+                                fontWeight: 700,
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "4px"
+                              }}
+                            >
+                              <EyeOff size={12} /> Hide Records
+                            </button>
+                          )}
+                        </div>
 
-                    <p style={{ fontSize: "0.72rem", color: "var(--text-muted)", margin: "6px 0 0", lineHeight: 1.4 }}>
-                      Owner contact details are kept private. If this pet appears distressed or unattended, please use the municipal rescue network.
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                          <div style={{ padding: "12px 14px", backgroundColor: "#FCFAF6", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+                            <span style={{ fontSize: "0.68rem", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>Vaccination Status</span>
+                            <p style={{ fontSize: "0.88rem", fontWeight: 800, color: "var(--text-main)", margin: "4px 0 0" }}>{pet.healthSummary?.vaccinationStatus || "Not on file"}</p>
+                          </div>
+                          <div style={{ padding: "12px 14px", backgroundColor: "#FCFAF6", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+                            <span style={{ fontSize: "0.68rem", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>Sterilization Status</span>
+                            <p style={{ fontSize: "0.88rem", fontWeight: 800, color: "var(--text-main)", margin: "4px 0 0" }}>{pet.healthSummary?.sterilizationStatus || "Not on file"}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      /* Confidential Welfare notice when publishWelfarePublicly is false */
+                      <div
+                        style={{
+                          padding: "16px",
+                          backgroundColor: "#F9FAFB",
+                          borderRadius: "14px",
+                          border: "1px solid #E5E7EB",
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: "12px"
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "10px",
+                            backgroundColor: "#F3F4F6",
+                            color: "#4B5563",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0
+                          }}
+                        >
+                          <Lock size={18} />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <h4 style={{ margin: "0 0 4px", fontSize: "0.88rem", fontWeight: 700, color: "#374151" }}>
+                            Welfare &amp; Medical Records Confidential
+                          </h4>
+                          <p style={{ margin: 0, fontSize: "0.78rem", color: "#6B7280", lineHeight: 1.4 }}>
+                            The custodian has marked vaccination and sterilization records confidential. Official health files remain safely recorded in the registry.
+                          </p>
+                          {isOwner && (
+                            <button
+                              type="button"
+                              onClick={() => handleToggleWelfarePrivacy(true)}
+                              className="btn btn-outline"
+                              style={{
+                                marginTop: "10px",
+                                padding: "6px 12px",
+                                fontSize: "0.74rem",
+                                fontWeight: 700,
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                borderColor: "#D97706",
+                                color: "#D97706"
+                              }}
+                            >
+                              <Eye size={13} /> Publish Medical Records Publicly
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    <p style={{ fontSize: "0.72rem", color: "var(--text-muted)", margin: "4px 0 0", lineHeight: 1.4 }}>
+                      Owner contact details are kept private. If this pet appears distressed or unattended, you can notify their custodian below.
                     </p>
+
+                    {/* ── General "Report Found / Send Sighting" Option (Even when NOT formally marked Lost) ── */}
+                    <div style={{ marginTop: "10px", borderTop: "1px dashed var(--border-color)", paddingTop: "16px" }}>
+                      {!showSightingForm ? (
+                        <div
+                          style={{
+                            padding: "16px",
+                            backgroundColor: "#F8FAFC",
+                            borderRadius: "14px",
+                            border: "1px dashed #CBD5E1",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "10px"
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                            <div style={{ width: "32px", height: "32px", borderRadius: "8px", backgroundColor: "#EFF6FF", color: "#2563EB", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                              <MapPin size={16} />
+                            </div>
+                            <div style={{ flex: 1 }}>
+                              <strong style={{ fontSize: "0.88rem", color: "#1E293B", display: "block" }}>
+                                Spotted {pet.name} wandering or unattended?
+                              </strong>
+                              <p style={{ fontSize: "0.76rem", color: "#64748B", margin: "2px 0 0", lineHeight: 1.4 }}>
+                                Log a community sighting or report holding custody so {isParentOwned ? "their family" : responsibleNgo} knows where {pet.name} is.
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setReportFormData((prev) => ({
+                                ...prev,
+                                reportType: "Community Sighting"
+                              }));
+                              setShowSightingForm(true);
+                            }}
+                            className="btn btn-outline"
+                            style={{
+                              width: "100%",
+                              padding: "10px",
+                              fontSize: "0.82rem",
+                              fontWeight: 700,
+                              borderColor: "#3B82F6",
+                              color: "#1D4ED8",
+                              backgroundColor: "rgba(59, 130, 246, 0.05)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              gap: "6px"
+                            }}
+                          >
+                            <Send size={14} /> Report Found / Send Sighting
+                          </button>
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            padding: "18px",
+                            backgroundColor: "#F8FAFC",
+                            borderRadius: "16px",
+                            border: "1px solid #CBD5E1",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "14px"
+                          }}
+                        >
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <div>
+                              <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: 800, color: "#0F172A", display: "flex", alignItems: "center", gap: "6px" }}>
+                                <Send size={15} color="#2563EB" /> Send Sighting / Report Found
+                              </h4>
+                              <p style={{ margin: "2px 0 0", fontSize: "0.75rem", color: "#64748B" }}>
+                                Help the custodian know {pet.name}'s current whereabouts.
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setShowSightingForm(false)}
+                              style={{ background: "none", border: 0, color: "#94A3B8", cursor: "pointer", fontSize: "0.8rem", fontWeight: 700 }}
+                            >
+                              ✕ Close
+                            </button>
+                          </div>
+
+                          <form onSubmit={handleSubmitReport} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                            <div className="form-group" style={{ margin: 0 }}>
+                              <label className="form-label" style={{ fontWeight: 700, fontSize: "0.8rem" }}>Report Type</label>
+                              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+                                <button
+                                  type="button"
+                                  onClick={() => setReportFormData({ ...reportFormData, reportType: "Community Sighting" })}
+                                  style={{
+                                    padding: "8px 10px",
+                                    borderRadius: "8px",
+                                    fontSize: "0.75rem",
+                                    fontWeight: 700,
+                                    border: reportFormData.reportType === "Community Sighting" ? "2px solid #2563EB" : "1px solid #CBD5E1",
+                                    backgroundColor: reportFormData.reportType === "Community Sighting" ? "#EFF6FF" : "#FFF",
+                                    color: reportFormData.reportType === "Community Sighting" ? "#1E40AF" : "#475569",
+                                    cursor: "pointer"
+                                  }}
+                                >
+                                  👀 Sighted Nearby
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setReportFormData({ ...reportFormData, reportType: "Found / In Custody" })}
+                                  style={{
+                                    padding: "8px 10px",
+                                    borderRadius: "8px",
+                                    fontSize: "0.75rem",
+                                    fontWeight: 700,
+                                    border: reportFormData.reportType === "Found / In Custody" ? "2px solid #059669" : "1px solid #CBD5E1",
+                                    backgroundColor: reportFormData.reportType === "Found / In Custody" ? "#ECFDF5" : "#FFF",
+                                    color: reportFormData.reportType === "Found / In Custody" ? "#065F46" : "#475569",
+                                    cursor: "pointer"
+                                  }}
+                                >
+                                  🤝 Safe In My Custody
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="form-group" style={{ margin: 0 }}>
+                              <label className="form-label" style={{ fontWeight: 700, fontSize: "0.8rem" }}>Sighting Location / Landmark *</label>
+                              <div style={{ display: "flex", gap: "8px" }}>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="e.g. Near Symbiosis Gate, Viman Nagar"
+                                  value={reportFormData.location}
+                                  onChange={(e) => { setReportFormData({ ...reportFormData, location: e.target.value }); setReportError(""); }}
+                                  required
+                                />
+                                <button
+                                  type="button"
+                                  className="btn btn-outline"
+                                  style={{ padding: "10px", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
+                                  onClick={handleGPSAutoCapture}
+                                  title="Auto Capture Coordinates"
+                                >
+                                  <MapPin size={18} />
+                                </button>
+                              </div>
+                              {reportError && <span style={{ fontSize: "0.72rem", color: "var(--accent-coral)", fontWeight: 700, marginTop: "4px", display: "block" }}>{reportError}</span>}
+                            </div>
+
+                            <div className="form-group" style={{ margin: 0 }}>
+                              <label className="form-label" style={{ fontWeight: 700, fontSize: "0.8rem" }}>Notes / Condition (Optional)</label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                placeholder="e.g. Friendly, resting near shop entrance"
+                                value={reportFormData.notes || ""}
+                                onChange={(e) => setReportFormData({ ...reportFormData, notes: e.target.value })}
+                              />
+                            </div>
+
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                              <div className="form-group" style={{ margin: 0 }}>
+                                <label className="form-label" style={{ fontWeight: 700, fontSize: "0.8rem" }}>Photo (Optional)</label>
+                                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                                  <label className="btn btn-outline" style={{ display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", padding: "8px 12px", fontSize: "0.75rem", width: "100%", justifyContent: "center" }}>
+                                    <Camera size={13} /> {reportFormData.photoPreview ? "Change" : "Add Photo"}
+                                    <input type="file" accept="image/*" style={{ display: "none" }} onChange={handleReportPhotoUpload} />
+                                  </label>
+                                  {reportFormData.photoPreview && (
+                                    <img src={reportFormData.photoPreview} alt="Upload preview" style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover", flexShrink: 0 }} />
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="form-group" style={{ margin: 0 }}>
+                                <label className="form-label" style={{ fontWeight: 700, fontSize: "0.8rem" }}>Your Phone (Optional)</label>
+                                <div style={{ position: "relative" }}>
+                                  <Phone size={13} style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="+91..."
+                                    style={{ paddingLeft: "30px", fontSize: "0.82rem" }}
+                                    value={reportFormData.contact}
+                                    onChange={(e) => setReportFormData({ ...reportFormData, contact: e.target.value })}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+
+                            <button
+                              type="submit"
+                              className="btn btn-primary"
+                              style={{
+                                width: "100%",
+                                padding: "11px",
+                                fontWeight: 800,
+                                backgroundColor: reportFormData.reportType === "Found / In Custody" ? "#059669" : "#2563EB",
+                                borderColor: reportFormData.reportType === "Found / In Custody" ? "#059669" : "#2563EB"
+                              }}
+                            >
+                              <Send size={14} style={{ marginRight: "6px" }} />
+                              {reportFormData.reportType === "Found / In Custody" ? "Submit Found Custody Report" : "Send Sighting Notification"}
+                            </button>
+                          </form>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
             </div>
           </div>
         ) : (
-          /* Found report submission success */
+          /* Sighting / Found report submission success */
           <div className="card animate-scale-up" style={{ padding: "40px 32px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "18px", borderRadius: "24px" }}>
             <div style={{ width: "60px", height: "60px", borderRadius: "50%", backgroundColor: "var(--secondary-light)", color: "var(--primary-color)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <CheckCircle size={32} />
             </div>
             <div>
-              <h2 style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--text-main)" }}>Thank you, Finder!</h2>
+              <h2 style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--text-main)" }}>
+                {reportFormData.reportType === "Lost Recovery" ? "Thank you, Finder!" : "Sighting Dispatched!"}
+              </h2>
               <p style={{ fontSize: "0.88rem", color: "var(--text-muted)", marginTop: "8px", lineHeight: 1.5 }}>
-                Your report has been successfully logged. {pet.name}'s custodian and municipal volunteer rescue hubs have been notified of your location.
+                {reportFormData.reportType === "Lost Recovery"
+                  ? `Your report has been successfully logged. ${pet.name}'s custodian and municipal volunteer rescue hubs have been notified of your location.`
+                  : `Your ${reportFormData.reportType.toLowerCase()} for ${pet.name} has been securely logged and communicated to their registered custodian (${isParentOwned ? "Parent" : responsibleNgo}).`}
               </p>
             </div>
             <div style={{ width: "100%", borderTop: "1px solid var(--border-color)", paddingTop: "20px", marginTop: "10px" }}>
               <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", margin: "0 0 16px" }}>
-                Keep this window open to receive proximity alerts once a custodian responds.
+                Thank you for contributing to Pune's community pet welfare network.
               </p>
               <button className="btn btn-outline" onClick={() => navigate("/")} style={{ width: "100%" }}>
                 Return to Selector

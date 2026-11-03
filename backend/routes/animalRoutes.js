@@ -47,11 +47,24 @@ router.post('/', optionalAuthMiddleware, async (req, res) => {
         if (!animalData.custodian) {
           animalData.custodian = `${req.user.name} (Home)`;
         }
+        if (!animalData.ownershipType) {
+          animalData.ownershipType = 'Parent-owned';
+        }
       } else if (req.user.role === 'ngo') {
         if (!animalData.custodian) {
           animalData.custodian = req.user.name;
         }
+        if (!animalData.ownershipType) {
+          animalData.ownershipType = 'NGO-custodied';
+        }
+        if (!animalData.responsibleNgoName) {
+          animalData.responsibleNgoName = req.user.name;
+        }
       }
+    }
+
+    if (animalData.publishWelfarePublicly === undefined) {
+      animalData.publishWelfarePublicly = true;
     }
 
     const animal = await Animal.create(animalData);

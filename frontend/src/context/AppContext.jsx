@@ -1359,12 +1359,11 @@ export const AppProvider = ({ children }) => {
   };
 
 
-  const submitFoundReport = async (animalId, reportData) => {
-    const pet = animals.find(p => p.id === animalId);
-    if (!pet) {
-      console.warn(`submitFoundReport blocked: Pet ${animalId} not found.`);
-      return;
-    }
+  const submitFoundReport = async (animalId, reportData = {}) => {
+    const pet = (animals || []).find(p => p.id === animalId);
+    const petName = reportData.petName || pet?.name || "animal";
+    const isLost = pet?.status === "Lost";
+    const reportType = reportData.reportType || (isLost ? "Lost Recovery" : "Community Sighting");
 
     const newId = `RPT-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     const payload = {
@@ -1374,15 +1373,22 @@ export const AppProvider = ({ children }) => {
       finderLocation: reportData.finderLocation || "Unknown coordinates",
       finderPhoto: reportData.finderPhoto || "",
       finderContact: reportData.finderContact || "",
+      reportType,
+      notes: reportData.notes || "",
       status: "Pending"
     };
 
     try {
       const res = await client.post('/foundreports', payload);
       setFoundReports((prev) => [res.data, ...prev]);
-      addToast(`🚨 Lost pet ${pet.name} scanned! Finder report submitted.`, "warning");
+      if (reportType === "Lost Recovery" || isLost) {
+        addToast(`🚨 Lost pet ${petName} scanned! Finder report submitted.`, "warning");
+      } else {
+        addToast(`📍 Sighting report submitted for ${petName}. Thank you!`, "success");
+      }
+      return res.data;
     } catch (err) {
-      addToast(err.response?.data?.error || "Failed to submit found report. Please try again.", "error");
+      addToast(err.response?.data?.error || "Failed to submit report. Please try again.", "error");
       console.error(err);
       throw err;
     }

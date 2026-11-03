@@ -15,6 +15,13 @@ const animalSchema = new mongoose.Schema({
     default: 'Adopted'
   },
   custodian: String,
+  ownershipType: {
+    type: String,
+    enum: ['Parent-owned', 'NGO-custodied'],
+    default: null
+  },
+  responsibleNgoName: { type: String, default: '' },
+  publishWelfarePublicly: { type: Boolean, default: true },
   ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   assignedVetId: String,

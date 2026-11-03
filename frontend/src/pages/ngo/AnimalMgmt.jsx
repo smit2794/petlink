@@ -370,6 +370,9 @@ const AnimalMgmt = () => {
           photo: photo,
           custodian: user?.name || "Pune Central Animal Shelter",
           createdBy: user?.id,
+          ownershipType: "NGO-custodied",
+          responsibleNgoName: user?.name || "Pune Central Animal Shelter",
+          publishWelfarePublicly: true,
           status: "In Shelter",
           assignedVetId: "VET-1"
         };

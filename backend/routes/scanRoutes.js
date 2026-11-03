@@ -53,17 +53,46 @@ router.get('/foundreports', async (req, res) => {
   }
 });
 
-// POST submit a found report — public, no auth. Blocked server-side unless animal status is "Lost"
+// POST submit a found report or sighting — public, no auth.
 router.post('/foundreports', async (req, res) => {
   try {
     if (!req.body.id || !req.body.animalId) {
       return res.status(400).json({ error: 'id and animalId are required' });
     }
     const animal = await Animal.findOne({ id: req.body.animalId });
-    if (!animal || animal.status !== 'Lost') {
-      return res.status(400).json({ error: 'This animal is not currently marked as Lost — report blocked.' });
+    if (!animal) {
+      return res.status(404).json({ error: 'Animal not found in registry.' });
     }
-    const report = await FoundReport.create(req.body);
+
+    const reportType = req.body.reportType || (animal.status === 'Lost' ? 'Lost Recovery' : 'Community Sighting');
+    const reportData = {
+      ...req.body,
+      reportType
+    };
+
+    const report = await FoundReport.create(reportData);
+
+    // Append sighting/found timeline entry
+    const isLost = animal.status === 'Lost';
+    const timelineTitle = isLost ? 'Missing Pet Sighting Reported' : 'Community Sighting Reported';
+    const noteText = req.body.notes ? ` Notes: "${req.body.notes}".` : '';
+    const contactText = req.body.finderContact ? ` Contact: ${req.body.finderContact}.` : '';
+    const timelineDesc = `${reportType} logged at ${req.body.finderLocation || 'Coordinates'}.${noteText}${contactText}`;
+
+    await Animal.findOneAndUpdate(
+      { id: req.body.animalId },
+      {
+        $push: {
+          timeline: {
+            date: new Date().toISOString().split('T')[0],
+            title: timelineTitle,
+            description: timelineDesc
+          }
+        },
+        $set: { lastUpdated: 'Just now' }
+      }
+    );
+
     res.status(201).json(report);
   } catch (err) {
     if (err.code === 11000) return res.status(400).json({ error: 'A found report with this ID already exists' });
