@@ -63,10 +63,14 @@ const PublicScanPage = () => {
     name: "",
     species: "Dog",
     breed: "",
-    gender: "Male",
+    gender: "Not Specified",
     age: "",
     weight: "",
     photo: "",
+    colorAndMarkings: "",
+    microchipNumber: "",
+    rescueDate: "",
+    rescueLocation: "",
     vaccinationStatus: "Fully Vaccinated",
     sterilizationStatus: "Sterilized",
     publishWelfarePublicly: true
@@ -77,10 +81,14 @@ const PublicScanPage = () => {
     name: "",
     species: "Dog",
     breed: "",
-    gender: "Male",
+    gender: "Not Specified",
     age: "",
     weight: "",
     photo: SAMPLE_PET_PHOTOS[0].url,
+    colorAndMarkings: "",
+    microchipNumber: "",
+    rescueDate: "",
+    rescueLocation: "",
     vaccinationStatus: "Fully Vaccinated",
     sterilizationStatus: "Sterilized",
     publishWelfarePublicly: true
@@ -114,10 +122,14 @@ const PublicScanPage = () => {
                 name: a.name || "",
                 species: a.species || "Dog",
                 breed: a.breed || "",
-                gender: a.gender || "Male",
+                gender: a.gender || "Not Specified",
                 age: a.age || "",
                 weight: a.weight || "",
                 photo: a.photo || SAMPLE_PET_PHOTOS[0].url,
+                colorAndMarkings: a.colorAndMarkings || "",
+                microchipNumber: a.microchipNumber || "",
+                rescueDate: a.rescueDate || "",
+                rescueLocation: a.rescueLocation || "",
                 vaccinationStatus: a.healthSummary?.vaccinationStatus || "Fully Vaccinated",
                 sterilizationStatus: a.healthSummary?.sterilizationStatus || "Sterilized",
                 publishWelfarePublicly: a.publishWelfarePublicly !== false
@@ -265,11 +277,11 @@ const PublicScanPage = () => {
     e.preventDefault();
     setServerError("");
     const errs = {};
-    if (!fillFormData.name.trim()) errs.name = "Pet name is required.";
-    if (!fillFormData.breed.trim()) errs.breed = "Breed is required.";
-    if (!fillFormData.age.trim()) errs.age = "Age is required (e.g. '2 years').";
-    if (!fillFormData.weight.trim()) errs.weight = "Weight is required (e.g. '14 kg').";
-    if (!fillFormData.photo) errs.photo = "A pet photo is required.";
+    const isNgo = user?.role === "ngo" || tokenState?.token?.assignedTo === "ngo";
+    const resolvedName = fillFormData.name.trim() || (isNgo ? `Rescue Case #${tagId}` : "");
+    if (!resolvedName) {
+      errs.name = "Animal name (or temporary name) is required.";
+    }
 
     if (Object.keys(errs).length > 0) {
       setFormErrors(errs);
@@ -281,17 +293,21 @@ const PublicScanPage = () => {
     const mockId = `PL-2026-${Math.floor(1000 + Math.random() * 9000)}`;
     const newAnimalPayload = {
       id: mockId,
-      name: fillFormData.name.trim(),
-      species: fillFormData.species,
-      breed: fillFormData.breed.trim(),
-      gender: fillFormData.gender,
-      age: fillFormData.age.trim(),
-      weight: fillFormData.weight.trim(),
-      photo: fillFormData.photo,
-      status: "Adopted",
-      custodian: user ? `${user.name} (Home)` : "Home Guardian",
-      ownershipType: user?.role === "ngo" ? "NGO-custodied" : "Parent-owned",
-      responsibleNgoName: user?.role === "ngo" ? user.name : "",
+      name: resolvedName,
+      species: fillFormData.species || "Dog",
+      breed: fillFormData.breed.trim() || "Mixed / Unknown",
+      gender: fillFormData.gender || "Not Specified",
+      age: fillFormData.age.trim() || "Unknown",
+      weight: fillFormData.weight.trim() || "Not recorded",
+      photo: fillFormData.photo || SAMPLE_PET_PHOTOS[0].url,
+      colorAndMarkings: fillFormData.colorAndMarkings.trim(),
+      microchipNumber: fillFormData.microchipNumber.trim(),
+      rescueDate: fillFormData.rescueDate || "",
+      rescueLocation: fillFormData.rescueLocation.trim(),
+      status: isNgo ? "In Shelter" : "Adopted",
+      custodian: user ? (isNgo ? user.name : `${user.name} (Home)`) : "Home Guardian",
+      ownershipType: isNgo ? "NGO-custodied" : "Parent-owned",
+      responsibleNgoName: isNgo ? (user?.name || "Registered Welfare NGO") : "",
       publishWelfarePublicly: fillFormData.publishWelfarePublicly !== false,
       ownerId: user?.id || user?._id,
       createdBy: user?.id || user?._id,
@@ -302,7 +318,9 @@ const PublicScanPage = () => {
         {
           date: new Date().toISOString().split("T")[0],
           title: "Tag Linked & Activated",
-          description: `Direct domestic registration by Parent ${user?.name || "Guardian"}. Collar tag ${tagId} linked.`
+          description: isNgo
+            ? `Shelter rescue registration by ${user?.name || "NGO"}. Collar tag ${tagId} linked.`
+            : `Direct domestic registration by Parent ${user?.name || "Guardian"}. Collar tag ${tagId} linked.`
         }
       ],
       healthSummary: {
@@ -340,6 +358,10 @@ const PublicScanPage = () => {
         age: createdAnimal.age,
         weight: createdAnimal.weight,
         photo: createdAnimal.photo,
+        colorAndMarkings: createdAnimal.colorAndMarkings || "",
+        microchipNumber: createdAnimal.microchipNumber || "",
+        rescueDate: createdAnimal.rescueDate || "",
+        rescueLocation: createdAnimal.rescueLocation || "",
         vaccinationStatus: createdAnimal.healthSummary?.vaccinationStatus || "Fully Vaccinated",
         sterilizationStatus: createdAnimal.healthSummary?.sterilizationStatus || "Sterilized",
         publishWelfarePublicly: createdAnimal.publishWelfarePublicly !== false
@@ -360,9 +382,6 @@ const PublicScanPage = () => {
     setServerError("");
     const errs = {};
     if (!editFormData.name.trim()) errs.name = "Pet name is required.";
-    if (!editFormData.breed.trim()) errs.breed = "Breed is required.";
-    if (!editFormData.age.trim()) errs.age = "Age is required.";
-    if (!editFormData.weight.trim()) errs.weight = "Weight is required.";
 
     if (Object.keys(errs).length > 0) {
       setFormErrors(errs);
@@ -379,6 +398,10 @@ const PublicScanPage = () => {
       age: editFormData.age.trim(),
       weight: editFormData.weight.trim(),
       photo: editFormData.photo,
+      colorAndMarkings: editFormData.colorAndMarkings?.trim() || "",
+      microchipNumber: editFormData.microchipNumber?.trim() || "",
+      rescueDate: editFormData.rescueDate || "",
+      rescueLocation: editFormData.rescueLocation?.trim() || "",
       publishWelfarePublicly: editFormData.publishWelfarePublicly !== false,
       healthSummary: {
         vaccinationStatus: editFormData.vaccinationStatus,
@@ -613,11 +636,16 @@ const PublicScanPage = () => {
 
               <form onSubmit={handleRegisterFillIn} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                 <div className="form-group">
-                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Pet Name *</label>
+                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem", display: "flex", justifyContent: "space-between" }}>
+                    <span>Animal Name {user?.role === "ngo" || tokenState?.token?.assignedTo === "ngo" ? "(Optional)" : "*"}</span>
+                    <span style={{ fontSize: "0.72rem", color: "#6B7280", fontWeight: 500 }}>
+                      {user?.role === "ngo" || tokenState?.token?.assignedTo === "ngo" ? "Auto-generates case name if blank" : "Required or temporary name"}
+                    </span>
+                  </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="e.g. Bella, Bruno, Milo"
+                    placeholder={user?.role === "ngo" || tokenState?.token?.assignedTo === "ngo" ? "e.g. Tiger (leave blank to auto-generate)" : "e.g. Bella, Bruno, Milo"}
                     value={fillFormData.name}
                     onChange={(e) => setFillFormData({ ...fillFormData, name: e.target.value })}
                   />
@@ -626,7 +654,7 @@ const PublicScanPage = () => {
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                   <div className="form-group">
-                    <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Species *</label>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Animal Species *</label>
                     <select
                       className="form-control"
                       value={fillFormData.species}
@@ -641,12 +669,13 @@ const PublicScanPage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Gender</label>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Sex / Gender</label>
                     <select
                       className="form-control"
                       value={fillFormData.gender}
                       onChange={(e) => setFillFormData({ ...fillFormData, gender: e.target.value })}
                     >
+                      <option value="Not Specified">Not Specified / Unknown</option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
                     </select>
@@ -654,32 +683,112 @@ const PublicScanPage = () => {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Breed *</label>
+                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem", display: "flex", justifyContent: "space-between" }}>
+                    <span>Breed</span>
+                    <span style={{ fontSize: "0.72rem", color: "#6B7280", fontWeight: 500 }}>Optional</span>
+                  </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="e.g. Golden Retriever, Indie, Persian"
+                    placeholder="e.g. Golden Retriever, Indie, Persian (leave blank if mixed/unknown)"
                     value={fillFormData.breed}
                     onChange={(e) => setFillFormData({ ...fillFormData, breed: e.target.value })}
                   />
-                  {formErrors.breed && <span style={{ fontSize: "0.72rem", color: "#DC2626", fontWeight: 600 }}>{formErrors.breed}</span>}
                 </div>
+
+                {/* Colour and Markings */}
+                <div className="form-group">
+                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem", display: "flex", justifyContent: "space-between" }}>
+                    <span>Colour and Markings</span>
+                    <span style={{ fontSize: "0.72rem", color: user?.role === "ngo" || tokenState?.token?.assignedTo === "ngo" ? "#0F766E" : "#6B7280", fontWeight: 600 }}>
+                      {user?.role === "ngo" || tokenState?.token?.assignedTo === "ngo" ? "Recommended for NGO" : "Optional"}
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="e.g. Brown with white chest patch, black ears, ring on tail"
+                    value={fillFormData.colorAndMarkings}
+                    onChange={(e) => setFillFormData({ ...fillFormData, colorAndMarkings: e.target.value })}
+                  />
+                </div>
+
+                {/* Microchip Number */}
+                <div className="form-group">
+                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem", display: "flex", justifyContent: "space-between" }}>
+                    <span>Microchip Number</span>
+                    <span style={{ fontSize: "0.72rem", color: "#6B7280", fontWeight: 500 }}>Optional (15-digit RFID)</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="e.g. 982000364829103"
+                    value={fillFormData.microchipNumber}
+                    onChange={(e) => setFillFormData({ ...fillFormData, microchipNumber: e.target.value })}
+                  />
+                </div>
+
+                {/* NGO Rescue Case Details (Visible if NGO) */}
+                {(user?.role === "ngo" || tokenState?.token?.assignedTo === "ngo") && (
+                  <div style={{ backgroundColor: "rgba(13, 148, 136, 0.05)", border: "1px solid rgba(13, 148, 136, 0.25)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "10px" }}>
+                    <span style={{ fontSize: "0.76rem", fontWeight: 800, color: "#0F766E", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                      Rescue Case Details (NGO)
+                    </span>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                      <div className="form-group" style={{ margin: 0 }}>
+                        <label className="form-label" style={{ fontWeight: 700, fontSize: "0.78rem" }}>Rescue Date</label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          value={fillFormData.rescueDate}
+                          onChange={(e) => setFillFormData({ ...fillFormData, rescueDate: e.target.value })}
+                        />
+                      </div>
+                      <div className="form-group" style={{ margin: 0 }}>
+                        <label className="form-label" style={{ fontWeight: 700, fontSize: "0.78rem" }}>Rescue Location</label>
+                        <div style={{ display: "flex", gap: "6px" }}>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="e.g. Station Road, Pune"
+                            value={fillFormData.rescueLocation}
+                            onChange={(e) => setFillFormData({ ...fillFormData, rescueLocation: e.target.value })}
+                          />
+                          <button
+                            type="button"
+                            className="btn btn-outline"
+                            style={{ padding: "8px", flexShrink: 0 }}
+                            title="Auto-fill GPS coordinates"
+                            onClick={() => setFillFormData((prev) => ({ ...prev, rescueLocation: "Lat: 18.5204, Lng: 73.8567 (Pune Area)" }))}
+                          >
+                            <MapPin size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                   <div className="form-group">
-                    <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Age *</label>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem", display: "flex", justifyContent: "space-between" }}>
+                      <span>Approx. Age / DOB</span>
+                      <span style={{ fontSize: "0.72rem", color: "#6B7280", fontWeight: 500 }}>Optional</span>
+                    </label>
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="e.g. 2 years"
+                      placeholder="e.g. 2 years / DOB: 2024"
                       value={fillFormData.age}
                       onChange={(e) => setFillFormData({ ...fillFormData, age: e.target.value })}
                     />
-                    {formErrors.age && <span style={{ fontSize: "0.72rem", color: "#DC2626", fontWeight: 600 }}>{formErrors.age}</span>}
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Weight *</label>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem", display: "flex", justifyContent: "space-between" }}>
+                      <span>Weight</span>
+                      <span style={{ fontSize: "0.72rem", color: "#6B7280", fontWeight: 500 }}>Optional</span>
+                    </label>
                     <input
                       type="text"
                       className="form-control"
@@ -687,12 +796,14 @@ const PublicScanPage = () => {
                       value={fillFormData.weight}
                       onChange={(e) => setFillFormData({ ...fillFormData, weight: e.target.value })}
                     />
-                    {formErrors.weight && <span style={{ fontSize: "0.72rem", color: "#DC2626", fontWeight: 600 }}>{formErrors.weight}</span>}
                   </div>
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Pet Photo *</label>
+                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem", display: "flex", justifyContent: "space-between" }}>
+                    <span>Animal Photo</span>
+                    <span style={{ fontSize: "0.72rem", color: "#6B7280", fontWeight: 500 }}>Recommended</span>
+                  </label>
                   <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
                     {fillFormData.photo && (
                       <img
@@ -739,12 +850,11 @@ const PublicScanPage = () => {
                       </button>
                     ))}
                   </div>
-                  {formErrors.photo && <span style={{ fontSize: "0.72rem", color: "#DC2626", fontWeight: 600 }}>{formErrors.photo}</span>}
                 </div>
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                   <div className="form-group">
-                    <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Vaccination Status</label>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Vaccination (Add Later)</label>
                     <select
                       className="form-control"
                       value={fillFormData.vaccinationStatus}
@@ -757,7 +867,7 @@ const PublicScanPage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Sterilization Status</label>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Sterilization (Add Later)</label>
                     <select
                       className="form-control"
                       value={fillFormData.sterilizationStatus}
@@ -920,12 +1030,13 @@ const PublicScanPage = () => {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Gender</label>
+                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Sex / Gender</label>
                   <select
                     className="form-control"
                     value={editFormData.gender}
                     onChange={(e) => setEditFormData({ ...editFormData, gender: e.target.value })}
                   >
+                    <option value="Not Specified">Not Specified / Unknown</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                   </select>
@@ -933,37 +1044,106 @@ const PublicScanPage = () => {
               </div>
 
               <div className="form-group">
-                <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Breed *</label>
+                <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem", display: "flex", justifyContent: "space-between" }}>
+                  <span>Breed</span>
+                  <span style={{ fontSize: "0.72rem", color: "#6B7280", fontWeight: 500 }}>Optional</span>
+                </label>
                 <input
                   type="text"
                   className="form-control"
+                  placeholder="e.g. Mixed, Indie, Labrador"
                   value={editFormData.breed}
                   onChange={(e) => setEditFormData({ ...editFormData, breed: e.target.value })}
                 />
-                {formErrors.breed && <span style={{ fontSize: "0.72rem", color: "#DC2626", fontWeight: 600 }}>{formErrors.breed}</span>}
               </div>
+
+              {/* Colour and Markings */}
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem", display: "flex", justifyContent: "space-between" }}>
+                  <span>Colour and Markings</span>
+                  <span style={{ fontSize: "0.72rem", color: "#6B7280", fontWeight: 500 }}>Optional</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="e.g. Brown with white chest, black spots"
+                  value={editFormData.colorAndMarkings}
+                  onChange={(e) => setEditFormData({ ...editFormData, colorAndMarkings: e.target.value })}
+                />
+              </div>
+
+              {/* Microchip Number */}
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem", display: "flex", justifyContent: "space-between" }}>
+                  <span>Microchip Number</span>
+                  <span style={{ fontSize: "0.72rem", color: "#6B7280", fontWeight: 500 }}>Optional (15-digit RFID)</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="e.g. 982000364829103"
+                  value={editFormData.microchipNumber}
+                  onChange={(e) => setEditFormData({ ...editFormData, microchipNumber: e.target.value })}
+                />
+              </div>
+
+              {/* Rescue Details (if present or NGO) */}
+              {(editFormData.rescueDate || editFormData.rescueLocation || user?.role === "ngo" || tokenState?.token?.assignedTo === "ngo") && (
+                <div style={{ backgroundColor: "rgba(13, 148, 136, 0.05)", border: "1px solid rgba(13, 148, 136, 0.25)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <span style={{ fontSize: "0.76rem", fontWeight: 800, color: "#0F766E", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                    Rescue Case Details
+                  </span>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                    <div className="form-group" style={{ margin: 0 }}>
+                      <label className="form-label" style={{ fontWeight: 700, fontSize: "0.78rem" }}>Rescue Date</label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        value={editFormData.rescueDate}
+                        onChange={(e) => setEditFormData({ ...editFormData, rescueDate: e.target.value })}
+                      />
+                    </div>
+                    <div className="form-group" style={{ margin: 0 }}>
+                      <label className="form-label" style={{ fontWeight: 700, fontSize: "0.78rem" }}>Rescue Location</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="e.g. Camp, Pune"
+                        value={editFormData.rescueLocation}
+                        onChange={(e) => setEditFormData({ ...editFormData, rescueLocation: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div className="form-group">
-                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Age *</label>
+                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem", display: "flex", justifyContent: "space-between" }}>
+                    <span>Approx. Age / DOB</span>
+                    <span style={{ fontSize: "0.72rem", color: "#6B7280", fontWeight: 500 }}>Optional</span>
+                  </label>
                   <input
                     type="text"
                     className="form-control"
+                    placeholder="e.g. 2 years"
                     value={editFormData.age}
                     onChange={(e) => setEditFormData({ ...editFormData, age: e.target.value })}
                   />
-                  {formErrors.age && <span style={{ fontSize: "0.72rem", color: "#DC2626", fontWeight: 600 }}>{formErrors.age}</span>}
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem" }}>Weight *</label>
+                  <label className="form-label" style={{ fontWeight: 700, fontSize: "0.82rem", display: "flex", justifyContent: "space-between" }}>
+                    <span>Weight</span>
+                    <span style={{ fontSize: "0.72rem", color: "#6B7280", fontWeight: 500 }}>Optional</span>
+                  </label>
                   <input
                     type="text"
                     className="form-control"
+                    placeholder="e.g. 14 kg"
                     value={editFormData.weight}
                     onChange={(e) => setEditFormData({ ...editFormData, weight: e.target.value })}
                   />
-                  {formErrors.weight && <span style={{ fontSize: "0.72rem", color: "#DC2626", fontWeight: 600 }}>{formErrors.weight}</span>}
                 </div>
               </div>
 
@@ -1106,10 +1286,14 @@ const PublicScanPage = () => {
                       name: pet.name || "",
                       species: pet.species || "Dog",
                       breed: pet.breed || "",
-                      gender: pet.gender || "Male",
+                      gender: pet.gender || "Not Specified",
                       age: pet.age || "",
                       weight: pet.weight || "",
                       photo: pet.photo || SAMPLE_PET_PHOTOS[0].url,
+                      colorAndMarkings: pet.colorAndMarkings || "",
+                      microchipNumber: pet.microchipNumber || "",
+                      rescueDate: pet.rescueDate || "",
+                      rescueLocation: pet.rescueLocation || "",
                       vaccinationStatus: pet.healthSummary?.vaccinationStatus || "Fully Vaccinated",
                       sterilizationStatus: pet.healthSummary?.sterilizationStatus || "Sterilized",
                       publishWelfarePublicly: pet.publishWelfarePublicly !== false
@@ -1182,8 +1366,31 @@ const PublicScanPage = () => {
                 <div>
                   <h1 style={{ fontSize: "1.7rem", fontWeight: 800, margin: 0, color: "var(--text-main)" }}>{pet.name}</h1>
                   <p style={{ color: "var(--text-muted)", fontSize: "0.88rem", marginTop: "4px", fontWeight: 500 }}>
-                    {pet.species} • {pet.breed} {pet.gender ? `• ${pet.gender}` : ""} {pet.age ? `• ${pet.age}` : ""}
+                    {pet.species} • {pet.breed || "Mixed Breed"} {pet.gender && pet.gender !== "Not Specified" ? `• ${pet.gender}` : ""} {pet.age && pet.age !== "Unknown" ? `• ${pet.age}` : ""}
                   </p>
+
+                  {/* Distinctive Colour, Markings & Microchip */}
+                  {(pet.colorAndMarkings || pet.microchipNumber) && (
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "8px" }}>
+                      {pet.colorAndMarkings && (
+                        <span style={{ fontSize: "0.75rem", padding: "4px 10px", borderRadius: "8px", backgroundColor: "#F3F4F6", color: "#374151", fontWeight: 600 }}>
+                          🎨 {pet.colorAndMarkings}
+                        </span>
+                      )}
+                      {pet.microchipNumber && (
+                        <span style={{ fontSize: "0.75rem", padding: "4px 10px", borderRadius: "8px", backgroundColor: "#EFF6FF", color: "#1E40AF", fontWeight: 600 }}>
+                          🏷️ Microchip: {pet.microchipNumber}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Rescue History Badge for NGO animals */}
+                  {(pet.rescueLocation || pet.rescueDate) && (
+                    <div style={{ marginTop: "8px", fontSize: "0.75rem", color: "#0F766E", backgroundColor: "rgba(13, 148, 136, 0.08)", padding: "6px 10px", borderRadius: "8px", fontWeight: 600 }}>
+                      🚨 {pet.rescueDate ? `Rescued on ${pet.rescueDate}` : "Rescue Case"} {pet.rescueLocation ? `at ${pet.rescueLocation}` : ""}
+                    </div>
+                  )}
                 </div>
 
                 {/* Responsible NGO Custodian Display (Specifically for NGO-custodied pets) */}

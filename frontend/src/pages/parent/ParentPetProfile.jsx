@@ -213,6 +213,18 @@ const ParentPetProfile = () => {
                 <span style={{ display: "block", fontSize: "0.78rem", color: "var(--text-muted)" }}>Custodian Node</span>
                 <strong style={{ fontSize: "0.95rem" }}>{pet.custodian}</strong>
               </div>
+              {pet.colorAndMarkings && (
+                <div>
+                  <span style={{ display: "block", fontSize: "0.78rem", color: "var(--text-muted)" }}>Colour &amp; Markings</span>
+                  <strong style={{ fontSize: "0.95rem" }}>{pet.colorAndMarkings}</strong>
+                </div>
+              )}
+              {pet.microchipNumber && (
+                <div>
+                  <span style={{ display: "block", fontSize: "0.78rem", color: "var(--text-muted)" }}>Microchip (RFID)</span>
+                  <strong style={{ fontSize: "0.95rem" }}>{pet.microchipNumber}</strong>
+                </div>
+              )}
             </div>
           </div>
 

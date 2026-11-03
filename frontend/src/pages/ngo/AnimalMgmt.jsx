@@ -373,6 +373,10 @@ const AnimalMgmt = () => {
           ownershipType: "NGO-custodied",
           responsibleNgoName: user?.name || "Pune Central Animal Shelter",
           publishWelfarePublicly: true,
+          colorAndMarkings: "Brown & White coat",
+          microchipNumber: "",
+          rescueDate: new Date().toISOString().split("T")[0],
+          rescueLocation: "Pune Ward 4",
           status: "In Shelter",
           assignedVetId: "VET-1"
         };

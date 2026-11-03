@@ -56,9 +56,11 @@ const RegisterNewPet = () => {
     name: "",
     species: "Dog",
     breed: "",
-    gender: "Male",
+    gender: "Not Specified",
     age: "",
     weight: "",
+    colorAndMarkings: "",
+    microchipNumber: "",
     photoFile: null,
     photoPreview: "",
     publishWelfarePublicly: true
@@ -99,10 +101,6 @@ const RegisterNewPet = () => {
     const tempErrors = {};
 
     if (!formData.name.trim()) tempErrors.name = "Pet name is required";
-    if (!formData.breed.trim()) tempErrors.breed = "Breed is required";
-    if (!formData.age.trim()) tempErrors.age = "Estimated age is required (e.g. '2 years')";
-    if (!formData.weight.trim()) tempErrors.weight = "Weight is required (e.g. '14 kg')";
-    if (!formData.photoPreview) tempErrors.photo = "Pet photo is required for digital collar tag validation";
 
     if (Object.keys(tempErrors).length > 0) {
       setErrors(tempErrors);
@@ -118,11 +116,13 @@ const RegisterNewPet = () => {
       id: mockId,
       name: formData.name.trim(),
       species: formData.species,
-      breed: formData.breed.trim(),
+      breed: formData.breed.trim() || "Mixed / Indie",
       gender: formData.gender,
-      age: formData.age.trim(),
-      weight: formData.weight.trim(),
-      photo: formData.photoPreview,
+      age: formData.age.trim() || "Unknown",
+      weight: formData.weight.trim() || "Not recorded",
+      photo: formData.photoPreview || "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=800",
+      colorAndMarkings: formData.colorAndMarkings.trim(),
+      microchipNumber: formData.microchipNumber.trim(),
       status: "Adopted",
       ownershipType: "Parent-owned",
       publishWelfarePublicly: formData.publishWelfarePublicly !== false,
@@ -332,75 +332,76 @@ const RegisterNewPet = () => {
 
               {/* Breed */}
               <div className="parent-register-field">
-                <label className="parent-register-field-label">Breed *</label>
+                <label className="parent-register-field-label">Breed (Optional)</label>
                 <input
                   type="text"
                   className="parent-register-input"
-                  placeholder="e.g. Indie / Persian Cat"
+                  placeholder="e.g. Indie / Persian / Mixed"
                   value={formData.breed}
-                  onChange={(e) => {
-                    setFormData({ ...formData, breed: e.target.value });
-                    if (errors.breed) setErrors({ ...errors, breed: null });
-                  }}
+                  onChange={(e) => setFormData({ ...formData, breed: e.target.value })}
                 />
-                {errors.breed && (
-                  <span style={{ color: "#DC2626", fontSize: "0.75rem", fontWeight: 700 }}>
-                    {errors.breed}
-                  </span>
-                )}
               </div>
 
               {/* Gender */}
               <div className="parent-register-field">
-                <label className="parent-register-field-label">Gender *</label>
+                <label className="parent-register-field-label">Sex / Gender</label>
                 <select
                   className="parent-register-select"
                   value={formData.gender}
                   onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                 >
+                  <option value="Not Specified">Not Specified / Unknown</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                 </select>
               </div>
 
+              {/* Colour and Markings */}
+              <div className="parent-register-field">
+                <label className="parent-register-field-label">Colour and Markings (Optional)</label>
+                <input
+                  type="text"
+                  className="parent-register-input"
+                  placeholder="e.g. Brown with white chest, black muzzle"
+                  value={formData.colorAndMarkings}
+                  onChange={(e) => setFormData({ ...formData, colorAndMarkings: e.target.value })}
+                />
+              </div>
+
+              {/* Microchip Number */}
+              <div className="parent-register-field">
+                <label className="parent-register-field-label">Microchip Number (Optional)</label>
+                <input
+                  type="text"
+                  className="parent-register-input"
+                  placeholder="e.g. 982000364829103"
+                  value={formData.microchipNumber}
+                  onChange={(e) => setFormData({ ...formData, microchipNumber: e.target.value })}
+                />
+              </div>
+
               {/* Estimated Age */}
               <div className="parent-register-field">
-                <label className="parent-register-field-label">Estimated Age *</label>
+                <label className="parent-register-field-label">Estimated Age / DOB (Optional)</label>
                 <input
                   type="text"
                   className="parent-register-input"
                   placeholder="e.g. 2 years / 6 months"
                   value={formData.age}
-                  onChange={(e) => {
-                    setFormData({ ...formData, age: e.target.value });
-                    if (errors.age) setErrors({ ...errors, age: null });
-                  }}
+                  onChange={(e) => setFormData({ ...formData, age: e.target.value })}
                 />
-                {errors.age && (
-                  <span style={{ color: "#DC2626", fontSize: "0.75rem", fontWeight: 700 }}>
-                    {errors.age}
-                  </span>
-                )}
               </div>
 
               {/* Weight */}
               <div className="parent-register-field">
-                <label className="parent-register-field-label">Weight *</label>
+                <label className="parent-register-field-label">Weight (Optional)</label>
                 <input
                   type="text"
                   className="parent-register-input"
                   placeholder="e.g. 14 kg / 4.2 kg"
                   value={formData.weight}
-                  onChange={(e) => {
-                    setFormData({ ...formData, weight: e.target.value });
-                    if (errors.weight) setErrors({ ...errors, weight: null });
-                  }}
+                  onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
                 />
-                {errors.weight && (
-                  <span style={{ color: "#DC2626", fontSize: "0.75rem", fontWeight: 700 }}>
-                    {errors.weight}
-                  </span>
-                )}
               </div>
             </div>
 

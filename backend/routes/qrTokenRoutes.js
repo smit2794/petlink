@@ -393,7 +393,7 @@ router.get('/tokens/by-animal/:animalId', async (req, res) => {
  * Requires auth (parent).
  * Body: { name, species, breed, gender, age, weight, photo, healthSummary }
  */
-router.put('/tokens/:tokenId/edit', authMiddleware, requireRole('parent'), async (req, res) => {
+router.put('/tokens/:tokenId/edit', authMiddleware, requireRole('parent', 'ngo'), async (req, res) => {
   try {
     const token = await QRToken.findOne({ tokenId: req.params.tokenId });
     if (!token) return res.status(404).json({ error: 'Token not found.' });
