@@ -25,8 +25,7 @@ import {
   Lock,
   Eye,
   EyeOff,
-  Send,
-  Info
+  Send
 } from "lucide-react";
 
 const SAMPLE_PET_PHOTOS = [
@@ -59,6 +58,7 @@ const PublicScanPage = () => {
   const scanLoggedRef = useRef(false);
 
   // Edit mode state (for Scenario 3)
+  const [isEditing, setIsEditing] = useState(false);
   const [editFormData, setEditFormData] = useState({
     name: "",
     species: "Dog",
